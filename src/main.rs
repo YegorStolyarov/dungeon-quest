@@ -2,8 +2,8 @@ use bevy::prelude::*;
 
 mod plugins;
 
-const WINDOW_WIDTH: f32 = 640.0;
-const WINDOW_HEIGHT: f32 = 360.0;
+const WINDOW_WIDTH: f32 = 960.0;
+const WINDOW_HEIGHT: f32 = 540.0;
 
 fn main() {
     let mut app = App::new();
