@@ -1,7 +1,15 @@
 use bevy::{app::AppExit, prelude::*};
 
-use crate::config::*;
 use crate::state::*;
+
+const BUTTON_WIDTH: f32 = 200.0;
+const BUTTON_HEIGHT: f32 = 60.0;
+const SEPARATE: f32 = BUTTON_HEIGHT / 4.0;
+
+static TEXT_FONT: &str = "fonts/Haedus.ttf";
+
+static BUTTON_IMAGE: &str = "images/empty_button.png";
+static BACKGROUND_IMAGE: &str = "images/menu_background.png";
 
 struct MainMenuData {
     camera_entity: Entity,
@@ -30,18 +38,22 @@ impl Plugin for MainMenuPlugin {
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     let camera_entity = commands.spawn_bundle(UiCameraBundle::default()).id();
 
+    let play_button_position = Vec2::new(SEPARATE, SEPARATE);
+    let demos_button_position = Vec2::new(SEPARATE, SEPARATE * 2.0 + BUTTON_HEIGHT);
+    let setting_button_position = Vec2::new(SEPARATE, SEPARATE * 3.0 + BUTTON_HEIGHT * 2.0);
+    let quit_button_position = Vec2::new(SEPARATE, SEPARATE * 4.0 + BUTTON_HEIGHT * 3.0);
+
     let ui_root = commands
         .spawn_bundle(NodeBundle {
             style: Style {
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                 ..Default::default()
             },
-            image: UiImage(asset_server.load("images/menu_background.png")),
+            image: UiImage(asset_server.load(BACKGROUND_IMAGE)),
             ..Default::default()
         })
         .with_children(|parent| {
             // Play Button
-            let play_button_position = Vec2::new(SEPARATE, SEPARATE);
             parent
                 .spawn_bundle(button_bundle(play_button_position, &asset_server))
                 .with_children(|parent| {
@@ -50,7 +62,6 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                 .insert(MainMenuButton::Play);
 
             // Demos Button
-            let demos_button_position = Vec2::new(SEPARATE, SEPARATE * 2.0 + BUTTON_HEIGHT);
             parent
                 .spawn_bundle(button_bundle(demos_button_position, &asset_server))
                 .with_children(|parent| {
@@ -59,7 +70,6 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                 .insert(MainMenuButton::Demos);
 
             // Setting Button
-            let setting_button_position = Vec2::new(SEPARATE, SEPARATE * 3.0 + BUTTON_HEIGHT * 2.0);
             parent
                 .spawn_bundle(button_bundle(setting_button_position, &asset_server))
                 .with_children(|parent| {
@@ -68,7 +78,6 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                 .insert(MainMenuButton::Setting);
 
             // Quit Button
-            let quit_button_position = Vec2::new(SEPARATE, SEPARATE * 4.0 + BUTTON_HEIGHT * 3.0);
             parent
                 .spawn_bundle(button_bundle(quit_button_position, &asset_server))
                 .with_children(|parent| {
@@ -95,7 +104,7 @@ fn text_bundle(value: &str, asset_server: &Res<AssetServer>) -> TextBundle {
         text: Text::with_section(
             value,
             TextStyle {
-                font: asset_server.load("fonts/Haedus.ttf"),
+                font: asset_server.load(TEXT_FONT),
                 font_size: 80.0,
                 color: Color::WHITE,
             },
@@ -126,7 +135,7 @@ fn button_bundle(position: Vec2, asset_server: &Res<AssetServer>) -> ButtonBundl
             },
             ..Default::default()
         },
-        image: UiImage(asset_server.load("images/EmptyButton.png")),
+        image: UiImage(asset_server.load(BUTTON_IMAGE)),
         ..Default::default()
     }
 }
@@ -161,12 +170,15 @@ fn button_system(
 // Button onClick handle system
 fn button_press_system(
     button_query: Query<(&Interaction, &MainMenuButton), (Changed<Interaction>, With<Button>)>,
-    // state: ResMut<State<ApplicationState>>,
+    mut state: ResMut<State<ApplicationState>>,
     mut exit: EventWriter<AppExit>,
 ) {
     for (interaction, button) in button_query.iter() {
         if *interaction == Interaction::Clicked {
             match button {
+                MainMenuButton::Demos => state
+                    .set(ApplicationState::DemosMenu)
+                    .expect("Couldn't switch state to DemosMenu"),
                 _ => exit.send(AppExit),
             }
         }
