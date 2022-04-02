@@ -1,5 +1,6 @@
 use bevy::{prelude::*, window::WindowMode};
 use config::*;
+use state::*;
 
 mod config;
 mod plugins;
@@ -24,8 +25,8 @@ fn main() {
             mode: WindowMode::Windowed,
             ..Default::default()
         })
+        .add_state(ApplicationState::MainMenu)
         .add_plugins(DefaultPlugins)
-        .add_startup_system_to_stage(StartupStage::PreStartup, plugins::assets::load_ascii)
         .add_plugin(plugins::main_menu::MainMenuPlugin)
         .run();
 }
