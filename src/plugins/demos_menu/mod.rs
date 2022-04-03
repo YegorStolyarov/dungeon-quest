@@ -1,14 +1,20 @@
 use bevy::prelude::*;
 
+mod ui;
+
 use crate::state::*;
+use ui::*;
 
 pub struct DemosMenuPlugin;
 
 impl Plugin for DemosMenuPlugin {
     fn build(&self, app: &mut App) {
-        // app.add_system(button_system);
-        // app.add_system(button_press_system);
+        // app.add_system(button_handle_system);
         app.add_system_set(SystemSet::on_enter(ApplicationState::DemosMenu).with_system(setup));
+        app.add_system_set(
+            SystemSet::on_update(ApplicationState::DemosMenu)
+                .with_system(button_interaction_handle_system), // .with_system(button_on_click_handle_system),
+        );
         app.add_system_set(SystemSet::on_exit(ApplicationState::DemosMenu).with_system(cleanup));
     }
 }
@@ -18,17 +24,24 @@ struct DemosMenuData {
     ui_root: Entity,
 }
 
-fn setup(mut commands: Commands, _asset_server: Res<AssetServer>) {
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     let camera_entity = commands.spawn_bundle(UiCameraBundle::default()).id();
     let ui_root = commands
-        .spawn_bundle(NodeBundle {
-            style: Style {
-                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-                ..Default::default()
-            },
-            color: UiColor(Color::RED),
-            // image: UiImage(asset_server.load(BACKGROUND_IMAGE)),
-            ..Default::default()
+        .spawn_bundle(root(&asset_server))
+        .with_children(|parent| {
+            parent
+                .spawn_bundle(button_bundle(DemosMenuButton::Movement, &asset_server))
+                .with_children(|parent| {
+                    parent.spawn_bundle(text_bundle(DemosMenuButton::Movement, &asset_server));
+                })
+                .insert(DemosMenuButton::Movement);
+
+            parent
+                .spawn_bundle(button_bundle(DemosMenuButton::Home, &asset_server))
+                .with_children(|parent| {
+                    parent.spawn_bundle(text_bundle(DemosMenuButton::Home, &asset_server));
+                })
+                .insert(DemosMenuButton::Home);
         })
         .id();
 
