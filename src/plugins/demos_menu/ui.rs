@@ -72,16 +72,16 @@ pub fn button_bundle(
     }
 }
 
-// Button interaction handle system
-pub fn button_interaction_handle_system(
-    mut interaction_query: Query<
+// Button handle system
+pub fn button_system(
+    mut button_query: Query<
         (&DemosMenuButton, &Interaction, &mut UiColor, &Children),
         (Changed<Interaction>, With<Button>),
     >,
     mut text_query: Query<&mut Text>,
     mut state: ResMut<State<ApplicationState>>,
 ) {
-    for (button, interaction, mut color, children) in interaction_query.iter_mut() {
+    for (button, interaction, mut color, children) in button_query.iter_mut() {
         let mut text = text_query.get_mut(children[0]).unwrap();
 
         match *interaction {

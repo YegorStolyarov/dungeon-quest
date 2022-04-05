@@ -14,7 +14,7 @@ const BUTTON_POSITIONS: [[f32; 2]; 4] = [
     [SEPARATE, SEPARATE * 4.0 + BUTTON_HEIGHT * 3.0], // Quit
 ];
 
-const TEXT_SIZE: f32 = 80.0;
+const FONT_SIZE: f32 = 80.0;
 
 #[derive(Component)]
 pub enum MainMenuButton {
@@ -108,6 +108,7 @@ pub fn button_on_click_handle_system(
                 MainMenuButton::Demos => state
                     .set(ApplicationState::DemosMenu)
                     .expect("Couldn't switch state to DemosMenu"),
+                MainMenuButton::Setting => {}
                 _ => exit.send(AppExit),
             }
         }
@@ -131,7 +132,7 @@ pub fn text_bundle(
             text,
             TextStyle {
                 font: asset_server.load(HAEDUS_FONT),
-                font_size: TEXT_SIZE,
+                font_size: FONT_SIZE,
                 color: Color::WHITE,
             },
             TextAlignment {

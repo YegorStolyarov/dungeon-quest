@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-mod ui;
+pub mod ui;
 
 use crate::state::*;
 use ui::*;
@@ -9,11 +9,10 @@ pub struct DemosMenuPlugin;
 
 impl Plugin for DemosMenuPlugin {
     fn build(&self, app: &mut App) {
-        // app.add_system(button_handle_system);
         app.add_system_set(SystemSet::on_enter(ApplicationState::DemosMenu).with_system(setup));
         app.add_system_set(
             SystemSet::on_update(ApplicationState::DemosMenu)
-                .with_system(button_interaction_handle_system), // .with_system(button_on_click_handle_system),
+                .with_system(button_system),
         );
         app.add_system_set(SystemSet::on_exit(ApplicationState::DemosMenu).with_system(cleanup));
     }

@@ -13,4 +13,5 @@ pub static SMALL_BUTTON_IMAGE: &str = "images/empty_button.png";
 
 pub static HAEDUS_FONT: &str = "fonts/Haedus.ttf";
 
+pub static SETTING_FILE: &str = "setting.txt";
 // pub static HOME_ICON: &str = "icons/home.png";
