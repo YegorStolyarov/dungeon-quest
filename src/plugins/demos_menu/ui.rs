@@ -73,7 +73,7 @@ pub fn button_bundle(
 }
 
 // Button handle system
-pub fn button_system(
+pub fn button_handle_system(
     mut button_query: Query<
         (&DemosMenuButton, &Interaction, &mut UiColor, &Children),
         (Changed<Interaction>, With<Button>),
