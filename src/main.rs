@@ -25,9 +25,10 @@ fn main() {
             mode: WindowMode::Windowed,
             ..Default::default()
         })
+        .add_startup_system(plugins::setting::load_setting)
         .add_state(ApplicationState::MainMenu)
         .add_plugins(DefaultPlugins)
-        .add_plugin(plugins::main_menu::MainMenuPlugin)
-        .add_plugin(plugins::demos_menu::DemosMenuPlugin)
+        .add_plugin(plugins::menu::main_menu::MainMenuPlugin)
+        .add_plugin(plugins::menu::demos_menu::DemosMenuPlugin)
         .run();
 }

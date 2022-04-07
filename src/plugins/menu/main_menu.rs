@@ -24,7 +24,75 @@ pub enum MainMenuButton {
     Quit,
 }
 
-pub fn root(asset_server: &Res<AssetServer>) -> NodeBundle {
+struct MainMenuData {
+    camera_entity: Entity,
+    ui_root: Entity,
+}
+
+pub struct MainMenuPlugin;
+
+impl Plugin for MainMenuPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_system_set(SystemSet::on_enter(ApplicationState::MainMenu).with_system(setup));
+        app.add_system_set(SystemSet::on_exit(ApplicationState::MainMenu).with_system(cleanup));
+        app.add_system_set(
+            SystemSet::on_update(ApplicationState::MainMenu).with_system(button_handle_system),
+        );
+    }
+}
+
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+    let camera_entity = commands.spawn_bundle(UiCameraBundle::default()).id();
+
+    let ui_root = commands
+        .spawn_bundle(root(&asset_server))
+        .with_children(|parent| {
+            // Play Button
+            parent
+                .spawn_bundle(button_bundle(MainMenuButton::Play, &asset_server))
+                .with_children(|parent| {
+                    parent.spawn_bundle(text_bundle(MainMenuButton::Play, &asset_server));
+                })
+                .insert(MainMenuButton::Play);
+
+            // Demos Button
+            parent
+                .spawn_bundle(button_bundle(MainMenuButton::Demos, &asset_server))
+                .with_children(|parent| {
+                    parent.spawn_bundle(text_bundle(MainMenuButton::Demos, &asset_server));
+                })
+                .insert(MainMenuButton::Demos);
+
+            // Setting Button
+            parent
+                .spawn_bundle(button_bundle(MainMenuButton::Setting, &asset_server))
+                .with_children(|parent| {
+                    parent.spawn_bundle(text_bundle(MainMenuButton::Setting, &asset_server));
+                })
+                .insert(MainMenuButton::Setting);
+
+            // Quit Button
+            parent
+                .spawn_bundle(button_bundle(MainMenuButton::Quit, &asset_server))
+                .with_children(|parent| {
+                    parent.spawn_bundle(text_bundle(MainMenuButton::Quit, &asset_server));
+                })
+                .insert(MainMenuButton::Quit);
+        })
+        .id();
+
+    commands.insert_resource(MainMenuData {
+        camera_entity,
+        ui_root,
+    });
+}
+
+fn cleanup(mut commands: Commands, menu_data: Res<MainMenuData>) {
+    commands.entity(menu_data.ui_root).despawn_recursive();
+    commands.entity(menu_data.camera_entity).despawn_recursive();
+}
+
+fn root(asset_server: &Res<AssetServer>) -> NodeBundle {
     NodeBundle {
         style: Style {
             size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
@@ -35,8 +103,7 @@ pub fn root(asset_server: &Res<AssetServer>) -> NodeBundle {
     }
 }
 
-// Button
-pub fn button_bundle(
+fn button_bundle(
     main_menu_button: MainMenuButton,
     asset_server: &Res<AssetServer>,
 ) -> ButtonBundle {
@@ -69,15 +136,17 @@ pub fn button_bundle(
     }
 }
 
-// Button interaction handle system
-pub fn button_interaction_handle_system(
-    mut interaction_query: Query<
-        (&Interaction, &mut UiColor, &Children),
+fn button_handle_system(
+    mut button_query: Query<
+        (&Interaction, &MainMenuButton, &mut UiColor, &Children),
         (Changed<Interaction>, With<Button>),
     >,
     mut text_query: Query<&mut Text>,
+    mut state: ResMut<State<ApplicationState>>,
+
+    mut exit: EventWriter<AppExit>,
 ) {
-    for (interaction, mut color, children) in interaction_query.iter_mut() {
+    for (interaction, button, mut color, children) in button_query.iter_mut() {
         let mut text = text_query.get_mut(children[0]).unwrap();
         match *interaction {
             Interaction::None => {
@@ -91,35 +160,19 @@ pub fn button_interaction_handle_system(
             Interaction::Clicked => {
                 text.sections[0].style.color = Color::RED.into();
                 *color = Color::RED.into();
+                match button {
+                    MainMenuButton::Demos => state
+                        .set(ApplicationState::DemosMenu)
+                        .expect("Couldn't switch state to DemosMenu"),
+                    MainMenuButton::Setting => {}
+                    _ => exit.send(AppExit),
+                }
             }
         }
     }
 }
 
-// Button onClick handle system
-pub fn button_on_click_handle_system(
-    button_query: Query<(&Interaction, &MainMenuButton), (Changed<Interaction>, With<Button>)>,
-    mut state: ResMut<State<ApplicationState>>,
-    mut exit: EventWriter<AppExit>,
-) {
-    for (interaction, button) in button_query.iter() {
-        if *interaction == Interaction::Clicked {
-            match button {
-                MainMenuButton::Demos => state
-                    .set(ApplicationState::DemosMenu)
-                    .expect("Couldn't switch state to DemosMenu"),
-                MainMenuButton::Setting => {}
-                _ => exit.send(AppExit),
-            }
-        }
-    }
-}
-
-// Text
-pub fn text_bundle(
-    main_menu_button: MainMenuButton,
-    asset_server: &Res<AssetServer>,
-) -> TextBundle {
+fn text_bundle(main_menu_button: MainMenuButton, asset_server: &Res<AssetServer>) -> TextBundle {
     let text: &str = match main_menu_button {
         MainMenuButton::Play => "PLAY",
         MainMenuButton::Demos => "DEMOS",
