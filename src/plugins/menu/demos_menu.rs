@@ -15,14 +15,14 @@ const SMALL_FONT_SIZE: f32 = 30.0;
 const BUTTON_X_POSITION: f32 = (WINDOW_HEIGHT * RESOLUTION / 2.0) - (BUTTON_WIDTH / 2.0);
 
 const BUTTON_POSITIONS: [[f32; 2]; 2] = [
+    [SEPARATE - 10.0, SEPARATE],   // ReturnHome
     [BUTTON_X_POSITION, SEPARATE], // Movement
-    [SEPARATE - 10.0, SEPARATE],   // Home
 ];
 
 #[derive(Component, PartialEq)]
 enum DemosMenuButton {
+    ReturnHome,
     Movement,
-    Home,
 }
 
 pub struct DemosMenuPlugin;
@@ -47,19 +47,21 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     let ui_root = commands
         .spawn_bundle(root(&asset_server))
         .with_children(|parent| {
+            // Return button
+            parent
+                .spawn_bundle(button_bundle(DemosMenuButton::ReturnHome, &asset_server))
+                .with_children(|parent| {
+                    parent.spawn_bundle(text_bundle(DemosMenuButton::ReturnHome, &asset_server));
+                })
+                .insert(DemosMenuButton::ReturnHome);
+
+            // Movement demo button
             parent
                 .spawn_bundle(button_bundle(DemosMenuButton::Movement, &asset_server))
                 .with_children(|parent| {
                     parent.spawn_bundle(text_bundle(DemosMenuButton::Movement, &asset_server));
                 })
                 .insert(DemosMenuButton::Movement);
-
-            parent
-                .spawn_bundle(button_bundle(DemosMenuButton::Home, &asset_server))
-                .with_children(|parent| {
-                    parent.spawn_bundle(text_bundle(DemosMenuButton::Home, &asset_server));
-                })
-                .insert(DemosMenuButton::Home);
         })
         .id();
 
@@ -90,15 +92,15 @@ fn button_bundle(
     asset_server: &Res<AssetServer>,
 ) -> ButtonBundle {
     let size = match demos_menu_button {
-        DemosMenuButton::Movement => Size::new(Val::Px(BUTTON_WIDTH), Val::Px(BUTTON_HEIGHT)),
-        DemosMenuButton::Home => {
+        DemosMenuButton::ReturnHome => {
             Size::new(Val::Px(BUTTON_WIDTH - 50.0), Val::Px(BUTTON_HEIGHT - 20.0))
         }
+        DemosMenuButton::Movement => Size::new(Val::Px(BUTTON_WIDTH), Val::Px(BUTTON_HEIGHT)),
     };
 
     let possition: [f32; 2] = match demos_menu_button {
-        DemosMenuButton::Movement => BUTTON_POSITIONS[0],
-        DemosMenuButton::Home => BUTTON_POSITIONS[1],
+        DemosMenuButton::ReturnHome => BUTTON_POSITIONS[0],
+        DemosMenuButton::Movement => BUTTON_POSITIONS[1],
     };
 
     ButtonBundle {
@@ -149,7 +151,7 @@ fn button_handle_system(
                     DemosMenuButton::Movement => state
                         .set(ApplicationState::MainMenu)
                         .expect("Couldn't switch state to MainMenu"),
-                    DemosMenuButton::Home => state
+                    DemosMenuButton::ReturnHome => state
                         .set(ApplicationState::MainMenu)
                         .expect("Couldn't switch state to MainMenu"),
                 }
@@ -166,7 +168,7 @@ fn text_bundle(demos_menu_button: DemosMenuButton, asset_server: &Res<AssetServe
 
     let font_size: f32 = match demos_menu_button {
         DemosMenuButton::Movement => BIG_FONT_SIZE,
-        DemosMenuButton::Home => SMALL_FONT_SIZE,
+        DemosMenuButton::ReturnHome => SMALL_FONT_SIZE,
     };
 
     TextBundle {
