@@ -2,6 +2,5 @@
 pub enum ApplicationState {
     MainMenu,
     DemosMenu,
-    SettingMenu, // InGame,
-                 // Paused
+    SettingMenu,
 }

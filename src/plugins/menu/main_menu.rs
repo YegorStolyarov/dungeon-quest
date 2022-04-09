@@ -163,8 +163,10 @@ fn button_handle_system(
                 match button {
                     MainMenuButton::Demos => state
                         .set(ApplicationState::DemosMenu)
-                        .expect("Couldn't switch state to DemosMenu"),
-                    MainMenuButton::Setting => {}
+                        .expect("Couldn't switch state to Demos Menu"),
+                    MainMenuButton::Setting => state
+                        .set(ApplicationState::SettingMenu)
+                        .expect("Couldn't switch state to Setting Menu"),
                     _ => exit.send(AppExit),
                 }
             }

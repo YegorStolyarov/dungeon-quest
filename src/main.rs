@@ -30,5 +30,6 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugin(plugins::menu::main_menu::MainMenuPlugin)
         .add_plugin(plugins::menu::demos_menu::DemosMenuPlugin)
+        .add_plugin(plugins::menu::setting_menu::SettingMenuPlugin)
         .run();
 }
