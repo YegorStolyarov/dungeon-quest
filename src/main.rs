@@ -1,4 +1,6 @@
 use bevy::{prelude::*, window::WindowMode};
+use bevy_kira_audio::AudioPlugin;
+
 use config::*;
 use state::*;
 
@@ -25,9 +27,11 @@ fn main() {
             mode: WindowMode::Windowed,
             ..Default::default()
         })
-        .add_startup_system(plugins::setting::load_setting)
+        .init_resource::<plugins::setting::Setting>()
         .add_state(ApplicationState::MainMenu)
+        .add_startup_system(plugins::music::start_background_music)
         .add_plugins(DefaultPlugins)
+        .add_plugin(AudioPlugin)
         .add_plugin(plugins::menu::main_menu::MainMenuPlugin)
         .add_plugin(plugins::menu::demos_menu::DemosMenuPlugin)
         .add_plugin(plugins::menu::setting_menu::SettingMenuPlugin)
