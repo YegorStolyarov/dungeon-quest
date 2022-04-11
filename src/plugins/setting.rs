@@ -12,6 +12,49 @@ pub struct Setting {
     fullscreen: bool,
 }
 
+impl Setting {
+    pub fn new(enable_sound: bool, enable_music: bool, fullscreen: bool) -> Self {
+        Setting {
+            enable_sound,
+            enable_music,
+            fullscreen,
+        }
+    }
+
+    pub fn get_enable_sound(&self) -> bool {
+        self.enable_sound
+    }
+
+    pub fn get_enable_music(&self) -> bool {
+        self.enable_music
+    }
+
+    pub fn get_fullscreen(&self) -> bool {
+        self.fullscreen
+    }
+
+    pub fn set_enable_sound(&mut self, enable_sound: bool) {
+        self.enable_sound = enable_sound;
+    }
+
+    pub fn set_enable_music(&mut self, enable_music: bool) {
+        self.enable_music = enable_music;
+    }
+
+    pub fn set_fullscreen(&mut self, fullscreen: bool) {
+        self.fullscreen = fullscreen;
+    }
+
+    pub fn store(&self) {
+        let mut setting_file = File::create(SETTING_FILE).expect("Can't open setting file");
+        let setting_str: String = serde_json::to_string(&self).unwrap();
+        dbg!(&setting_str);
+        setting_file
+            .write(setting_str.as_bytes())
+            .expect("Unable to write file");
+    }
+}
+
 pub fn load_setting(mut command: Commands) {
     match File::open(SETTING_FILE) {
         Ok(mut file) => {
@@ -33,24 +76,11 @@ pub fn load_setting(mut command: Commands) {
 
 fn create_new_setting_file() -> Setting {
     let mut setting_file = File::create(SETTING_FILE).expect("Error create setting file");
-    let setting = Setting {
-        enable_sound: false,
-        enable_music: false,
-        fullscreen: false,
-    };
+    let setting = Setting::new(true, true, false);
     let setting_str: String = serde_json::to_string(&setting).unwrap();
     setting_file
         .write(setting_str.as_bytes())
         .expect("Unable to write file");
 
     setting
-}
-
-fn store_setting(setting: Setting) {
-    let mut setting_file = File::open(SETTING_FILE).expect("Can't open setting file");
-    let setting_str: String = serde_json::to_string(&setting).unwrap();
-    dbg!(&setting_str);
-    setting_file
-        .write(setting_str.as_bytes())
-        .expect("Unable to write file");
 }

@@ -143,7 +143,6 @@ fn button_handle_system(
     >,
     mut text_query: Query<&mut Text>,
     mut state: ResMut<State<ApplicationState>>,
-
     mut exit: EventWriter<AppExit>,
 ) {
     for (interaction, button, mut color, children) in button_query.iter_mut() {
