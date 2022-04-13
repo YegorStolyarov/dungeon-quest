@@ -59,6 +59,6 @@ pub fn player_movement_system(
     }
 }
 
-pub fn clean_up_player(mut commands: Commands, player_data: Res<PlayerData>) {
+pub fn cleanup_player(mut commands: Commands, player_data: Res<PlayerData>) {
     commands.entity(player_data.player).despawn_recursive();
 }
