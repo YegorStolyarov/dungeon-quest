@@ -29,7 +29,7 @@ fn main() {
         })
         .init_resource::<plugins::setting::Setting>()
         .add_state(ApplicationState::MainMenu)
-        .add_startup_system(plugins::music::init_background_audio_channel)
+        .add_startup_system(plugins::music::background_audio_channel_setup)
         .add_system(plugins::music::play_background_music)
         .add_plugins(DefaultPlugins)
         .add_plugin(AudioPlugin)

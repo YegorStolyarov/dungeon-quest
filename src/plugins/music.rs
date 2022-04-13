@@ -10,7 +10,7 @@ pub struct BackgroundAudioChannel {
     volume: f32,
 }
 
-pub fn init_background_audio_channel(mut commands: Commands, asset_server: Res<AssetServer>) {
+pub fn background_audio_channel_setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     let background_audio_channel = BackgroundAudioChannel {
         background_music: asset_server.load("sounds/background_music.ogg"),
         channel: AudioChannel::new("background".to_owned()),
