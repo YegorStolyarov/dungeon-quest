@@ -2,6 +2,8 @@ use bevy::prelude::*;
 
 use crate::plugins::gameplay::camera::*;
 use crate::plugins::gameplay::player::*;
+use crate::plugins::gameplay::shared_systems::*;
+
 use crate::state::*;
 
 pub struct MovementDemoPlugin;
@@ -23,16 +25,5 @@ impl Plugin for MovementDemoPlugin {
                 .with_system(cleanup_camera)
                 .with_system(cleanup_player),
         );
-    }
-}
-
-fn escape_button_handle(
-    keyboard_input: Res<Input<KeyCode>>,
-    mut state: ResMut<State<ApplicationState>>,
-) {
-    if keyboard_input.pressed(KeyCode::Escape) {
-        state
-            .set(ApplicationState::DemosMenu)
-            .expect("Couldn't switch state to DemoMenu");
     }
 }
