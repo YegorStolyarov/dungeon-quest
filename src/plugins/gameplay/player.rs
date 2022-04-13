@@ -2,18 +2,18 @@ use bevy::prelude::*;
 
 use crate::config::*;
 
-pub struct PlayerData {
-    player: Entity,
+pub struct Player {
+    entity: Entity,
 }
 
 #[derive(Component)]
-pub struct Player {
+pub struct PlayerStats {
     movement_speed: f32,
 }
 
-impl Player {
+impl PlayerStats {
     pub fn new() -> Self {
-        Player {
+        PlayerStats {
             movement_speed: 3.0,
         }
     }
@@ -29,36 +29,36 @@ pub fn setup_player(mut commands: Commands, asset_server: Res<AssetServer>) {
             },
             ..Default::default()
         })
-        .insert(Player::new())
+        .insert(PlayerStats::new())
         .id();
 
-    commands.insert_resource(PlayerData { player });
+    commands.insert_resource(Player { entity: player });
 }
 
 pub fn player_movement_system(
-    mut player_query: Query<(&Player, &mut Transform)>,
+    mut player_query: Query<(&PlayerStats, &mut Transform)>,
     keyboard_input: Res<Input<KeyCode>>,
     time: Res<Time>,
 ) {
-    let (player, mut transform) = player_query.single_mut();
+    let (player_stats, mut transform) = player_query.single_mut();
 
     if keyboard_input.pressed(KeyCode::W) {
-        transform.translation.y += player.movement_speed * TILE_SIZE * time.delta_seconds();
+        transform.translation.y += player_stats.movement_speed * TILE_SIZE * time.delta_seconds();
     }
 
     if keyboard_input.pressed(KeyCode::S) {
-        transform.translation.y -= player.movement_speed * TILE_SIZE * time.delta_seconds();
+        transform.translation.y -= player_stats.movement_speed * TILE_SIZE * time.delta_seconds();
     }
 
     if keyboard_input.pressed(KeyCode::A) {
-        transform.translation.x -= player.movement_speed * TILE_SIZE * time.delta_seconds();
+        transform.translation.x -= player_stats.movement_speed * TILE_SIZE * time.delta_seconds();
     }
 
     if keyboard_input.pressed(KeyCode::D) {
-        transform.translation.x += player.movement_speed * TILE_SIZE * time.delta_seconds();
+        transform.translation.x += player_stats.movement_speed * TILE_SIZE * time.delta_seconds();
     }
 }
 
-pub fn cleanup_player(mut commands: Commands, player_data: Res<PlayerData>) {
-    commands.entity(player_data.player).despawn_recursive();
+pub fn cleanup_player(mut commands: Commands, player: Res<Player>) {
+    commands.entity(player.entity).despawn_recursive();
 }

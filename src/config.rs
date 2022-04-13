@@ -18,4 +18,4 @@ pub static SETTING_FILE: &str = "setting.json";
 pub static HOME_ICON: &str = "icons/home.png";
 pub static TICK_ICON: &str = "icons/tick.png";
 
-pub const TILE_SIZE: f32 = 64.0;
+pub const TILE_SIZE: f32 = 48.0;
