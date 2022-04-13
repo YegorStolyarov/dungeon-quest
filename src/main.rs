@@ -22,7 +22,6 @@ fn main() {
                 max_width: WINDOW_HEIGHT * RESOLUTION,
                 min_height: WINDOW_HEIGHT,
                 max_height: WINDOW_HEIGHT,
-                ..Default::default()
             },
             mode: WindowMode::Windowed,
             ..Default::default()
@@ -36,5 +35,6 @@ fn main() {
         .add_plugin(plugins::menu::main_menu::MainMenuPlugin)
         .add_plugin(plugins::menu::demos_menu::DemosMenuPlugin)
         .add_plugin(plugins::menu::setting_menu::SettingMenuPlugin)
+        .add_plugin(plugins::gameplay::demos::movement::MovementDemoPlugin)
         .run();
 }

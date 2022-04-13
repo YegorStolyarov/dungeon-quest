@@ -25,6 +25,11 @@ enum DemosMenuButton {
     Movement,
 }
 
+struct DemosMenuData {
+    camera_entity: Entity,
+    ui_root: Entity,
+}
+
 pub struct DemosMenuPlugin;
 
 impl Plugin for DemosMenuPlugin {
@@ -35,11 +40,6 @@ impl Plugin for DemosMenuPlugin {
         );
         app.add_system_set(SystemSet::on_exit(ApplicationState::DemosMenu).with_system(cleanup));
     }
-}
-
-struct DemosMenuData {
-    camera_entity: Entity,
-    ui_root: Entity,
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
@@ -149,7 +149,7 @@ fn button_handle_system(
                 *color = Color::RED.into();
                 match button {
                     DemosMenuButton::Movement => state
-                        .set(ApplicationState::MainMenu)
+                        .set(ApplicationState::MovementDemo)
                         .expect("Couldn't switch state to MainMenu"),
                     DemosMenuButton::ReturnHome => state
                         .set(ApplicationState::MainMenu)

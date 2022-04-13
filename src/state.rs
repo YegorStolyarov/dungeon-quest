@@ -3,4 +3,5 @@ pub enum ApplicationState {
     MainMenu,
     DemosMenu,
     SettingMenu,
+    MovementDemo,
 }
