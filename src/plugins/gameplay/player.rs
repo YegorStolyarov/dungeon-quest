@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy_inspector_egui::Inspectable;
 
 use crate::config::*;
 
@@ -6,7 +7,7 @@ pub struct Player {
     entity: Entity,
 }
 
-#[derive(Component)]
+#[derive(Component, Inspectable)]
 pub struct PlayerStats {
     movement_speed: f32,
 }

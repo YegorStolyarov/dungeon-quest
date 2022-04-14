@@ -36,5 +36,6 @@ fn main() {
         .add_plugin(plugins::menu::demos_menu::DemosMenuPlugin)
         .add_plugin(plugins::menu::setting_menu::SettingMenuPlugin)
         .add_plugin(plugins::gameplay::demos::movement::MovementDemoPlugin)
+        .add_plugin(plugins::debug::DebugPlugin)
         .run();
 }
