@@ -17,6 +17,7 @@ impl Plugin for MovementDemoPlugin {
         );
         app.add_system_set(
             SystemSet::on_update(ApplicationState::MovementDemo)
+                .with_system(player_animation_system)
                 .with_system(player_movement_system)
                 .with_system(escape_button_handle),
         );

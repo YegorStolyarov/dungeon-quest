@@ -7,15 +7,17 @@ pub const WINDOW_HEIGHT: f32 = 360.0;
 pub const MONITOR_HEIGHT: f32 = 1080.0;
 pub const MONITOR_WIDTH: f32 = 1920.0;
 
-pub static MENU_BACKGROUND_IMAGE: &str = "images/menu_background.png";
-pub static NORMAL_BUTTON_IMAGE: &str = "images/small_empty_button.png";
-pub static SMALL_BUTTON_IMAGE: &str = "images/empty_button.png";
+pub const MENU_BACKGROUND_IMAGE: &str = "images/menu_background.png";
+pub const NORMAL_BUTTON_IMAGE: &str = "images/small_empty_button.png";
+pub const SMALL_BUTTON_IMAGE: &str = "images/empty_button.png";
 
-pub static HAEDUS_FONT: &str = "fonts/Haedus.ttf";
+pub const HAEDUS_FONT: &str = "fonts/Haedus.ttf";
 
-pub static SETTING_FILE: &str = "setting.json";
+pub const SETTING_FILE: &str = "setting.json";
 
-pub static HOME_ICON: &str = "icons/home.png";
-pub static TICK_ICON: &str = "icons/tick.png";
+pub const HOME_ICON: &str = "icons/home.png";
+pub const TICK_ICON: &str = "icons/tick.png";
 
 pub const TILE_SIZE: f32 = 48.0;
+
+// pub const HERO_FILE: &str = "heros.json";
