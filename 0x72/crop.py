@@ -3,8 +3,8 @@
 import os
 from PIL import Image
 
-IMG_PATH = '0x72_DungeonTilesetII_v1.4.png'
-TILES_PATH = 'tiles_list_v1.4'
+IMG_PATH = 'image/0x72_DungeonTilesetII_v1.4.png'
+TILES_PATH = 'titles/tiles_list_v1.4'
 
 def getBox(arr, frameIndex = 0):
     w, h = int(arr[3]), int(arr[4])

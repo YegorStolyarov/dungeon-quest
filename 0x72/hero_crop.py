@@ -3,8 +3,8 @@
 import os
 from PIL import Image
 
-IMG_PATH = '0x72_DungeonTilesetII_v1.4.png'
-TILES_PATH = 'tiles_list_v1.4'
+IMG_PATH = 'image/0x72_DungeonTilesetII_v1.4.png'
+TILES_PATH = 'titles/hero_list.txt'
 
 def getBox(arr, totalFrame = 1):
     x = int(arr[1])
@@ -14,7 +14,7 @@ def getBox(arr, totalFrame = 1):
     return (x, y, x+w, y+h)
 
 def saveCrop(img, title, box):
-    path = os.path.join('./frames/' + title + '.png')
+    path = os.path.join('./heros/' + title + '.png')
     try:
         croppedImg = img.crop(box)
         croppedImg.save(path)

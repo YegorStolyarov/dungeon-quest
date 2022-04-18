@@ -1,0 +1,8 @@
+elf_f 128 4 16 28 9
+elf_m 128 36 16 28 9
+knight_f 128 68 16 28 9
+knight_m 128 100 16 28 9
+wizzard_f 128 132 16 28 9
+wizzard_m 128 164 16 28 9
+lizard_f 128 196 16 28 9
+lizard_m 128 228 16 28 9
