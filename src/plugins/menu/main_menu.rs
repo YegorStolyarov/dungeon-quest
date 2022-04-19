@@ -166,6 +166,9 @@ fn button_handle_system(
                     MainMenuButton::Setting => state
                         .set(ApplicationState::SettingMenu)
                         .expect("Couldn't switch state to Setting Menu"),
+                    MainMenuButton::Play => state
+                        .set(ApplicationState::LoadingScreen)
+                        .expect("Couldn't switch state to Loading Screen"),
                     _ => exit.send(AppExit),
                 }
             }
