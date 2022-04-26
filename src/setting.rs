@@ -55,7 +55,7 @@ impl Setting {
     }
 
     pub fn load_setting(&mut self) {
-        let setting: Setting;
+        let mut setting: Setting;
         match File::open(SETTING_FILE) {
             Ok(mut file) => {
                 let mut contents = String::new();
@@ -74,10 +74,9 @@ impl Setting {
                     .expect("Unable to write file");
             }
         }
-
-        self.enable_sound = setting.enable_sound;
-        self.enable_music = setting.enable_music;
-        self.fullscreen = setting.fullscreen;
+        setting.enable_sound = setting.enable_sound;
+        setting.enable_music = setting.enable_music;
+        setting.fullscreen = setting.fullscreen;
     }
 }
 

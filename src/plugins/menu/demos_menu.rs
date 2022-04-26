@@ -2,6 +2,7 @@ use bevy::prelude::*;
 
 use crate::config::*;
 use crate::state::*;
+use crate::status::*;
 
 const BUTTON_WIDTH: f32 = 150.0;
 const BUTTON_HEIGHT: f32 = 50.0;
@@ -131,6 +132,7 @@ fn button_handle_system(
     >,
     mut text_query: Query<&mut Text>,
     mut state: ResMut<State<ApplicationState>>,
+    mut application_status: ResMut<ApplicationStatus>,
 ) {
     for (button, interaction, mut color, children) in button_query.iter_mut() {
         let mut text = text_query.get_mut(children[0]).unwrap();
@@ -148,9 +150,18 @@ fn button_handle_system(
                 text.sections[0].style.color = Color::RED.into();
                 *color = Color::RED.into();
                 match button {
-                    DemosMenuButton::Movement => state
-                        .set(ApplicationState::MovementDemo)
-                        .expect("Couldn't switch state to MainMenu"),
+                    DemosMenuButton::Movement => {
+                        if !application_status.is_data_loaded() {
+                            state
+                                .set(ApplicationState::LoadingScreen)
+                                .expect("Couldn't switch state to Loading Screen");
+                            application_status.set_next_state(ApplicationState::MovementDemo);
+                        } else {
+                            state
+                                .set(ApplicationState::MovementDemo)
+                                .expect("Couldn't switch state to Movement Demo");
+                        }
+                    }
                     DemosMenuButton::ReturnHome => state
                         .set(ApplicationState::MainMenu)
                         .expect("Couldn't switch state to MainMenu"),

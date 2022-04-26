@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::config::*;
-use crate::plugins::setting::*;
+use crate::setting::Setting;
 use crate::state::*;
 
 const RETURN_HOME_BUTTON_SIDE: f32 = 30.0;

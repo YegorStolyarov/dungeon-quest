@@ -6,7 +6,9 @@ use state::*;
 
 mod config;
 mod plugins;
+mod setting;
 mod state;
+mod status;
 
 fn main() {
     App::new()
@@ -26,7 +28,8 @@ fn main() {
             mode: WindowMode::Windowed,
             ..Default::default()
         })
-        .init_resource::<plugins::setting::Setting>()
+        .init_resource::<setting::Setting>()
+        .init_resource::<status::ApplicationStatus>()
         .add_state(ApplicationState::MainMenu)
         .add_startup_system(plugins::music::background_audio_channel_setup)
         .add_system(plugins::music::play_background_music)
@@ -35,7 +38,8 @@ fn main() {
         .add_plugin(plugins::menu::main_menu::MainMenuPlugin)
         .add_plugin(plugins::menu::demos_menu::DemosMenuPlugin)
         .add_plugin(plugins::menu::setting_menu::SettingMenuPlugin)
-        .add_plugin(plugins::gameplay::demos::movement::MovementDemoPlugin)
+        .add_plugin(plugins::loading_screen::LoadingScreenPlugin)
+        .add_plugin(plugins::demos::movement::MovementDemoPlugin)
         .add_plugin(plugins::debug::DebugPlugin)
         .run();
 }
