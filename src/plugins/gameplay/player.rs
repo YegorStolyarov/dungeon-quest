@@ -52,7 +52,7 @@ pub fn setup_player(
         })
         .insert(Player)
         .insert(PlayerStats::new())
-        .insert(Timer::from_seconds(0.1, true))
+        .insert(AnimationTimer(Timer::from_seconds(0.1, true)))
         .id();
 
     commands.insert_resource(PlayerEntity { _p: player });
@@ -63,14 +63,14 @@ pub fn player_animation_system(
     texture_atlases: Res<Assets<TextureAtlas>>,
     mut query: Query<(
         &PlayerStats,
-        &mut Timer,
+        &mut AnimationTimer,
         &mut TextureAtlasSprite,
         &Handle<TextureAtlas>,
     )>,
 ) {
     for (player_stats, mut timer, mut sprite, texture_atlas_handle) in query.iter_mut() {
-        timer.tick(time.delta());
-        if timer.just_finished() {
+        timer.0.tick(time.delta());
+        if timer.0.just_finished() {
             let texture_atlas = texture_atlases.get(texture_atlas_handle).unwrap();
             match player_stats.movement_state {
                 PlayerMovementState::Idle => {

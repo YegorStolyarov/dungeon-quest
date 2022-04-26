@@ -17,7 +17,6 @@ fn main() {
             height: WINDOW_HEIGHT,
             title: TITLE.to_string(),
             position: Some(Vec2::new(MONITOR_WIDTH / 4.0, MONITOR_HEIGHT / 4.0)),
-            vsync: true,
             resizable: false,
             resize_constraints: bevy::window::WindowResizeConstraints {
                 min_width: WINDOW_HEIGHT * RESOLUTION,
