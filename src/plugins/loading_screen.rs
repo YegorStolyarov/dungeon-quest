@@ -2,6 +2,7 @@ use bevy::prelude::*;
 
 use crate::config::*;
 use crate::state::*;
+use crate::status::ApplicationStatus;
 
 const LOADING_BORDER_WIDTH: f32 = 400.0;
 const LOADING_BORDER_HEIGHT: f32 = 50.0;
@@ -26,7 +27,7 @@ impl Plugin for LoadingScreenPlugin {
     fn build(&self, app: &mut App) {
         app.add_system_set(SystemSet::on_enter(ApplicationState::LoadingScreen).with_system(setup));
         app.add_system_set(
-            SystemSet::on_update(ApplicationState::LoadingScreen).with_system(run_loading),
+            SystemSet::on_update(ApplicationState::LoadingScreen).with_system(run_loading_ui),
         );
         app.add_system_set(
             SystemSet::on_exit(ApplicationState::LoadingScreen).with_system(cleanup),
@@ -152,11 +153,21 @@ fn loading_text_bundle(asset_server: Res<AssetServer>) -> TextBundle {
     }
 }
 
-fn run_loading(mut query: Query<(&mut Loader, &mut Style)>) {
+fn run_loading_ui(
+    mut query: Query<(&mut Loader, &mut Style)>,
+    mut state: ResMut<State<ApplicationState>>,
+    mut application_status: ResMut<ApplicationStatus>,
+) {
     for (mut loader, mut style) in query.iter_mut() {
         if loader.current_width < loader.max_width {
             loader.current_width += 2.5;
             style.size.width = Val::Px(loader.current_width);
+        } else {
+            application_status.data_loaded();
+            let next_state = application_status.get_next_state();
+            state
+                .set(next_state)
+                .expect("Couldn't switch state to next state");
         }
     }
 }
