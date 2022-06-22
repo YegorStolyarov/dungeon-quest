@@ -1,7 +1,7 @@
 use bevy::{app::AppExit, prelude::*};
 
 use crate::config::*;
-use crate::resources::scene::ApplicationScene;
+use crate::scenes::{ApplicationScene, ApplicationSceneController};
 
 const BUTTON_WIDTH: f32 = 200.0;
 const BUTTON_HEIGHT: f32 = 60.0;
@@ -34,7 +34,9 @@ pub struct MainMenuScenePlugin;
 impl Plugin for MainMenuScenePlugin {
     fn build(&self, app: &mut App) {
         app.add_system_set(SystemSet::on_enter(ApplicationScene::MainMenuScene).with_system(setup));
-        app.add_system_set(SystemSet::on_exit(ApplicationScene::MainMenuScene).with_system(cleanup));
+        app.add_system_set(
+            SystemSet::on_exit(ApplicationScene::MainMenuScene).with_system(cleanup),
+        );
         app.add_system_set(
             SystemSet::on_update(ApplicationScene::MainMenuScene).with_system(button_handle_system),
         );
@@ -88,8 +90,12 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 }
 
 fn cleanup(mut commands: Commands, main_menu_scene_data: Res<MainMenuSceneData>) {
-    commands.entity(main_menu_scene_data.ui_root).despawn_recursive();
-    commands.entity(main_menu_scene_data.camera_entity).despawn_recursive();
+    commands
+        .entity(main_menu_scene_data.ui_root)
+        .despawn_recursive();
+    commands
+        .entity(main_menu_scene_data.camera_entity)
+        .despawn_recursive();
 }
 
 fn root(asset_server: &Res<AssetServer>) -> NodeBundle {
@@ -173,7 +179,10 @@ fn button_handle_system(
     }
 }
 
-fn text_bundle(main_menu_scene_button: MainMenuSceneButton, asset_server: &Res<AssetServer>) -> TextBundle {
+fn text_bundle(
+    main_menu_scene_button: MainMenuSceneButton,
+    asset_server: &Res<AssetServer>,
+) -> TextBundle {
     let text: &str = match main_menu_scene_button {
         MainMenuSceneButton::Play => "PLAY",
         MainMenuSceneButton::Demos => "DEMOS",

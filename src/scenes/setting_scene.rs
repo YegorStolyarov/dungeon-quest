@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::config::*;
 use crate::resources::setting::Setting;
-use crate::resources::scene::ApplicationScene;
+use crate::scenes::{ApplicationScene, ApplicationSceneController};
 
 const RETURN_HOME_BUTTON_SIDE: f32 = 30.0;
 const BUTTON_SIDE: f32 = 50.0;
@@ -117,10 +117,18 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, setting: Res<Se
     });
 }
 
-fn cleanup(mut commands: Commands, setting_scene_data: Res<SettingSceneData>, setting: Res<Setting>) {
+fn cleanup(
+    mut commands: Commands,
+    setting_scene_data: Res<SettingSceneData>,
+    setting: Res<Setting>,
+) {
     setting.store();
-    commands.entity(setting_scene_data.ui_root).despawn_recursive();
-    commands.entity(setting_scene_data.camera_entity).despawn_recursive();
+    commands
+        .entity(setting_scene_data.ui_root)
+        .despawn_recursive();
+    commands
+        .entity(setting_scene_data.camera_entity)
+        .despawn_recursive();
 }
 
 fn root(asset_server: &Res<AssetServer>) -> NodeBundle {

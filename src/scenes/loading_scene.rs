@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::config::*;
-use crate::resources::{scene::ApplicationScene, scene_controller::ApplicationSceneController};
+use crate::scenes::{ApplicationScene, ApplicationSceneController};
 
 const LOADING_BORDER_WIDTH: f32 = 400.0;
 const LOADING_BORDER_HEIGHT: f32 = 50.0;
@@ -28,9 +28,7 @@ impl Plugin for LoadingScenePlugin {
         app.add_system_set(
             SystemSet::on_update(ApplicationScene::LoadingScene).with_system(run_loading_ui),
         );
-        app.add_system_set(
-            SystemSet::on_exit(ApplicationScene::LoadingScene).with_system(cleanup),
-        );
+        app.add_system_set(SystemSet::on_exit(ApplicationScene::LoadingScene).with_system(cleanup));
     }
 }
 

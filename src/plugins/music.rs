@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 use bevy_kira_audio::{Audio, AudioChannel, AudioSource};
 
-use crate::resources::{scene::ApplicationScene, setting::Setting};
+use crate::resources::setting::Setting;
+use crate::scenes::{ApplicationScene, ApplicationSceneController};
 
 pub struct BackgroundAudioChannel {
     background_music: Handle<AudioSource>,
