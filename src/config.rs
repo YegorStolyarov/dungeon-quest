@@ -9,7 +9,7 @@ pub const MONITOR_WIDTH: f32 = 1920.0;
 
 pub const MENU_BACKGROUND_IMAGE: &str = "images/menu_background.png";
 pub const NORMAL_BUTTON_IMAGE: &str = "images/small_empty_button.png";
-pub const SMALL_BUTTON_IMAGE: &str = "images/empty_button.png";
+// pub const SMALL_BUTTON_IMAGE: &str = "images/empty_button.png";
 
 pub const HAEDUS_FONT: &str = "fonts/Haedus.ttf";
 
@@ -19,5 +19,3 @@ pub const HOME_ICON: &str = "icons/home.png";
 pub const TICK_ICON: &str = "icons/tick.png";
 
 pub const TILE_SIZE: f32 = 48.0;
-
-// pub const HERO_FILE: &str = "heros.json";

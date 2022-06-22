@@ -1,8 +1,8 @@
 use bevy::prelude::*;
 
 use crate::config::*;
-use crate::setting::Setting;
-use crate::state::*;
+use crate::resources::setting::Setting;
+use crate::resources::scene::ApplicationScene;
 
 const RETURN_HOME_BUTTON_SIDE: f32 = 30.0;
 const BUTTON_SIDE: f32 = 50.0;
@@ -23,26 +23,26 @@ const TEXT_POSITIONS: [[f32; 2]; 3] = [
 ];
 
 #[derive(Component, PartialEq)]
-enum SettingMenuButton {
+enum SettingSceneButton {
     ReturnHome,
     EnableSound,
     EnableMusic,
     FullScreen,
 }
 
-pub struct SettingMenuPlugin;
+pub struct SettingScenePlugin;
 
-struct SettingMenuData {
+struct SettingSceneData {
     camera_entity: Entity,
     ui_root: Entity,
 }
 
-impl Plugin for SettingMenuPlugin {
+impl Plugin for SettingScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(SystemSet::on_enter(ApplicationState::SettingMenu).with_system(setup));
-        app.add_system_set(SystemSet::on_exit(ApplicationState::SettingMenu).with_system(cleanup));
+        app.add_system_set(SystemSet::on_enter(ApplicationScene::SettingScene).with_system(setup));
+        app.add_system_set(SystemSet::on_exit(ApplicationScene::SettingScene).with_system(cleanup));
         app.add_system_set(
-            SystemSet::on_update(ApplicationState::SettingMenu).with_system(button_handle_system),
+            SystemSet::on_update(ApplicationScene::SettingScene).with_system(button_handle_system),
         );
     }
 }
@@ -55,72 +55,72 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, setting: Res<Se
         .with_children(|parent| {
             parent
                 .spawn_bundle(button_bundle(
-                    SettingMenuButton::ReturnHome,
+                    SettingSceneButton::ReturnHome,
                     &asset_server,
                     &setting,
                 ))
-                .insert(SettingMenuButton::ReturnHome);
+                .insert(SettingSceneButton::ReturnHome);
 
-            parent.spawn_bundle(text_bundle(SettingMenuButton::EnableSound, &asset_server));
+            parent.spawn_bundle(text_bundle(SettingSceneButton::EnableSound, &asset_server));
             parent
                 .spawn_bundle(check_box_bundle(
-                    SettingMenuButton::EnableSound,
+                    SettingSceneButton::EnableSound,
                     &asset_server,
                 ))
                 .with_children(|parent| {
                     parent
                         .spawn_bundle(button_bundle(
-                            SettingMenuButton::EnableSound,
+                            SettingSceneButton::EnableSound,
                             &asset_server,
                             &setting,
                         ))
-                        .insert(SettingMenuButton::EnableSound);
+                        .insert(SettingSceneButton::EnableSound);
                 });
 
-            parent.spawn_bundle(text_bundle(SettingMenuButton::EnableMusic, &asset_server));
+            parent.spawn_bundle(text_bundle(SettingSceneButton::EnableMusic, &asset_server));
             parent
                 .spawn_bundle(check_box_bundle(
-                    SettingMenuButton::EnableMusic,
+                    SettingSceneButton::EnableMusic,
                     &asset_server,
                 ))
                 .with_children(|parent| {
                     parent
                         .spawn_bundle(button_bundle(
-                            SettingMenuButton::EnableMusic,
+                            SettingSceneButton::EnableMusic,
                             &asset_server,
                             &setting,
                         ))
-                        .insert(SettingMenuButton::EnableMusic);
+                        .insert(SettingSceneButton::EnableMusic);
                 });
 
-            parent.spawn_bundle(text_bundle(SettingMenuButton::FullScreen, &asset_server));
+            parent.spawn_bundle(text_bundle(SettingSceneButton::FullScreen, &asset_server));
             parent
                 .spawn_bundle(check_box_bundle(
-                    SettingMenuButton::FullScreen,
+                    SettingSceneButton::FullScreen,
                     &asset_server,
                 ))
                 .with_children(|parent| {
                     parent
                         .spawn_bundle(button_bundle(
-                            SettingMenuButton::FullScreen,
+                            SettingSceneButton::FullScreen,
                             &asset_server,
                             &setting,
                         ))
-                        .insert(SettingMenuButton::FullScreen);
+                        .insert(SettingSceneButton::FullScreen);
                 });
         })
         .id();
 
-    commands.insert_resource(SettingMenuData {
+    commands.insert_resource(SettingSceneData {
         camera_entity,
         ui_root,
     });
 }
 
-fn cleanup(mut commands: Commands, menu_data: Res<SettingMenuData>, setting: Res<Setting>) {
+fn cleanup(mut commands: Commands, setting_scene_data: Res<SettingSceneData>, setting: Res<Setting>) {
     setting.store();
-    commands.entity(menu_data.ui_root).despawn_recursive();
-    commands.entity(menu_data.camera_entity).despawn_recursive();
+    commands.entity(setting_scene_data.ui_root).despawn_recursive();
+    commands.entity(setting_scene_data.camera_entity).despawn_recursive();
 }
 
 fn root(asset_server: &Res<AssetServer>) -> NodeBundle {
@@ -135,22 +135,22 @@ fn root(asset_server: &Res<AssetServer>) -> NodeBundle {
 }
 
 fn check_box_bundle(
-    setting_menu_button: SettingMenuButton,
+    setting_scene_button: SettingSceneButton,
     asset_server: &Res<AssetServer>,
 ) -> NodeBundle {
-    let size = match setting_menu_button {
-        SettingMenuButton::ReturnHome => Size::new(
+    let size = match setting_scene_button {
+        SettingSceneButton::ReturnHome => Size::new(
             Val::Px(RETURN_HOME_BUTTON_SIDE),
             Val::Px(RETURN_HOME_BUTTON_SIDE),
         ),
         _ => Size::new(Val::Px(BUTTON_SIDE), Val::Px(BUTTON_SIDE)),
     };
 
-    let position: [f32; 2] = match setting_menu_button {
-        SettingMenuButton::ReturnHome => BUTTON_POSITIONS[0],
-        SettingMenuButton::EnableSound => BUTTON_POSITIONS[1],
-        SettingMenuButton::EnableMusic => BUTTON_POSITIONS[2],
-        SettingMenuButton::FullScreen => BUTTON_POSITIONS[3],
+    let position: [f32; 2] = match setting_scene_button {
+        SettingSceneButton::ReturnHome => BUTTON_POSITIONS[0],
+        SettingSceneButton::EnableSound => BUTTON_POSITIONS[1],
+        SettingSceneButton::EnableMusic => BUTTON_POSITIONS[2],
+        SettingSceneButton::FullScreen => BUTTON_POSITIONS[3],
     };
 
     NodeBundle {
@@ -174,21 +174,21 @@ fn check_box_bundle(
 }
 
 fn button_bundle(
-    setting_menu_button: SettingMenuButton,
+    setting_scene_button: SettingSceneButton,
     asset_server: &Res<AssetServer>,
     setting: &Res<Setting>,
 ) -> ButtonBundle {
     let size = Size::new(Val::Px(30.0), Val::Px(30.0));
 
-    let image_str: &str = match setting_menu_button {
-        SettingMenuButton::ReturnHome => HOME_ICON,
+    let image_str: &str = match setting_scene_button {
+        SettingSceneButton::ReturnHome => HOME_ICON,
         _ => TICK_ICON,
     };
 
-    let is_visible: bool = match setting_menu_button {
-        SettingMenuButton::EnableSound => setting.get_enable_sound(),
-        SettingMenuButton::EnableMusic => setting.get_enable_music(),
-        SettingMenuButton::FullScreen => setting.get_fullscreen(),
+    let is_visible: bool = match setting_scene_button {
+        SettingSceneButton::EnableSound => setting.get_enable_sound(),
+        SettingSceneButton::EnableMusic => setting.get_enable_music(),
+        SettingSceneButton::FullScreen => setting.get_fullscreen(),
         _ => true,
     };
 
@@ -207,13 +207,13 @@ fn button_handle_system(
     mut button_query: Query<
         (
             &Interaction,
-            &SettingMenuButton,
+            &SettingSceneButton,
             &mut UiColor,
             &mut Visibility,
         ),
         (Changed<Interaction>, With<Button>),
     >,
-    mut state: ResMut<State<ApplicationState>>,
+    mut state: ResMut<State<ApplicationScene>>,
     mut setting: ResMut<Setting>,
 ) {
     for (interaction, button, mut color, mut visibility) in button_query.iter_mut() {
@@ -225,18 +225,18 @@ fn button_handle_system(
                 *color = Color::GREEN.into();
             }
             Interaction::Clicked => match button {
-                SettingMenuButton::ReturnHome => state
-                    .set(ApplicationState::MainMenu)
+                SettingSceneButton::ReturnHome => state
+                    .set(ApplicationScene::MainMenuScene)
                     .expect("Couldn't switch state to Main Menu"),
-                SettingMenuButton::EnableSound => {
+                SettingSceneButton::EnableSound => {
                     visibility.is_visible = !visibility.is_visible;
                     setting.set_enable_sound(visibility.is_visible);
                 }
-                SettingMenuButton::EnableMusic => {
+                SettingSceneButton::EnableMusic => {
                     visibility.is_visible = !visibility.is_visible;
                     setting.set_enable_music(visibility.is_visible);
                 }
-                SettingMenuButton::FullScreen => {
+                SettingSceneButton::FullScreen => {
                     visibility.is_visible = !visibility.is_visible;
                     setting.set_fullscreen(visibility.is_visible);
                 }
@@ -246,20 +246,20 @@ fn button_handle_system(
 }
 
 fn text_bundle(
-    setting_menu_button: SettingMenuButton,
+    setting_scene_button: SettingSceneButton,
     asset_server: &Res<AssetServer>,
 ) -> TextBundle {
-    let text: &str = match setting_menu_button {
-        SettingMenuButton::EnableSound => "Enable Sound",
-        SettingMenuButton::EnableMusic => "Enable Music",
-        SettingMenuButton::FullScreen => "Fullscreen",
-        SettingMenuButton::ReturnHome => "_",
+    let text: &str = match setting_scene_button {
+        SettingSceneButton::EnableSound => "Enable Sound",
+        SettingSceneButton::EnableMusic => "Enable Music",
+        SettingSceneButton::FullScreen => "Fullscreen",
+        SettingSceneButton::ReturnHome => "_",
     };
 
-    let position = match setting_menu_button {
-        SettingMenuButton::EnableSound => TEXT_POSITIONS[0],
-        SettingMenuButton::EnableMusic => TEXT_POSITIONS[1],
-        SettingMenuButton::FullScreen => TEXT_POSITIONS[2],
+    let position = match setting_scene_button {
+        SettingSceneButton::EnableSound => TEXT_POSITIONS[0],
+        SettingSceneButton::EnableMusic => TEXT_POSITIONS[1],
+        SettingSceneButton::FullScreen => TEXT_POSITIONS[2],
         _ => TEXT_POSITIONS[0],
     };
 

@@ -2,13 +2,11 @@ use bevy::{prelude::*, window::WindowMode};
 use bevy_kira_audio::AudioPlugin;
 
 use config::*;
-use state::*;
 
 mod config;
 mod plugins;
-mod setting;
-mod state;
-mod status;
+mod resources;
+mod scenes;
 
 fn main() {
     App::new()
@@ -27,18 +25,16 @@ fn main() {
             mode: WindowMode::Windowed,
             ..Default::default()
         })
-        .init_resource::<setting::Setting>()
-        .init_resource::<status::ApplicationStatus>()
-        .add_state(ApplicationState::MainMenu)
+        .init_resource::<resources::setting::Setting>()
+        .init_resource::<resources::scene_controller::ApplicationSceneController>()
+        .add_state(resources::scene::ApplicationScene::MainMenuScene)
         .add_startup_system(plugins::music::background_audio_channel_setup)
         .add_system(plugins::music::play_background_music)
         .add_plugins(DefaultPlugins)
         .add_plugin(AudioPlugin)
-        .add_plugin(plugins::menu::main_menu::MainMenuPlugin)
-        .add_plugin(plugins::menu::demos_menu::DemosMenuPlugin)
-        .add_plugin(plugins::menu::setting_menu::SettingMenuPlugin)
-        .add_plugin(plugins::loading_screen::LoadingScreenPlugin)
-        .add_plugin(plugins::demos::movement::MovementDemoPlugin)
+        .add_plugin(scenes::main_menu_scene::MainMenuScenePlugin)
+        .add_plugin(scenes::setting_scene::SettingScenePlugin)
+        // .add_plugin(scenes::loading_scene::LoadingScenePlugin)
         .add_plugin(plugins::debug::DebugPlugin)
         .run();
 }
