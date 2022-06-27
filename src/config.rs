@@ -9,11 +9,8 @@ pub const MONITOR_WIDTH: f32 = 1920.0;
 
 pub const MENU_BACKGROUND_IMAGE: &str = "images/menu_background.png";
 
-pub const HAEDUS_FONT: &str = "fonts/Haedus.ttf";
+pub const FIBBERISH_FONT: &str = "fonts/fibberish.ttf";
 
+pub const VIETNAMESE_LANGUAGE_FILE: &str = "vietnamese.json";
+pub const ENGLISH_LANGUAGE_FILE: &str = "english.json";
 pub const SETTING_FILE: &str = "setting.json";
-
-pub const HOME_ICON: &str = "icons/home.png";
-pub const TICK_ICON: &str = "icons/tick.png";
-
-// pub const TILE_SIZE: f32 = 48.0;

@@ -1,22 +1,47 @@
-use bevy::{app::AppExit, prelude::*};
-use bevy_inspector_egui::egui::Ui;
+use bevy::prelude::*;
+use std::slice::Iter;
 
 use crate::config::*;
+use crate::resources::dictionary::{ApplicationDictionary, Dictionary};
 use crate::scenes::ApplicationScene;
 
-const BUTTON_WIDTH: f32 = 200.0;
-const BUTTON_HEIGHT: f32 = 60.0;
-const SEPARATE: f32 = BUTTON_HEIGHT / 4.0;
-
-const BUTTON_POSITIONS: [[f32; 2]; 1] = [
-    [SEPARATE, WINDOW_HEIGHT / 2.0], // Play
+const MAIN_MENU_BOX_ARRAY: [[i8; 5]; 8] = [
+    [0, 1, 1, 1, 2],
+    [3, 4, 4, 4, 5],
+    [3, 4, 4, 4, 5],
+    [3, 4, 4, 4, 5],
+    [3, 4, 4, 4, 5],
+    [3, 4, 4, 4, 5],
+    [3, 4, 4, 4, 5],
+    [6, 7, 7, 7, 8],
 ];
 
-const FONT_SIZE: f32 = 30.0;
+const FONT_SIZE: f32 = 36.0;
 
-#[derive(Component)]
-pub enum MainMenuSceneButton {
+const MAIN_MENU_BOX_TILE_SIZE: f32 = 50.0;
+
+#[derive(Component, Copy, Clone)]
+enum MainMenuSceneButton {
     Play,
+    Highscore,
+    Options,
+    Help,
+    Credits,
+    Quit,
+}
+
+impl MainMenuSceneButton {
+    pub fn iterator() -> Iter<'static, MainMenuSceneButton> {
+        static MAIN_MENU_SCENE_BUTTONS: [MainMenuSceneButton; 6] = [
+            MainMenuSceneButton::Play,
+            MainMenuSceneButton::Highscore,
+            MainMenuSceneButton::Options,
+            MainMenuSceneButton::Help,
+            MainMenuSceneButton::Credits,
+            MainMenuSceneButton::Quit,
+        ];
+        MAIN_MENU_SCENE_BUTTONS.iter()
+    }
 }
 
 struct MainMenuSceneData {
@@ -32,24 +57,25 @@ impl Plugin for MainMenuScenePlugin {
         app.add_system_set(
             SystemSet::on_exit(ApplicationScene::MainMenuScene).with_system(cleanup),
         );
-        app.add_system_set(
-            SystemSet::on_update(ApplicationScene::MainMenuScene).with_system(button_handle_system),
-        );
+        // app.add_system_set(
+        // SystemSet::on_update(ApplicationScene::MainMenuScene).with_system(button_handle_system),
+        // );
     }
 }
 
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn setup(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    application_dictionary: Res<ApplicationDictionary>,
+) {
     let camera_entity = commands.spawn_bundle(UiCameraBundle::default()).id();
 
     let ui_root = commands
         .spawn_bundle(root(&asset_server))
         .with_children(|parent| {
-            parent
-                .spawn_bundle(button_bundle(MainMenuSceneButton::Play, &asset_server))
-                .with_children(|parent| {
-                    parent.spawn_bundle(text_bundle(MainMenuSceneButton::Play, &asset_server));
-                })
-                .insert(MainMenuSceneButton::Play);
+            main_menu_box(parent, &asset_server);
+            let dictionary = application_dictionary.get_dictionary();
+            buttons(parent, &asset_server, dictionary);
         })
         .id();
 
@@ -80,87 +106,101 @@ fn root(asset_server: &Res<AssetServer>) -> NodeBundle {
     }
 }
 
-fn button_bundle(
-    main_menu_scene_button: MainMenuSceneButton,
-    asset_server: &Res<AssetServer>,
-) -> ButtonBundle {
-    let size = Size::new(Val::Px(BUTTON_WIDTH), Val::Px(BUTTON_HEIGHT));
-
-    let possition: [f32; 2] = match main_menu_scene_button {
-        MainMenuSceneButton::Play => BUTTON_POSITIONS[0],
+fn main_menu_box(root: &mut ChildBuilder, asset_server: &Res<AssetServer>) {
+    let size: Size<Val> = Size {
+        width: Val::Px(MAIN_MENU_BOX_TILE_SIZE),
+        height: Val::Px(MAIN_MENU_BOX_TILE_SIZE),
     };
 
-    ButtonBundle {
-        style: Style {
-            size,
-            justify_content: JustifyContent::Center,
-            position_type: PositionType::Absolute,
-            align_items: AlignItems::Center,
-            align_self: AlignSelf::FlexEnd,
-            position: Rect {
-                left: Val::Px(possition[0]),
-                top: Val::Px(possition[1]),
+    for (row_index, row) in MAIN_MENU_BOX_ARRAY.iter().enumerate() {
+        for (column_index, value) in row.iter().enumerate() {
+            let position: Rect<Val> = Rect {
+                left: Val::Px(10.0 + MAIN_MENU_BOX_TILE_SIZE * column_index as f32),
+                top: Val::Px(10.0 + MAIN_MENU_BOX_TILE_SIZE * row_index as f32),
                 bottom: Val::Auto,
                 right: Val::Auto,
-            },
-            ..Default::default()
-        },
-        image: UiImage(asset_server.load("images/panel_Example1.png")),
-        ..Default::default()
-    }
-}
+            };
 
-fn button_handle_system(
-    mut button_query: Query<
-        (&Interaction, &MainMenuSceneButton, &mut UiColor, &Children),
-        (Changed<Interaction>, With<Button>),
-    >,
-    mut text_query: Query<&mut Text>,
-    mut state: ResMut<State<ApplicationScene>>,
-    mut exit: EventWriter<AppExit>,
-) {
-    for (interaction, button, mut color, children) in button_query.iter_mut() {
-        let mut text = text_query.get_mut(children[0]).unwrap();
-        match *interaction {
-            Interaction::None => {
-                text.sections[0].style.color = Color::WHITE.into();
-            }
-            Interaction::Hovered => {
-                text.sections[0].style.color = Color::GREEN.into();
-            }
-            Interaction::Clicked => {
-                text.sections[0].style.color = Color::RED.into();
-                match button {
-                    MainMenuSceneButton::Play => state
-                        .set(ApplicationScene::LoadingScene)
-                        .expect("Couldn't switch state to Loading Screen"),
-                }
-            }
+            let image_str: &str = match value {
+                0 => "images/gui/main_menu/top_right.png",
+                1 => "images/gui/main_menu/top_center.png",
+                2 => "images/gui/main_menu/top_left.png",
+                3 => "images/gui/main_menu/mid_right.png",
+                4 => "images/gui/main_menu/mid_center.png",
+                5 => "images/gui/main_menu/mid_left.png",
+                6 => "images/gui/main_menu/bottom_right.png",
+                7 => "images/gui/main_menu/bottom_center.png",
+                8 => "images/gui/main_menu/bottom_left.png",
+                _ => panic!("Unknown resources"),
+            };
+
+            root.spawn_bundle(NodeBundle {
+                image: UiImage(asset_server.load(image_str)),
+                style: Style {
+                    position_type: PositionType::Absolute,
+                    position,
+                    size,
+                    ..Default::default()
+                },
+
+                ..Default::default()
+            });
         }
     }
 }
 
-fn text_bundle(
-    main_menu_scene_button: MainMenuSceneButton,
-    asset_server: &Res<AssetServer>,
-) -> TextBundle {
-    let text: &str = match main_menu_scene_button {
-        MainMenuSceneButton::Play => "PLAY",
-    };
+fn buttons(root: &mut ChildBuilder, asset_server: &Res<AssetServer>, dictionary: Dictionary) {
+    for (index, button) in MainMenuSceneButton::iterator().enumerate() {
+        let position: Rect<Val> = Rect {
+            left: Val::Px(10.0 + MAIN_MENU_BOX_TILE_SIZE * (3.0 - 1.0) / 2.0),
+            right: Val::Auto,
+            top: Val::Px(10.0 + MAIN_MENU_BOX_TILE_SIZE * (index as f32 + 1.0)),
+            bottom: Val::Auto,
+        };
 
-    TextBundle {
-        text: Text::with_section(
-            text,
-            TextStyle {
-                font: asset_server.load("fonts/DungeonFont.ttf"),
-                font_size: FONT_SIZE,
-                color: Color::WHITE,
+        let size = Size {
+            width: Val::Px(MAIN_MENU_BOX_TILE_SIZE * 3.0),
+            height: Val::Px(MAIN_MENU_BOX_TILE_SIZE),
+        };
+
+        root.spawn_bundle(ButtonBundle {
+            style: Style {
+                size,
+                justify_content: JustifyContent::Center,
+                position_type: PositionType::Absolute,
+                align_items: AlignItems::Center,
+                align_self: AlignSelf::FlexEnd,
+                position,
+                ..Default::default()
             },
-            TextAlignment {
-                vertical: VerticalAlign::Center,
-                horizontal: HorizontalAlign::Center,
-            },
-        ),
-        ..Default::default()
+            color: UiColor(Color::NONE),
+            ..Default::default()
+        })
+        .with_children(|parent| {
+            let text: &str = match button {
+                MainMenuSceneButton::Play => dictionary.main_menu_text.play.as_str(),
+                MainMenuSceneButton::Highscore => dictionary.main_menu_text.highscore.as_str(),
+                MainMenuSceneButton::Options => dictionary.main_menu_text.options.as_str(),
+                MainMenuSceneButton::Help => dictionary.main_menu_text.help.as_str(),
+                MainMenuSceneButton::Credits => dictionary.main_menu_text.credits.as_str(),
+                MainMenuSceneButton::Quit => dictionary.main_menu_text.quit.as_str(),
+            };
+
+            parent.spawn_bundle(TextBundle {
+                text: Text::with_section(
+                    text,
+                    TextStyle {
+                        font: asset_server.load(FIBBERISH_FONT),
+                        font_size: FONT_SIZE,
+                        color: Color::DARK_GRAY,
+                    },
+                    TextAlignment {
+                        vertical: VerticalAlign::Center,
+                        horizontal: HorizontalAlign::Center,
+                    },
+                ),
+                ..Default::default()
+            });
+        });
     }
 }

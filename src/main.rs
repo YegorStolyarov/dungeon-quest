@@ -26,6 +26,7 @@ fn main() {
             ..Default::default()
         })
         .init_resource::<resources::setting::Setting>()
+        .init_resource::<resources::dictionary::ApplicationDictionary>()
         .init_resource::<scenes::ApplicationSceneController>()
         .add_state(scenes::ApplicationScene::MainMenuScene)
         .add_startup_system(plugins::music::background_audio_channel_setup)

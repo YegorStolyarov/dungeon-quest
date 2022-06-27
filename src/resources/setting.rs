@@ -4,20 +4,21 @@ use std::fs::File;
 use std::io::prelude::*;
 
 use crate::config::*;
+use crate::resources::language::Language;
 
 #[derive(Component, Serialize, Deserialize, Debug)]
 pub struct Setting {
     enable_sound: bool,
     enable_music: bool,
-    fullscreen: bool,
+    language: Language,
 }
 
 impl Setting {
-    pub fn new(enable_sound: bool, enable_music: bool, fullscreen: bool) -> Self {
+    pub fn new(enable_sound: bool, enable_music: bool) -> Self {
         Setting {
             enable_sound,
             enable_music,
-            fullscreen,
+            language: Language::EN,
         }
     }
 
@@ -29,8 +30,8 @@ impl Setting {
         self.enable_music
     }
 
-    pub fn get_fullscreen(&self) -> bool {
-        self.fullscreen
+    pub fn get_language(&self) -> Language {
+        self.language
     }
 
     pub fn set_enable_sound(&mut self, enable_sound: bool) {
@@ -41,8 +42,8 @@ impl Setting {
         self.enable_music = enable_music;
     }
 
-    pub fn set_fullscreen(&mut self, fullscreen: bool) {
-        self.fullscreen = fullscreen;
+    pub fn set_language(&mut self, language: Language) {
+        self.language = language;
     }
 
     pub fn store(&self) {
@@ -61,29 +62,29 @@ impl Setting {
                 let mut contents = String::new();
                 file.read_to_string(&mut contents).expect("Error read file");
                 setting = serde_json::from_str(&contents).expect("JSON was not well-formatted");
-                dbg!(&setting);
             }
             Err(err) => {
                 dbg!(err);
                 let mut setting_file =
                     File::create(SETTING_FILE).expect("Error create setting file");
-                setting = Setting::new(true, true, false);
+                setting = Setting::new(true, true);
                 let setting_str: String = serde_json::to_string(&setting).unwrap();
                 setting_file
                     .write(setting_str.as_bytes())
                     .expect("Unable to write file");
             }
         }
-        setting.enable_sound = setting.enable_sound;
-        setting.enable_music = setting.enable_music;
-        setting.fullscreen = setting.fullscreen;
+        self.enable_sound = setting.enable_sound;
+        self.enable_music = setting.enable_music;
+        self.language = setting.language;
     }
 }
 
 impl FromWorld for Setting {
     fn from_world(_world: &mut World) -> Self {
-        let mut setting: Setting = Setting::new(false, false, false);
+        let mut setting: Setting = Setting::new(false, false);
         setting.load_setting();
+        dbg!(&setting);
         setting
     }
 }

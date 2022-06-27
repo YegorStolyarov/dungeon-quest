@@ -1,0 +1,10 @@
+{
+  "main_menu_text": {
+    "play": "Play",
+    "highscore": "Highscore",
+    "options": "Options",
+    "help": "Help",
+    "credits": "Credits",
+    "quit": "Quit"
+  }
+}
