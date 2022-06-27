@@ -1,8 +1,9 @@
-pub mod main_menu_scene;
-pub mod setting_scene;
-pub mod loading_scene;
-
 use bevy::prelude::*;
+
+// pub mod loading_scene;
+pub mod main_menu_scene;
+// pub mod setting_scene;
+// pub mod test_scene;
 
 pub struct ApplicationSceneController {
     next_state: ApplicationScene,
@@ -49,4 +50,5 @@ pub enum ApplicationScene {
     MainMenuScene,
     SettingScene,
     LoadingScene,
+    TestScene,
 }
