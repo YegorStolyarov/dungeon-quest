@@ -1,0 +1,69 @@
+wall_top_left 16 0 16 16
+wall_top_mid 32 0 16 16
+wall_top_right 48 0 16 16
+
+wall_left 16 16 16 16
+wall_mid 32 16 16 16
+wall_right 48 16 16 16
+
+wall_fountain_top 64 0 16 16
+wall_fountain_mid_red_anim 64 16 16 16 3
+wall_fountain_basin_red_anim 64 32 16 16 3
+wall_fountain_mid_blue_anim 64 48 16 16 3
+wall_fountain_basin_blue_anim 64 64 16 16 3
+
+wall_hole_1 48 32 16 16
+wall_hole_2 48 48 16 16
+
+wall_banner_red 16 32 16 16
+wall_banner_blue 32 32 16 16
+wall_banner_green 16 48 16 16
+wall_banner_yellow 32 48 16 16
+
+column_top 80 80 16 16
+column_mid 80 96 16 16
+coulmn_base 80 112 16 16
+wall_column_top 96 80 16 16
+wall_column_mid 96 96 16 16
+wall_coulmn_base 96 112 16 16
+
+wall_goo 64 80 16 16
+wall_goo_base 64 96 16 16
+
+floor_1 16 64 16 16
+floor_2 32 64 16 16
+floor_3 48 64 16 16
+floor_4 16 80 16 16
+floor_5 32 80 16 16
+floor_6 48 80 16 16
+floor_7 16 96 16 16
+floor_8 32 96 16 16
+floor_ladder 48 96 16 16
+
+floor_spikes_anim 16 176 16 16 4
+
+wall_side_top_left 0 112 16 16
+wall_side_top_right 16 112 16 16
+wall_side_mid_left 0 128 16 16
+wall_side_mid_right 16 128 16 16
+wall_side_front_left 0 144 16 16
+wall_side_front_right 16 144 16 16
+
+wall_corner_top_left 32 112 16 16
+wall_corner_top_right 48 112 16 16
+wall_corner_left 32 128 16 16
+wall_corner_right 48 128 16 16
+wall_corner_bottom_left 32 144 16 16
+wall_corner_bottom_right 48 144 16 16
+wall_corner_front_left 32 160 16 16
+wall_corner_front_right 48 160 16 16
+
+wall_inner_corner_l_top_left 80 128 16 16
+wall_inner_corner_l_top_rigth 64 128 16 16
+wall_inner_corner_mid_left 80 144 16 16
+wall_inner_corner_mid_rigth 64 144 16 16
+wall_inner_corner_t_top_left 80 160 16 16
+wall_inner_corner_t_top_rigth 64 160 16 16
+
+edge 96 128 16 16
+hole 96 144 16 16

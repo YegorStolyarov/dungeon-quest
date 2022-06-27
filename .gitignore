@@ -11,4 +11,11 @@ Cargo.lock
 
 setting.json
 
-0x72/frames
+resources/results/frames/*
+!resources/results/frames/note.txt
+
+resources/results/heros/*
+!resources/results/heros/note.txt
+
+resources/results/GUIs/*
+!resources/results/GUIs/note.txt

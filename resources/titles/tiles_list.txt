@@ -156,35 +156,3 @@ ogre_idle_anim  16 320 32 32 4
 ogre_run_anim 144 320 32 32 4
 big_demon_idle_anim  16 364 32 36 4
 big_demon_run_anim 144 364 32 36 4
-
-elf_f_idle_anim 128 4 16 28 4
-elf_f_run_anim 192 4 16 28 4
-elf_f_hit_anim 256 4 16 28 1
-
-elf_m_idle_anim 128 36 16 28 4
-elf_m_run_anim 192 36 16 28 4
-elf_m_hit_anim 256 36 16 28 1
-
-knight_f_idle_anim 128 68 16 28 4
-knight_f_run_anim 192 68 16 28 4
-knight_f_hit_anim 256 68 16 28 1
-
-knight_m_idle_anim 128 100 16 28 4
-knight_m_run_anim 192 100 16 28 4
-knight_m_hit_anim 256 100 16 28 1
-
-wizzard_f_idle_anim 128 132 16 28 4
-wizzard_f_run_anim 192 132 16 28 4
-wizzard_f_hit_anim 256 132 16 28 1
-
-wizzard_m_idle_anim 128 164 16 28 4
-wizzard_m_run_anim 192 164 16 28 4
-wizzard_m_hit_anim 256 164 16 28 1
-
-lizard_f_idle_anim 128 196 16 28 4
-lizard_f_run_anim 192 196 16 28 4
-lizard_f_hit_anim 256 196 16 28 1
-
-lizard_m_idle_anim 128 228 16 28 4
-lizard_m_run_anim 192 228 16 28 4
-lizard_m_hit_anim 256 228 16 28 1
