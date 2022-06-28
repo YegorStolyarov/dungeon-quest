@@ -1,3 +1,4 @@
+use bevy::app::AppExit;
 use bevy::prelude::*;
 use std::slice::Iter;
 
@@ -55,9 +56,9 @@ impl Plugin for MainMenuScenePlugin {
     fn build(&self, app: &mut App) {
         app.add_system_set(SystemSet::on_enter(SceneState::MainMenuScene).with_system(setup));
         app.add_system_set(SystemSet::on_exit(SceneState::MainMenuScene).with_system(cleanup));
-        // app.add_system_set(
-        // SystemSet::on_update(ApplicationScene::MainMenuScene).with_system(button_handle_system),
-        // );
+        app.add_system_set(
+            SystemSet::on_update(SceneState::MainMenuScene).with_system(button_handle_system),
+        );
     }
 }
 
@@ -188,7 +189,7 @@ fn buttons(root: &mut ChildBuilder, asset_server: &Res<AssetServer>, dictionary:
                     TextStyle {
                         font: asset_server.load(font),
                         font_size: FONT_SIZE,
-                        color: Color::DARK_GRAY,
+                        color: Color::GRAY,
                     },
                     TextAlignment {
                         vertical: VerticalAlign::Center,
@@ -197,6 +198,46 @@ fn buttons(root: &mut ChildBuilder, asset_server: &Res<AssetServer>, dictionary:
                 ),
                 ..Default::default()
             });
-        });
+        })
+        .insert(button.clone());
+    }
+}
+
+fn button_handle_system(
+    mut button_query: Query<
+        (&Interaction, &MainMenuSceneButton, &Children),
+        (Changed<Interaction>, With<Button>),
+    >,
+    mut text_query: Query<&mut Text>,
+    mut state: ResMut<State<SceneState>>,
+    mut exit: EventWriter<AppExit>,
+) {
+    for (interaction, button, children) in button_query.iter_mut() {
+        let mut text = text_query.get_mut(children[0]).unwrap();
+        match *interaction {
+            Interaction::None => text.sections[0].style.color = Color::GRAY,
+            Interaction::Hovered => text.sections[0].style.color = Color::BLACK.into(),
+            Interaction::Clicked => {
+                text.sections[0].style.color = Color::RED.into();
+                match button {
+                    MainMenuSceneButton::Play => state
+                        .set(SceneState::GameModeSelectScene)
+                        .expect("Couldn't switch state to Loading Screen"),
+                    MainMenuSceneButton::Highscore => state
+                        .set(SceneState::HighscoreScene)
+                        .expect("Couldn't switch state to Highscore Scene"),
+                    MainMenuSceneButton::Options => state
+                        .set(SceneState::OptionsScene)
+                        .expect("Couldn't switch state to Options Scene"),
+                    MainMenuSceneButton::Help => state
+                        .set(SceneState::HelpScene)
+                        .expect("Couldn't switch state to Help Scene"),
+                    MainMenuSceneButton::Credits => state
+                        .set(SceneState::CreditsScene)
+                        .expect("Couldn't switch state to Credits Scene"),
+                    MainMenuSceneButton::Quit => exit.send(AppExit),
+                }
+            }
+        }
     }
 }

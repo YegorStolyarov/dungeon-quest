@@ -47,8 +47,17 @@ impl FromWorld for SceneController {
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub enum SceneState {
-    MainMenuScene,
-    SettingScene,
     LoadingScene,
+    MainMenuScene,
+    HighscoreScene,
+    OptionsScene,
+    HelpScene,
+    CreditsScene,
+    GameModeSelectScene,
+    HeroSelectScene,
+    InGameScene,
+    LuckySpinScene,
+    RandomRewardScene,
+    ResultScene,
     TestScene,
 }
