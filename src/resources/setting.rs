@@ -56,7 +56,7 @@ impl Setting {
     }
 
     pub fn load_setting(&mut self) {
-        let mut setting: Setting;
+        let setting: Setting;
         match File::open(SETTING_FILE) {
             Ok(mut file) => {
                 let mut contents = String::new();

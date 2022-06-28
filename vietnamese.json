@@ -1,10 +1,10 @@
 {
   "main_menu_text": {
-    "play": "Choi",
+    "play": "Chơi",
     "highscore": "BXH",
-    "options": "Cai dat",
-    "help": "Tro giup",
+    "options": "Cài đặt",
+    "help": "Trợ giúp",
     "credits": "Credits",
-    "quit": "Thoat"
+    "quit": "Thoát"
   }
 }

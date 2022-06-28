@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use std::slice::Iter;
 
 use crate::config::*;
-use crate::resources::dictionary::{ApplicationDictionary, Dictionary};
+use crate::resources::dictionary::Dictionary;
 use crate::scenes::ApplicationScene;
 
 const MAIN_MENU_BOX_ARRAY: [[i8; 5]; 8] = [
@@ -63,18 +63,13 @@ impl Plugin for MainMenuScenePlugin {
     }
 }
 
-fn setup(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    application_dictionary: Res<ApplicationDictionary>,
-) {
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>, dictionary: Res<Dictionary>) {
     let camera_entity = commands.spawn_bundle(UiCameraBundle::default()).id();
 
     let ui_root = commands
         .spawn_bundle(root(&asset_server))
         .with_children(|parent| {
             main_menu_box(parent, &asset_server);
-            let dictionary = application_dictionary.get_dictionary();
             buttons(parent, &asset_server, dictionary);
         })
         .id();
@@ -116,7 +111,7 @@ fn main_menu_box(root: &mut ChildBuilder, asset_server: &Res<AssetServer>) {
         for (column_index, value) in row.iter().enumerate() {
             let position: Rect<Val> = Rect {
                 left: Val::Px(10.0 + MAIN_MENU_BOX_TILE_SIZE * column_index as f32),
-                top: Val::Px(10.0 + MAIN_MENU_BOX_TILE_SIZE * row_index as f32),
+                top: Val::Px(150.0 + MAIN_MENU_BOX_TILE_SIZE * row_index as f32),
                 bottom: Val::Auto,
                 right: Val::Auto,
             };
@@ -149,12 +144,15 @@ fn main_menu_box(root: &mut ChildBuilder, asset_server: &Res<AssetServer>) {
     }
 }
 
-fn buttons(root: &mut ChildBuilder, asset_server: &Res<AssetServer>, dictionary: Dictionary) {
+fn buttons(root: &mut ChildBuilder, asset_server: &Res<AssetServer>, dictionary: Res<Dictionary>) {
+    let glossary = dictionary.get_glossary();
+    let font = dictionary.get_font();
+
     for (index, button) in MainMenuSceneButton::iterator().enumerate() {
         let position: Rect<Val> = Rect {
             left: Val::Px(10.0 + MAIN_MENU_BOX_TILE_SIZE * (3.0 - 1.0) / 2.0),
             right: Val::Auto,
-            top: Val::Px(10.0 + MAIN_MENU_BOX_TILE_SIZE * (index as f32 + 1.0)),
+            top: Val::Px(150.0 + MAIN_MENU_BOX_TILE_SIZE * (index as f32 + 1.0)),
             bottom: Val::Auto,
         };
 
@@ -178,19 +176,19 @@ fn buttons(root: &mut ChildBuilder, asset_server: &Res<AssetServer>, dictionary:
         })
         .with_children(|parent| {
             let text: &str = match button {
-                MainMenuSceneButton::Play => dictionary.main_menu_text.play.as_str(),
-                MainMenuSceneButton::Highscore => dictionary.main_menu_text.highscore.as_str(),
-                MainMenuSceneButton::Options => dictionary.main_menu_text.options.as_str(),
-                MainMenuSceneButton::Help => dictionary.main_menu_text.help.as_str(),
-                MainMenuSceneButton::Credits => dictionary.main_menu_text.credits.as_str(),
-                MainMenuSceneButton::Quit => dictionary.main_menu_text.quit.as_str(),
+                MainMenuSceneButton::Play => glossary.main_menu_text.play.as_str(),
+                MainMenuSceneButton::Highscore => glossary.main_menu_text.highscore.as_str(),
+                MainMenuSceneButton::Options => glossary.main_menu_text.options.as_str(),
+                MainMenuSceneButton::Help => glossary.main_menu_text.help.as_str(),
+                MainMenuSceneButton::Credits => glossary.main_menu_text.credits.as_str(),
+                MainMenuSceneButton::Quit => glossary.main_menu_text.quit.as_str(),
             };
 
             parent.spawn_bundle(TextBundle {
                 text: Text::with_section(
                     text,
                     TextStyle {
-                        font: asset_server.load(FIBBERISH_FONT),
+                        font: asset_server.load(font),
                         font_size: FONT_SIZE,
                         color: Color::DARK_GRAY,
                     },

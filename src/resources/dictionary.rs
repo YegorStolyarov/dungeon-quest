@@ -1,88 +1,54 @@
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
-use std::fs::File;
-use std::io::prelude::*;
 
 use crate::config::*;
 
+use crate::resources::glossary::Glossary;
 use crate::resources::language::Language;
 use crate::resources::setting::Setting;
 
 #[derive(Component, Serialize, Deserialize, Debug, Clone)]
-pub struct ApplicationDictionary {
-    vi_dictionary: Option<Dictionary>,
-    en_dictionary: Option<Dictionary>,
+pub struct Dictionary {
+    vi_glossary: Glossary,
+    vi_font: String,
+    en_glossary: Glossary,
+    en_font: String,
     current_language: Language,
 }
 
-#[derive(Component, Serialize, Deserialize, Debug, Clone)]
-pub struct Dictionary {
-    pub main_menu_text: MenuText,
-}
-
-#[derive(Component, Serialize, Deserialize, Debug, Clone)]
-pub struct MenuText {
-    pub play: String,
-    pub highscore: String,
-    pub options: String,
-    pub help: String,
-    pub credits: String,
-    pub quit: String,
-}
-
-impl ApplicationDictionary {
+impl Dictionary {
     pub fn new(current_language: Language) -> Self {
-        ApplicationDictionary {
-            vi_dictionary: None,
-            en_dictionary: None,
+        Dictionary {
+            vi_glossary: Glossary::new(Language::VI),
+            vi_font: ROBOTO_FONT.to_string(),
+            en_glossary: Glossary::new(Language::EN),
+            en_font: FIBBERISH_FONT.to_string(),
             current_language,
         }
     }
 
-    pub fn get_dictionary(&self) -> Dictionary {
+    pub fn get_glossary(&self) -> Glossary {
         return match self.current_language {
-            Language::VI => self.vi_dictionary.clone().unwrap(),
-            Language::EN => self.en_dictionary.clone().unwrap(),
+            Language::VI => self.vi_glossary.clone(),
+            Language::EN => self.en_glossary.clone(),
         };
     }
 
-    pub fn load_language(&mut self, language: Language) {
-        let file_name = match language {
-            Language::VI => VIETNAMESE_LANGUAGE_FILE,
-            Language::EN => ENGLISH_LANGUAGE_FILE,
+    pub fn _get_current_language(&self) -> Language {
+        self.current_language.clone()
+    }
+
+    pub fn get_font(&self) -> &str {
+        return match self.current_language {
+            Language::VI => self.vi_font.as_str(),
+            Language::EN => self.en_font.as_str(),
         };
-
-        match File::open(file_name) {
-            Ok(mut file) => {
-                let mut contents = String::new();
-                file.read_to_string(&mut contents).expect("Error read file");
-                let application_text =
-                    serde_json::from_str(&contents).expect("JSON was not well-formatted");
-
-                dbg!(&application_text);
-
-                match language {
-                    Language::VI => self.vi_dictionary = Some(application_text),
-                    Language::EN => self.en_dictionary = Some(application_text),
-                };
-            }
-            Err(err) => {
-                dbg!(err);
-                panic!("Can't find language file");
-            }
-        }
     }
 }
 
-impl FromWorld for ApplicationDictionary {
+impl FromWorld for Dictionary {
     fn from_world(world: &mut World) -> Self {
         let setting = world.get_resource_mut::<Setting>().unwrap();
-        dbg!(&setting);
-        let mut application_dictionary = ApplicationDictionary::new(setting.get_language());
-
-        application_dictionary.load_language(Language::EN);
-        application_dictionary.load_language(Language::VI);
-
-        application_dictionary
+        Dictionary::new(setting.get_language())
     }
 }

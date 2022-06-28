@@ -10,6 +10,7 @@ pub const MONITOR_WIDTH: f32 = 1920.0;
 pub const MENU_BACKGROUND_IMAGE: &str = "images/menu_background.png";
 
 pub const FIBBERISH_FONT: &str = "fonts/fibberish.ttf";
+pub const ROBOTO_FONT: &str = "fonts/Roboto-Bold.ttf";
 
 pub const VIETNAMESE_LANGUAGE_FILE: &str = "vietnamese.json";
 pub const ENGLISH_LANGUAGE_FILE: &str = "english.json";
