@@ -3,7 +3,7 @@ use std::slice::Iter;
 
 use crate::config::*;
 use crate::resources::dictionary::Dictionary;
-use crate::scenes::ApplicationScene;
+use crate::scenes::SceneState;
 
 const MAIN_MENU_BOX_ARRAY: [[i8; 5]; 8] = [
     [0, 1, 1, 1, 2],
@@ -53,10 +53,8 @@ pub struct MainMenuScenePlugin;
 
 impl Plugin for MainMenuScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(SystemSet::on_enter(ApplicationScene::MainMenuScene).with_system(setup));
-        app.add_system_set(
-            SystemSet::on_exit(ApplicationScene::MainMenuScene).with_system(cleanup),
-        );
+        app.add_system_set(SystemSet::on_enter(SceneState::MainMenuScene).with_system(setup));
+        app.add_system_set(SystemSet::on_exit(SceneState::MainMenuScene).with_system(cleanup));
         // app.add_system_set(
         // SystemSet::on_update(ApplicationScene::MainMenuScene).with_system(button_handle_system),
         // );

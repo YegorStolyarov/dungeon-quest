@@ -5,48 +5,48 @@ pub mod main_menu_scene;
 // pub mod setting_scene;
 // pub mod test_scene;
 
-pub struct ApplicationSceneController {
-    next_state: ApplicationScene,
-    previous_state: ApplicationScene,
+pub struct SceneController {
+    next_scene: SceneState,
+    previous_scene: SceneState,
 }
 
-impl ApplicationSceneController {
+impl SceneController {
     pub fn new() -> Self {
-        ApplicationSceneController {
-            next_state: ApplicationScene::MainMenuScene,
-            previous_state: ApplicationScene::MainMenuScene,
+        SceneController {
+            next_scene: SceneState::MainMenuScene,
+            previous_scene: SceneState::MainMenuScene,
         }
     }
 
-    pub fn set_next_state(&mut self, next_state: ApplicationScene) {
-        self.next_state = next_state;
+    pub fn set_next_state(&mut self, next_scene: SceneState) {
+        self.next_scene = next_scene;
     }
 
-    pub fn _set_previous_state(&mut self, previous_state: ApplicationScene) {
-        self.previous_state = previous_state;
+    pub fn _set_previous_state(&mut self, previous_scene: SceneState) {
+        self.previous_scene = previous_scene;
     }
 
-    pub fn get_next_state(&mut self) -> ApplicationScene {
-        let next_state: ApplicationScene = self.next_state.clone();
-        self.next_state = ApplicationScene::MainMenuScene;
-        next_state
+    pub fn get_next_state(&mut self) -> SceneState {
+        let next_scene: SceneState = self.next_scene.clone();
+        self.next_scene = SceneState::MainMenuScene;
+        next_scene
     }
 
-    pub fn _get_previous_state(&mut self) -> ApplicationScene {
-        let previous_state: ApplicationScene = self.previous_state.clone();
-        self.previous_state = ApplicationScene::MainMenuScene;
-        previous_state
+    pub fn _get_previous_state(&mut self) -> SceneState {
+        let previous_scene: SceneState = self.previous_scene.clone();
+        self.previous_scene = SceneState::MainMenuScene;
+        previous_scene
     }
 }
 
-impl FromWorld for ApplicationSceneController {
+impl FromWorld for SceneController {
     fn from_world(_world: &mut World) -> Self {
-        ApplicationSceneController::new()
+        SceneController::new()
     }
 }
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
-pub enum ApplicationScene {
+pub enum SceneState {
     MainMenuScene,
     SettingScene,
     LoadingScene,
