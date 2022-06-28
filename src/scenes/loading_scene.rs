@@ -4,11 +4,11 @@ use crate::config::*;
 use crate::resources::dictionary::Dictionary;
 use crate::scenes::SceneState;
 
+const LOADING_TEXT_FONT_SIZE: f32 = 30.0;
+const TEXT_FONT_SIZE: f32 = 40.0;
+
 const LOADING_BORDER_WIDTH: f32 = 600.0;
 const LOADING_BORDER_HEIGHT: f32 = 60.0;
-
-const TEXT_FONT_SIZE: f32 = 40.0;
-const LOADING_TEXT_FONT_SIZE: f32 = 30.0;
 
 #[derive(Component)]
 struct Loader {

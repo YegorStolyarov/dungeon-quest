@@ -16,9 +16,7 @@ const MAIN_MENU_BOX_ARRAY: [[i8; 5]; 8] = [
     [3, 4, 4, 4, 5],
     [6, 7, 7, 7, 8],
 ];
-
 const FONT_SIZE: f32 = 36.0;
-
 const MAIN_MENU_BOX_TILE_SIZE: f32 = 50.0;
 
 #[derive(Component, Copy, Clone)]
