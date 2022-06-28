@@ -1,10 +1,13 @@
 {
-  "main_menu_text": {
+  "main_menu_scene_text": {
     "play": "Play",
     "highscore": "Highscore",
     "options": "Options",
     "help": "Help",
     "credits": "Credits",
     "quit": "Quit"
+  },
+  "loading_scene_text": {
+    "loading": "Loading..."
   }
 }

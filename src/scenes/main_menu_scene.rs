@@ -175,12 +175,12 @@ fn buttons(root: &mut ChildBuilder, asset_server: &Res<AssetServer>, dictionary:
         })
         .with_children(|parent| {
             let text: &str = match button {
-                MainMenuSceneButton::Play => glossary.main_menu_text.play.as_str(),
-                MainMenuSceneButton::Highscore => glossary.main_menu_text.highscore.as_str(),
-                MainMenuSceneButton::Options => glossary.main_menu_text.options.as_str(),
-                MainMenuSceneButton::Help => glossary.main_menu_text.help.as_str(),
-                MainMenuSceneButton::Credits => glossary.main_menu_text.credits.as_str(),
-                MainMenuSceneButton::Quit => glossary.main_menu_text.quit.as_str(),
+                MainMenuSceneButton::Play => glossary.main_menu_scene_text.play.as_str(),
+                MainMenuSceneButton::Highscore => glossary.main_menu_scene_text.highscore.as_str(),
+                MainMenuSceneButton::Options => glossary.main_menu_scene_text.options.as_str(),
+                MainMenuSceneButton::Help => glossary.main_menu_scene_text.help.as_str(),
+                MainMenuSceneButton::Credits => glossary.main_menu_scene_text.credits.as_str(),
+                MainMenuSceneButton::Quit => glossary.main_menu_scene_text.quit.as_str(),
             };
 
             parent.spawn_bundle(TextBundle {

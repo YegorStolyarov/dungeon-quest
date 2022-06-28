@@ -8,17 +8,23 @@ use crate::resources::language::Language;
 
 #[derive(Component, Serialize, Deserialize, Debug, Clone)]
 pub struct Glossary {
-    pub main_menu_text: MenuText,
+    pub main_menu_scene_text: MainMenuSceneText,
+    pub loading_scene_text: LoadingSceneText,
 }
 
 #[derive(Component, Serialize, Deserialize, Debug, Clone)]
-pub struct MenuText {
+pub struct MainMenuSceneText {
     pub play: String,
     pub highscore: String,
     pub options: String,
     pub help: String,
     pub credits: String,
     pub quit: String,
+}
+
+#[derive(Component, Serialize, Deserialize, Debug, Clone)]
+pub struct LoadingSceneText {
+    pub loading: String,
 }
 
 impl Glossary {
