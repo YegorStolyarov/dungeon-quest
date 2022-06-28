@@ -17,7 +17,6 @@ struct Loader {
 }
 
 struct LoadingSceneData {
-    camera_entity: Entity,
     ui_root: Entity,
 }
 
@@ -34,7 +33,6 @@ impl Plugin for LoadingScenePlugin {
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>, dictionary: Res<Dictionary>) {
-    let camera_entity = commands.spawn_bundle(UiCameraBundle::default()).id();
     let ui_root = commands
         .spawn_bundle(root())
         .with_children(|parent| {
@@ -43,15 +41,13 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, dictionary: Res
         })
         .id();
 
-    commands.insert_resource(LoadingSceneData {
-        camera_entity,
-        ui_root,
-    });
+    commands.insert_resource(LoadingSceneData { ui_root });
 }
 
-fn cleanup(mut commands: Commands, menu_data: Res<LoadingSceneData>) {
-    commands.entity(menu_data.ui_root).despawn_recursive();
-    commands.entity(menu_data.camera_entity).despawn_recursive();
+fn cleanup(mut commands: Commands, loading_scene_data: Res<LoadingSceneData>) {
+    commands
+        .entity(loading_scene_data.ui_root)
+        .despawn_recursive();
 }
 
 fn root() -> NodeBundle {
@@ -204,7 +200,7 @@ fn update_loader(
 ) {
     for (mut loader, mut style, children) in query.iter_mut() {
         if loader.current_width < loader.max_width {
-            loader.current_width += 2.0;
+            loader.current_width += 3.0;
             style.size.width = Val::Px(loader.current_width);
 
             let value = (loader.current_width / loader.max_width * 100.0) as usize;

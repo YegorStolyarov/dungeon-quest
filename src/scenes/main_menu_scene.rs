@@ -44,7 +44,6 @@ impl MainMenuSceneButton {
 }
 
 struct MainMenuSceneData {
-    camera_entity: Entity,
     ui_root: Entity,
 }
 
@@ -61,8 +60,6 @@ impl Plugin for MainMenuScenePlugin {
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>, dictionary: Res<Dictionary>) {
-    let camera_entity = commands.spawn_bundle(UiCameraBundle::default()).id();
-
     let ui_root = commands
         .spawn_bundle(root(&asset_server))
         .with_children(|parent| {
@@ -71,18 +68,12 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, dictionary: Res
         })
         .id();
 
-    commands.insert_resource(MainMenuSceneData {
-        camera_entity,
-        ui_root,
-    });
+    commands.insert_resource(MainMenuSceneData { ui_root });
 }
 
 fn cleanup(mut commands: Commands, main_menu_scene_data: Res<MainMenuSceneData>) {
     commands
         .entity(main_menu_scene_data.ui_root)
-        .despawn_recursive();
-    commands
-        .entity(main_menu_scene_data.camera_entity)
         .despawn_recursive();
 }
 
