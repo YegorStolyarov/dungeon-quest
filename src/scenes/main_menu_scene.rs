@@ -2,8 +2,8 @@ use bevy::app::AppExit;
 use bevy::prelude::*;
 use std::slice::Iter;
 
-use crate::config::*;
 use crate::resources::dictionary::Dictionary;
+use crate::resources::materials::{scenes::main_menu_scene::MainMenuBoxMaterials, GlobalMaterials};
 use crate::scenes::SceneState;
 
 const MAIN_MENU_BOX_ARRAY: [[i8; 5]; 8] = [
@@ -59,12 +59,21 @@ impl Plugin for MainMenuScenePlugin {
     }
 }
 
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>, dictionary: Res<Dictionary>) {
+fn setup(
+    mut commands: Commands,
+    global_materials: Res<GlobalMaterials>,
+    dictionary: Res<Dictionary>,
+) {
     let ui_root = commands
-        .spawn_bundle(root(&asset_server))
+        .spawn_bundle(root(&global_materials))
         .with_children(|parent| {
-            main_menu_box(parent, &asset_server);
-            buttons(parent, &asset_server, dictionary);
+            main_menu_box(
+                parent,
+                &global_materials
+                    .main_menu_scene_materials
+                    .main_menu_box_materials,
+            );
+            buttons(parent, &global_materials, dictionary);
         })
         .id();
 
@@ -77,19 +86,19 @@ fn cleanup(mut commands: Commands, main_menu_scene_data: Res<MainMenuSceneData>)
         .despawn_recursive();
 }
 
-fn root(asset_server: &Res<AssetServer>) -> NodeBundle {
+fn root(global_materials: &Res<GlobalMaterials>) -> NodeBundle {
     NodeBundle {
         style: Style {
             position_type: PositionType::Absolute,
             size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
             ..Default::default()
         },
-        image: UiImage(asset_server.load(MENU_BACKGROUND_IMAGE)),
+        image: UiImage(global_materials.main_menu_background.clone()),
         ..Default::default()
     }
 }
 
-fn main_menu_box(root: &mut ChildBuilder, asset_server: &Res<AssetServer>) {
+fn main_menu_box(root: &mut ChildBuilder, main_menu_box_materials: &MainMenuBoxMaterials) {
     let size: Size<Val> = Size {
         width: Val::Px(MAIN_MENU_BOX_TILE_SIZE),
         height: Val::Px(MAIN_MENU_BOX_TILE_SIZE),
@@ -104,21 +113,21 @@ fn main_menu_box(root: &mut ChildBuilder, asset_server: &Res<AssetServer>) {
                 right: Val::Auto,
             };
 
-            let image_str: &str = match value {
-                0 => "images/gui/main_menu/top_right.png",
-                1 => "images/gui/main_menu/top_center.png",
-                2 => "images/gui/main_menu/top_left.png",
-                3 => "images/gui/main_menu/mid_right.png",
-                4 => "images/gui/main_menu/mid_center.png",
-                5 => "images/gui/main_menu/mid_left.png",
-                6 => "images/gui/main_menu/bottom_right.png",
-                7 => "images/gui/main_menu/bottom_center.png",
-                8 => "images/gui/main_menu/bottom_left.png",
+            let image: Handle<Image> = match value {
+                0 => main_menu_box_materials.top_right.clone(),
+                1 => main_menu_box_materials.top_center.clone(),
+                2 => main_menu_box_materials.top_left.clone(),
+                3 => main_menu_box_materials.mid_right.clone(),
+                4 => main_menu_box_materials.mid_center.clone(),
+                5 => main_menu_box_materials.mid_left.clone(),
+                6 => main_menu_box_materials.bottom_right.clone(),
+                7 => main_menu_box_materials.bottom_center.clone(),
+                8 => main_menu_box_materials.bottom_left.clone(),
                 _ => panic!("Unknown resources"),
             };
 
             root.spawn_bundle(NodeBundle {
-                image: UiImage(asset_server.load(image_str)),
+                image: UiImage(image),
                 style: Style {
                     position_type: PositionType::Absolute,
                     position,
@@ -132,9 +141,12 @@ fn main_menu_box(root: &mut ChildBuilder, asset_server: &Res<AssetServer>) {
     }
 }
 
-fn buttons(root: &mut ChildBuilder, asset_server: &Res<AssetServer>, dictionary: Res<Dictionary>) {
+fn buttons(
+    root: &mut ChildBuilder,
+    global_materials: &Res<GlobalMaterials>,
+    dictionary: Res<Dictionary>,
+) {
     let glossary = dictionary.get_glossary();
-    let font = dictionary.get_font();
 
     for (index, button) in MainMenuSceneButton::iterator().enumerate() {
         let position: Rect<Val> = Rect {
@@ -176,7 +188,7 @@ fn buttons(root: &mut ChildBuilder, asset_server: &Res<AssetServer>, dictionary:
                 text: Text::with_section(
                     text,
                     TextStyle {
-                        font: asset_server.load(font),
+                        font: global_materials.get_font(dictionary.get_current_language()),
                         font_size: FONT_SIZE,
                         color: Color::GRAY,
                     },
