@@ -40,6 +40,7 @@ fn main() {
         .add_plugin(scenes::highscore_scene::HighscoreScenePlugin)
         .add_plugin(scenes::options_scene::OptionsScenePlugin)
         .add_plugin(scenes::help_scene::HelpScenePlugin)
+        .add_plugin(scenes::credits_scene::CreditsScenePlugin)
         .add_plugin(plugins::debug::DebugPlugin)
         .run();
 }

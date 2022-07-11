@@ -62,6 +62,7 @@ fn setup(
             return_button(parent, &scenes_materials)
         })
         .id();
+
     commands.insert_resource(HelpSceneData {
         user_interface_root,
     });

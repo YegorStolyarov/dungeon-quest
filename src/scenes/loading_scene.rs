@@ -5,7 +5,6 @@ use crate::scenes::SceneState;
 
 use crate::resources::dictionary::Dictionary;
 use crate::resources::language::Language;
-
 use crate::resources::materials::{
     ingame::heros::HerosMaterials,
     scenes::{FlagMaterials, IconMaterials, MenuBoxMaterials, ScenesMaterials},
