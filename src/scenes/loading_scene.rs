@@ -6,10 +6,11 @@ use crate::scenes::SceneState;
 use crate::resources::dictionary::Dictionary;
 use crate::resources::language::Language;
 
-use crate::resources::materials::scenes::main_menu_scene::{
-    MainMenuBoxMaterials, MainMenuSceneMaterials,
+use crate::resources::materials::{
+    ingame::{heros::HerosMaterials, InGameMaterials},
+    scenes::{MenuBoxMaterials, ScenesMaterials},
+    Materials,
 };
-use crate::resources::materials::GlobalMaterials;
 
 const LOADING_TEXT_FONT_SIZE: f32 = 30.0;
 const TEXT_FONT_SIZE: f32 = 40.0;
@@ -24,7 +25,7 @@ struct Loader {
 }
 
 struct LoadingSceneData {
-    ui_root: Entity,
+    user_interface_root: Entity,
 }
 
 pub struct LoadingScenePlugin;
@@ -44,7 +45,7 @@ impl Plugin for LoadingScenePlugin {
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>, dictionary: Res<Dictionary>) {
-    let ui_root = commands
+    let user_interface_root = commands
         .spawn_bundle(root())
         .with_children(|parent| {
             loading_text(parent, &asset_server, &dictionary);
@@ -52,12 +53,14 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, dictionary: Res
         })
         .id();
 
-    commands.insert_resource(LoadingSceneData { ui_root });
+    commands.insert_resource(LoadingSceneData {
+        user_interface_root,
+    });
 }
 
 fn cleanup(mut commands: Commands, loading_scene_data: Res<LoadingSceneData>) {
     commands
-        .entity(loading_scene_data.ui_root)
+        .entity(loading_scene_data.user_interface_root)
         .despawn_recursive();
 }
 
@@ -233,25 +236,55 @@ fn update_loader(
 }
 
 fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let global_materials: GlobalMaterials = GlobalMaterials {
+    let materials: Materials = Materials {
         roboto_font: asset_server.load(ROBOTO_FONT),
         fibberish_font: asset_server.load(FIBBERISH_FONT),
         main_menu_background: asset_server.load(MAIN_MENU_BACKGROUND_IMAGE),
         sub_menu_background: asset_server.load(SUB_MENU_BACKGROUND_IMAGE),
-        main_menu_scene_materials: MainMenuSceneMaterials {
-            main_menu_box_materials: MainMenuBoxMaterials {
-                top_right: asset_server.load("images/gui/main_menu/top_right.png"),
-                top_center: asset_server.load("images/gui/main_menu/top_center.png"),
-                top_left: asset_server.load("images/gui/main_menu/top_left.png"),
-                mid_right: asset_server.load("images/gui/main_menu/mid_right.png"),
-                mid_center: asset_server.load("images/gui/main_menu/mid_center.png"),
-                mid_left: asset_server.load("images/gui/main_menu/mid_left.png"),
-                bottom_right: asset_server.load("images/gui/main_menu/bottom_right.png"),
-                bottom_center: asset_server.load("images/gui/main_menu/bottom_center.png"),
-                bottom_left: asset_server.load("images/gui/main_menu/bottom_left.png"),
-            },
+    };
+
+    let scenes_materials: ScenesMaterials = ScenesMaterials {
+        menu_box_materials: MenuBoxMaterials {
+            top_right: asset_server.load("scenes/gui/menu_box/top_right.png"),
+            top_center: asset_server.load("scenes/gui/menu_box/top_center.png"),
+            top_left: asset_server.load("scenes/gui/menu_box/top_left.png"),
+            mid_right: asset_server.load("scenes/gui/menu_box/mid_right.png"),
+            mid_center: asset_server.load("scenes/gui/menu_box/mid_center.png"),
+            mid_left: asset_server.load("scenes/gui/menu_box/mid_left.png"),
+            bottom_right: asset_server.load("scenes/gui/menu_box/bottom_right.png"),
+            bottom_center: asset_server.load("scenes/gui/menu_box/bottom_center.png"),
+            bottom_left: asset_server.load("scenes/gui/menu_box/bottom_left.png"),
+        },
+        home_icon_normal: asset_server.load("icons/home_icon_normal.png"),
+        home_icon_hovered: asset_server.load("icons/home_icon_hovered.png"),
+        home_icon_clicked: asset_server.load("icons/home_icon_clicked.png"),
+        book_tileset: asset_server.load("scenes/book.png"),
+        heros_materials: HerosMaterials {
+            male_elf: asset_server.load("scenes/heros/male_elf.png"),
+            male_knight: asset_server.load("scenes/heros/male_knight.png"),
+            male_wizard: asset_server.load("scenes/heros/male_wizard.png"),
+            male_lizard: asset_server.load("scenes/heros/male_lizard.png"),
+            female_elf: asset_server.load("scenes/heros/female_elf.png"),
+            female_knight: asset_server.load("scenes/heros/female_knight.png"),
+            female_wizard: asset_server.load("scenes/heros/female_wizard.png"),
+            female_lizard: asset_server.load("scenes/heros/female_lizard.png"),
         },
     };
 
-    commands.insert_resource(global_materials);
+    let ingame_materials: InGameMaterials = InGameMaterials {
+        heros_materials: HerosMaterials {
+            male_elf: asset_server.load("textures/heros/male_elf.png"),
+            male_knight: asset_server.load("textures/heros/male_knight.png"),
+            male_wizard: asset_server.load("textures/heros/male_wizard.png"),
+            male_lizard: asset_server.load("textures/heros/male_lizard.png"),
+            female_elf: asset_server.load("textures/heros/female_elf.png"),
+            female_knight: asset_server.load("textures/heros/female_knight.png"),
+            female_wizard: asset_server.load("textures/heros/female_wizard.png"),
+            female_lizard: asset_server.load("textures/heros/female_lizard.png"),
+        },
+    };
+
+    commands.insert_resource(materials);
+    commands.insert_resource(scenes_materials);
+    commands.insert_resource(ingame_materials);
 }

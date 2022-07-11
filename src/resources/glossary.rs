@@ -10,6 +10,8 @@ use crate::resources::language::Language;
 pub struct Glossary {
     pub main_menu_scene_text: MainMenuSceneText,
     pub loading_scene_text: LoadingSceneText,
+    pub highscore_scene_text: HighscoreSceneText,
+    pub shared_text: SharedText,
 }
 
 #[derive(Component, Serialize, Deserialize, Debug, Clone)]
@@ -25,6 +27,26 @@ pub struct MainMenuSceneText {
 #[derive(Component, Serialize, Deserialize, Debug, Clone)]
 pub struct LoadingSceneText {
     pub loading: String,
+}
+
+#[derive(Component, Serialize, Deserialize, Debug, Clone)]
+pub struct HighscoreSceneText {
+    pub name: String,
+    pub gender: String,
+    pub game_mode: String,
+    pub total_killed_monsters: String,
+    pub total_cleared_rooms: String,
+    pub total_cleared_waves: String,
+    pub date: String,
+    pub playtime: String,
+}
+
+#[derive(Component, Serialize, Deserialize, Debug, Clone)]
+pub struct SharedText {
+    pub male: String,
+    pub female: String,
+    pub classic_mode: String,
+    pub survival_mode: String,
 }
 
 impl Glossary {

@@ -1,0 +1,46 @@
+[
+  {
+      "name": "Anh hung 1",
+      "game_mode": "ClassicMode",
+      "hero_class": "Elf",
+      "gender": "Female",
+      "total_killed_monsters": 200,
+      "total_cleared_rooms": 99,
+      "total_cleared_waves": 0,
+      "date": "2022-07-08T10:08:39.689980704+07:00",
+      "playtime": 210
+  },
+  {
+      "name": "Anh hung 2",
+      "game_mode": "SurvivalMode",
+      "hero_class": "Knight",
+      "gender": "Male",
+      "total_killed_monsters": 111,
+      "total_cleared_rooms": 0,
+      "total_cleared_waves": 10,
+      "date": "2022-07-09T10:08:39.689980704+07:00",
+      "playtime": 600
+  },
+  {
+      "name": "Anh hung 3",
+      "game_mode": "ClassicMode",
+      "hero_class": "Lizard",
+      "gender": "Female",
+      "total_killed_monsters": 80,
+      "total_cleared_rooms": 99,
+      "total_cleared_waves": 0,
+      "date": "2022-07-10T10:08:39.689980704+07:00",
+      "playtime": 760
+  },
+  {
+      "name": "Anh hung 4",
+      "game_mode": "SurvivalMode",
+      "hero_class": "Wizard",
+      "gender": "Male",
+      "total_killed_monsters": 60,
+      "total_cleared_rooms": 0,
+      "total_cleared_waves": 25,
+      "date": "2022-07-11T10:08:39.689980704+07:00",
+      "playtime": 960
+  }
+]

@@ -15,4 +15,5 @@ pub const ROBOTO_FONT: &str = "fonts/Roboto-Bold.ttf";
 
 pub const VIETNAMESE_LANGUAGE_FILE: &str = "vietnamese.json";
 pub const ENGLISH_LANGUAGE_FILE: &str = "english.json";
+pub const HIGHSCORE_FILE: &str = "highscores.json";
 pub const SETTING_FILE: &str = "setting.json";

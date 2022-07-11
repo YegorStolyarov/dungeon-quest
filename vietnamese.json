@@ -9,5 +9,21 @@
   },
   "loading_scene_text": {
     "loading": "Đang tải tài nguyên, vui lòng đợi."
+  },
+  "highscore_scene_text": {
+    "name": "Tên: ",
+    "gender": "Giới tính: ",
+    "game_mode": "Chế độ chơi: ",
+    "total_killed_monsters": "Số quái vật tiêu diệt: ",
+    "total_cleared_rooms": "Căn phòng đã mở: ",
+    "total_cleared_waves": "Vòng chơi vượt qua: ",
+    "date": "Ngày chơi: ",
+    "playtime": "Thời gian chơi: "
+  },
+  "shared_text": {
+    "male": "Trai",
+    "female": "Gái",
+    "classic_mode": "Chế độ cổ điển",
+    "survival_mode": "Chế độ sinh tồn"
   }
 }

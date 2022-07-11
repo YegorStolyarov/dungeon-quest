@@ -4,6 +4,7 @@ use bevy_kira_audio::AudioPlugin;
 use config::*;
 
 mod config;
+mod ingame;
 mod plugins;
 mod resources;
 mod scenes;

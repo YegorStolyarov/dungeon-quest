@@ -9,5 +9,21 @@
   },
   "loading_scene_text": {
     "loading": "Loading..."
+  },
+  "highscore_scene_text": {
+    "name": "Name: ",
+    "gender": "Gender: ",
+    "game_mode": "Game Mode: ",
+    "total_killed_monsters": "Killed monsters: ",
+    "total_cleared_rooms": "Cleared rooms: ",
+    "total_cleared_waves": "Cleared waves: ",
+    "date": "Date: ",
+    "playtime": "Playtime: "
+  },
+  "shared_text": {
+    "male": "Male",
+    "female": "Female",
+    "classic_mode": "Classic Mode",
+    "survival_mode": "Survival Mode"
   }
 }

@@ -3,7 +3,8 @@ use bevy::prelude::*;
 use std::slice::Iter;
 
 use crate::resources::dictionary::Dictionary;
-use crate::resources::materials::{scenes::main_menu_scene::MainMenuBoxMaterials, GlobalMaterials};
+use crate::resources::materials::scenes::{MenuBoxMaterials, ScenesMaterials};
+use crate::resources::materials::Materials;
 use crate::scenes::SceneState;
 
 const MAIN_MENU_BOX_ARRAY: [[i8; 5]; 8] = [
@@ -44,7 +45,7 @@ impl MainMenuSceneButton {
 }
 
 struct MainMenuSceneData {
-    ui_root: Entity,
+    user_interface_root: Entity,
 }
 
 pub struct MainMenuScenePlugin;
@@ -61,44 +62,42 @@ impl Plugin for MainMenuScenePlugin {
 
 fn setup(
     mut commands: Commands,
-    global_materials: Res<GlobalMaterials>,
+    materials: Res<Materials>,
+    scenes_materials: Res<ScenesMaterials>,
     dictionary: Res<Dictionary>,
 ) {
-    let ui_root = commands
-        .spawn_bundle(root(&global_materials))
+    let user_interface_root = commands
+        .spawn_bundle(root(&materials))
         .with_children(|parent| {
-            main_menu_box(
-                parent,
-                &global_materials
-                    .main_menu_scene_materials
-                    .main_menu_box_materials,
-            );
-            buttons(parent, &global_materials, dictionary);
+            main_menu_box(parent, &scenes_materials.menu_box_materials);
+            buttons(parent, &materials, dictionary);
         })
         .id();
 
-    commands.insert_resource(MainMenuSceneData { ui_root });
+    commands.insert_resource(MainMenuSceneData {
+        user_interface_root,
+    });
 }
 
 fn cleanup(mut commands: Commands, main_menu_scene_data: Res<MainMenuSceneData>) {
     commands
-        .entity(main_menu_scene_data.ui_root)
+        .entity(main_menu_scene_data.user_interface_root)
         .despawn_recursive();
 }
 
-fn root(global_materials: &Res<GlobalMaterials>) -> NodeBundle {
+fn root(materials: &Res<Materials>) -> NodeBundle {
     NodeBundle {
         style: Style {
             position_type: PositionType::Absolute,
             size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
             ..Default::default()
         },
-        image: UiImage(global_materials.main_menu_background.clone()),
+        image: UiImage(materials.main_menu_background.clone()),
         ..Default::default()
     }
 }
 
-fn main_menu_box(root: &mut ChildBuilder, main_menu_box_materials: &MainMenuBoxMaterials) {
+fn main_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     let size: Size<Val> = Size {
         width: Val::Px(MAIN_MENU_BOX_TILE_SIZE),
         height: Val::Px(MAIN_MENU_BOX_TILE_SIZE),
@@ -114,15 +113,15 @@ fn main_menu_box(root: &mut ChildBuilder, main_menu_box_materials: &MainMenuBoxM
             };
 
             let image: Handle<Image> = match value {
-                0 => main_menu_box_materials.top_right.clone(),
-                1 => main_menu_box_materials.top_center.clone(),
-                2 => main_menu_box_materials.top_left.clone(),
-                3 => main_menu_box_materials.mid_right.clone(),
-                4 => main_menu_box_materials.mid_center.clone(),
-                5 => main_menu_box_materials.mid_left.clone(),
-                6 => main_menu_box_materials.bottom_right.clone(),
-                7 => main_menu_box_materials.bottom_center.clone(),
-                8 => main_menu_box_materials.bottom_left.clone(),
+                0 => menu_box_materials.top_right.clone(),
+                1 => menu_box_materials.top_center.clone(),
+                2 => menu_box_materials.top_left.clone(),
+                3 => menu_box_materials.mid_right.clone(),
+                4 => menu_box_materials.mid_center.clone(),
+                5 => menu_box_materials.mid_left.clone(),
+                6 => menu_box_materials.bottom_right.clone(),
+                7 => menu_box_materials.bottom_center.clone(),
+                8 => menu_box_materials.bottom_left.clone(),
                 _ => panic!("Unknown resources"),
             };
 
@@ -141,11 +140,7 @@ fn main_menu_box(root: &mut ChildBuilder, main_menu_box_materials: &MainMenuBoxM
     }
 }
 
-fn buttons(
-    root: &mut ChildBuilder,
-    global_materials: &Res<GlobalMaterials>,
-    dictionary: Res<Dictionary>,
-) {
+fn buttons(root: &mut ChildBuilder, materials: &Res<Materials>, dictionary: Res<Dictionary>) {
     let glossary = dictionary.get_glossary();
 
     for (index, button) in MainMenuSceneButton::iterator().enumerate() {
@@ -188,7 +183,7 @@ fn buttons(
                 text: Text::with_section(
                     text,
                     TextStyle {
-                        font: global_materials.get_font(dictionary.get_current_language()),
+                        font: materials.get_font(dictionary.get_current_language()),
                         font_size: FONT_SIZE,
                         color: Color::GRAY,
                     },
