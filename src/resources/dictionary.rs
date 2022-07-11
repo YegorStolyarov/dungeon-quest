@@ -31,6 +31,10 @@ impl Dictionary {
     pub fn get_current_language(&self) -> Language {
         self.current_language.clone()
     }
+
+    pub fn set_current_language(&mut self, language: Language) {
+        self.current_language = language;
+    }
 }
 
 impl FromWorld for Dictionary {

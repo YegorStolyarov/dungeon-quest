@@ -11,6 +11,7 @@ pub struct Glossary {
     pub main_menu_scene_text: MainMenuSceneText,
     pub loading_scene_text: LoadingSceneText,
     pub highscore_scene_text: HighscoreSceneText,
+    pub options_scene_text: OptionsSceneText,
     pub shared_text: SharedText,
 }
 
@@ -39,6 +40,14 @@ pub struct HighscoreSceneText {
     pub total_cleared_waves: String,
     pub date: String,
     pub playtime: String,
+}
+
+#[derive(Component, Serialize, Deserialize, Debug, Clone)]
+pub struct OptionsSceneText {
+    pub options: String,
+    pub enable_music: String,
+    pub enable_sound: String,
+    pub language: String,
 }
 
 #[derive(Component, Serialize, Deserialize, Debug, Clone)]

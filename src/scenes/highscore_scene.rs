@@ -244,8 +244,10 @@ fn setup(
 fn buttons(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
     for (index, button) in HighscoreSceneButton::iterator().enumerate() {
         let handle_image = match button {
-            HighscoreSceneButton::Return => scenes_materials.home_icon_normal.clone(),
-            _ => scenes_materials.home_icon_normal.clone(),
+            HighscoreSceneButton::Return => {
+                scenes_materials.icon_materials.home_icon_normal.clone()
+            }
+            _ => scenes_materials.icon_materials.home_icon_normal.clone(),
         };
 
         let size = match button {
@@ -304,10 +306,14 @@ fn button_handle_system(
     for (interaction, button, mut ui_image) in button_query.iter_mut() {
         match *button {
             HighscoreSceneButton::Return => match *interaction {
-                Interaction::None => ui_image.0 = scenes_materials.home_icon_normal.clone(),
-                Interaction::Hovered => ui_image.0 = scenes_materials.home_icon_hovered.clone(),
+                Interaction::None => {
+                    ui_image.0 = scenes_materials.icon_materials.home_icon_normal.clone()
+                }
+                Interaction::Hovered => {
+                    ui_image.0 = scenes_materials.icon_materials.home_icon_hovered.clone()
+                }
                 Interaction::Clicked => {
-                    ui_image.0 = scenes_materials.home_icon_clicked.clone();
+                    ui_image.0 = scenes_materials.icon_materials.home_icon_clicked.clone();
                     state
                         .set(SceneState::MainMenuScene)
                         .expect("Couldn't switch state to Main Menu Screen");

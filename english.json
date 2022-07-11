@@ -25,5 +25,11 @@
     "female": "Female",
     "classic_mode": "Classic Mode",
     "survival_mode": "Survival Mode"
+  },
+  "options_scene_text": {
+    "options": "Options",
+    "enable_music": "Enable Music",
+    "enable_sound": "Enable Sound",
+    "language": "Language"
   }
 }

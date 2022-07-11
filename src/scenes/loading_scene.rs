@@ -7,8 +7,8 @@ use crate::resources::dictionary::Dictionary;
 use crate::resources::language::Language;
 
 use crate::resources::materials::{
-    ingame::{heros::HerosMaterials, InGameMaterials},
-    scenes::{MenuBoxMaterials, ScenesMaterials},
+    ingame::heros::HerosMaterials,
+    scenes::{FlagMaterials, IconMaterials, MenuBoxMaterials, ScenesMaterials},
     Materials,
 };
 
@@ -255,9 +255,17 @@ fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
             bottom_center: asset_server.load("scenes/gui/menu_box/bottom_center.png"),
             bottom_left: asset_server.load("scenes/gui/menu_box/bottom_left.png"),
         },
-        home_icon_normal: asset_server.load("icons/home_icon_normal.png"),
-        home_icon_hovered: asset_server.load("icons/home_icon_hovered.png"),
-        home_icon_clicked: asset_server.load("icons/home_icon_clicked.png"),
+        icon_materials: IconMaterials {
+            home_icon_normal: asset_server.load("icons/home_icon_normal.png"),
+            home_icon_hovered: asset_server.load("icons/home_icon_hovered.png"),
+            home_icon_clicked: asset_server.load("icons/home_icon_clicked.png"),
+            music_icon_on: asset_server.load("icons/music_icon_on.png"),
+            music_icon_off: asset_server.load("icons/music_icon_off.png"),
+            music_icon_hovered: asset_server.load("icons/music_icon_hovered.png"),
+            sound_icon_on: asset_server.load("icons/sound_icon_on.png"),
+            sound_icon_off: asset_server.load("icons/sound_icon_off.png"),
+            sound_icon_hovered: asset_server.load("icons/sound_icon_hovered.png"),
+        },
         book_tileset: asset_server.load("scenes/book.png"),
         heros_materials: HerosMaterials {
             male_elf: asset_server.load("scenes/heros/male_elf.png"),
@@ -269,22 +277,26 @@ fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
             female_wizard: asset_server.load("scenes/heros/female_wizard.png"),
             female_lizard: asset_server.load("scenes/heros/female_lizard.png"),
         },
-    };
-
-    let ingame_materials: InGameMaterials = InGameMaterials {
-        heros_materials: HerosMaterials {
-            male_elf: asset_server.load("textures/heros/male_elf.png"),
-            male_knight: asset_server.load("textures/heros/male_knight.png"),
-            male_wizard: asset_server.load("textures/heros/male_wizard.png"),
-            male_lizard: asset_server.load("textures/heros/male_lizard.png"),
-            female_elf: asset_server.load("textures/heros/female_elf.png"),
-            female_knight: asset_server.load("textures/heros/female_knight.png"),
-            female_wizard: asset_server.load("textures/heros/female_wizard.png"),
-            female_lizard: asset_server.load("textures/heros/female_lizard.png"),
+        flag_materials: FlagMaterials {
+            vietnam: asset_server.load("scenes/vietnam.png"),
+            united_states: asset_server.load("scenes/united_states.png"),
         },
     };
 
+    // let ingame_materials: InGameMaterials = InGameMaterials {
+    //     heros_materials: HerosMaterials {
+    //         male_elf: asset_server.load("textures/heros/male_elf.png"),
+    //         male_knight: asset_server.load("textures/heros/male_knight.png"),
+    //         male_wizard: asset_server.load("textures/heros/male_wizard.png"),
+    //         male_lizard: asset_server.load("textures/heros/male_lizard.png"),
+    //         female_elf: asset_server.load("textures/heros/female_elf.png"),
+    //         female_knight: asset_server.load("textures/heros/female_knight.png"),
+    //         female_wizard: asset_server.load("textures/heros/female_wizard.png"),
+    //         female_lizard: asset_server.load("textures/heros/female_lizard.png"),
+    //     },
+    // };
+
     commands.insert_resource(materials);
     commands.insert_resource(scenes_materials);
-    commands.insert_resource(ingame_materials);
+    // commands.insert_resource(ingame_materials);
 }

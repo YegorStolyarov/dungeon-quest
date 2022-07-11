@@ -25,5 +25,11 @@
     "female": "Gái",
     "classic_mode": "Chế độ cổ điển",
     "survival_mode": "Chế độ sinh tồn"
+  },
+  "options_scene_text": {
+    "options": "Cài đặt",
+    "enable_music": "Bật nhạc nền",
+    "enable_sound": "Bật âm thanh",
+    "language": "Ngôn ngữ"
   }
 }
