@@ -12,6 +12,7 @@ pub struct Glossary {
     pub loading_scene_text: LoadingSceneText,
     pub highscore_scene_text: HighscoreSceneText,
     pub options_scene_text: OptionsSceneText,
+    pub help_scene_text: HelpSceneText,
     pub shared_text: SharedText,
 }
 
@@ -48,6 +49,18 @@ pub struct OptionsSceneText {
     pub enable_music: String,
     pub enable_sound: String,
     pub language: String,
+}
+
+#[derive(Component, Serialize, Deserialize, Debug, Clone)]
+pub struct HelpSceneText {
+    pub help: String,
+    pub move_up: String,
+    pub move_down: String,
+    pub move_left: String,
+    pub move_right: String,
+    pub use_skill: String,
+    pub attack: String,
+    pub aim: String,
 }
 
 #[derive(Component, Serialize, Deserialize, Debug, Clone)]

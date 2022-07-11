@@ -170,12 +170,12 @@ fn setup(
 
 fn cleanup(
     mut commands: Commands,
-    setting_scene_data: Res<OptionsSceneData>,
+    options_scene_data: Res<OptionsSceneData>,
     setting: Res<Setting>,
 ) {
     setting.store();
     commands
-        .entity(setting_scene_data.user_interface_root)
+        .entity(options_scene_data.user_interface_root)
         .despawn_recursive();
 }
 

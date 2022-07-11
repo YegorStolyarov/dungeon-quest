@@ -39,7 +39,7 @@ fn main() {
         .add_plugin(scenes::main_menu_scene::MainMenuScenePlugin)
         .add_plugin(scenes::highscore_scene::HighscoreScenePlugin)
         .add_plugin(scenes::options_scene::OptionsScenePlugin)
-        // .add_plugin(scenes::test_scene::TestScenePlugin)
+        .add_plugin(scenes::help_scene::HelpScenePlugin)
         .add_plugin(plugins::debug::DebugPlugin)
         .run();
 }

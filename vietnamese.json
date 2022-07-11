@@ -31,5 +31,15 @@
     "enable_music": "Bật nhạc nền",
     "enable_sound": "Bật âm thanh",
     "language": "Ngôn ngữ"
+  },
+  "help_scene_text": {
+    "help": "Trợ giúp",
+    "move_up": "Di chuyển lên",
+    "move_down": "Di chuyển xuống",
+    "move_left": "Di chuyển sang trái",
+    "move_right": "Di chuyển sang phải",
+    "use_skill": "Sử dụng kỹ năng",
+    "attack": "Tấn công",
+    "aim": "Nhắm"
   }
 }

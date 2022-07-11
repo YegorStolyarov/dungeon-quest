@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_kira_audio::{Audio, AudioChannel, AudioSource};
 
 use crate::resources::setting::Setting;
-use crate::scenes::{SceneController, SceneState};
+use crate::scenes::SceneState;
 
 pub struct BackgroundAudioChannel {
     background_music: Handle<AudioSource>,
@@ -16,7 +16,7 @@ pub fn background_audio_channel_setup(mut commands: Commands, asset_server: Res<
         background_music: asset_server.load("sounds/background_music.ogg"),
         channel: AudioChannel::new("background".to_owned()),
         loop_started: false,
-        volume: 0.5,
+        volume: 0.2,
     };
 
     commands.insert_resource(background_audio_channel);
