@@ -182,13 +182,10 @@ fn setup(
     let profiles: Vec<StoredProfile> = match File::open(HIGHSCORE_FILE) {
         Ok(mut file) => {
             let mut contents = String::new();
-            file.read_to_string(&mut contents).expect("Error read file");
+            file.read_to_string(&mut contents).unwrap();
             serde_json::from_str(&contents).expect("JSON was not well-formatted")
         }
-        Err(err) => {
-            dbg!(err);
-            panic!("Can't find highscores file");
-        }
+        Err(err) => panic!("Can't find highscores file: {}", err.to_string()),
     };
 
     // book

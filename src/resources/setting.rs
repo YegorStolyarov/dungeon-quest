@@ -49,31 +49,28 @@ impl Setting {
     pub fn store(&self) {
         let mut setting_file = File::create(SETTING_FILE).expect("Can't open setting file");
         let setting_str: String = serde_json::to_string(&self).unwrap();
-        dbg!(&setting_str);
         setting_file
             .write(setting_str.as_bytes())
             .expect("Unable to write file");
     }
 
     pub fn load_setting(&mut self) {
-        let setting: Setting;
-        match File::open(SETTING_FILE) {
+        let setting = match File::open(SETTING_FILE) {
             Ok(mut file) => {
                 let mut contents = String::new();
-                file.read_to_string(&mut contents).expect("Error read file");
-                setting = serde_json::from_str(&contents).expect("JSON was not well-formatted");
+                file.read_to_string(&mut contents).unwrap();
+                serde_json::from_str(&contents).expect("JSON was not well-formatted")
             }
-            Err(err) => {
-                dbg!(err);
+            Err(_err) => {
                 let mut setting_file =
                     File::create(SETTING_FILE).expect("Error create setting file");
-                setting = Setting::new(true, true);
-                let setting_str: String = serde_json::to_string(&setting).unwrap();
+                let setting_str = serde_json::to_string(&Setting::new(true, true)).unwrap();
                 setting_file
                     .write(setting_str.as_bytes())
                     .expect("Unable to write file");
+                Setting::new(true, true)
             }
-        }
+        };
         self.enable_sound = setting.enable_sound;
         self.enable_music = setting.enable_music;
         self.language = setting.language;
@@ -84,7 +81,6 @@ impl FromWorld for Setting {
     fn from_world(_world: &mut World) -> Self {
         let mut setting: Setting = Setting::new(false, false);
         setting.load_setting();
-        dbg!(&setting);
         setting
     }
 }

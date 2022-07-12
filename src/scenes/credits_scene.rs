@@ -128,7 +128,6 @@ fn credits_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMateria
                     size,
                     ..Default::default()
                 },
-
                 ..Default::default()
             });
         }
@@ -221,7 +220,11 @@ fn credits_text(root: &mut ChildBuilder, materials: &Materials, dictionary: &Dic
 
 fn texts(root: &mut ChildBuilder, materials: &Materials, dictionary: &Dictionary) {
     let font = materials.get_font(dictionary.get_current_language());
-    let file = File::open(CREDITS_FILE).expect("Can't find file");
+    let file = match File::open(CREDITS_FILE) {
+        Ok(file) => file,
+        Err(err) => panic!("Can't open credits file: {}", err.to_string()),
+    };
+
     let lines = io::BufReader::new(file).lines();
     let mut index = 0;
 

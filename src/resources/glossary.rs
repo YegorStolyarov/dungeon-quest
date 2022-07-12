@@ -81,16 +81,12 @@ impl Glossary {
         match File::open(file_name) {
             Ok(mut file) => {
                 let mut contents = String::new();
-                file.read_to_string(&mut contents).expect("Error read file");
+                file.read_to_string(&mut contents).unwrap();
                 let glossary =
                     serde_json::from_str(&contents).expect("JSON was not well-formatted");
-                dbg!(&glossary);
                 glossary
             }
-            Err(err) => {
-                dbg!(err);
-                panic!("Can't find language file");
-            }
+            Err(err) => panic!("Can't find language file: {}", err.to_string()),
         }
     }
 }
