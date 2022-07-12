@@ -182,7 +182,7 @@ fn button_handle_system(
                     ui_image.0 = scenes_materials.icon_materials.home_icon_clicked.clone();
                     state
                         .set(SceneState::MainMenuScene)
-                        .expect("Couldn't switch state to Main Menu Screen");
+                        .expect("Couldn't switch state to Main Menu Scene");
                 }
             },
         }

@@ -69,6 +69,7 @@ pub struct SharedText {
     pub female: String,
     pub classic_mode: String,
     pub survival_mode: String,
+    pub game_mode_select: String,
 }
 
 impl Glossary {

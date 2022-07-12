@@ -24,7 +24,8 @@
     "male": "Trai",
     "female": "Gái",
     "classic_mode": "Chế độ cổ điển",
-    "survival_mode": "Chế độ sinh tồn"
+    "survival_mode": "Chế độ sinh tồn",
+    "game_mode_select": "Chọn chế độ chơi"
   },
   "options_scene_text": {
     "options": "Cài đặt",

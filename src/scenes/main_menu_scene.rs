@@ -218,7 +218,7 @@ fn button_handle_system(
                 match button {
                     MainMenuSceneButton::Play => state
                         .set(SceneState::GameModeSelectScene)
-                        .expect("Couldn't switch state to Loading Screen"),
+                        .expect("Couldn't switch state to Loading Scene"),
                     MainMenuSceneButton::Highscore => state
                         .set(SceneState::HighscoreScene)
                         .expect("Couldn't switch state to Highscore Scene"),

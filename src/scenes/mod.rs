@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 pub mod credits_scene;
+pub mod game_mode_select_scene;
 pub mod help_scene;
 pub mod highscore_scene;
 pub mod loading_scene;

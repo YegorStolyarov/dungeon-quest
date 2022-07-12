@@ -24,7 +24,8 @@
     "male": "Male",
     "female": "Female",
     "classic_mode": "Classic Mode",
-    "survival_mode": "Survival Mode"
+    "survival_mode": "Survival Mode",
+    "game_mode_select": "Game Mode Select"
   },
   "options_scene_text": {
     "options": "Options",
