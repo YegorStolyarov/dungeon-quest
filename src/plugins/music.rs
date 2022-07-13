@@ -39,6 +39,14 @@ pub fn play_background_music(
                 background_audio_channel.background_music.clone(),
                 &background_audio_channel.channel,
             );
+        } else {
+            match *state.current() {
+                SceneState::InGameScene => {
+                    background_audio_channel.loop_started = false;
+                    audio.stop_channel(&background_audio_channel.channel);
+                }
+                _ => (),
+            }
         }
     } else {
         if background_audio_channel.loop_started {

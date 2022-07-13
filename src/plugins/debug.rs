@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy_inspector_egui::{RegisterInspectable, WorldInspectorPlugin};
+use bevy_inspector_egui::WorldInspectorPlugin;
 
 // use crate::plugins::gameplay::player::PlayerStats;
 
