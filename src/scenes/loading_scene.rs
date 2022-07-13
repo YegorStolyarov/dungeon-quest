@@ -6,7 +6,7 @@ use crate::scenes::SceneState;
 use crate::resources::dictionary::Dictionary;
 use crate::resources::language::Language;
 use crate::resources::materials::{
-    ingame::heros::HerosMaterials,
+    ingame::{heros::HerosMaterials, InGameMaterials},
     scenes::{FlagMaterials, IconMaterials, MenuBoxMaterials, ScenesMaterials},
     Materials,
 };
@@ -282,20 +282,20 @@ fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
         },
     };
 
-    // let ingame_materials: InGameMaterials = InGameMaterials {
-    //     heros_materials: HerosMaterials {
-    //         male_elf: asset_server.load("textures/heros/male_elf.png"),
-    //         male_knight: asset_server.load("textures/heros/male_knight.png"),
-    //         male_wizard: asset_server.load("textures/heros/male_wizard.png"),
-    //         male_lizard: asset_server.load("textures/heros/male_lizard.png"),
-    //         female_elf: asset_server.load("textures/heros/female_elf.png"),
-    //         female_knight: asset_server.load("textures/heros/female_knight.png"),
-    //         female_wizard: asset_server.load("textures/heros/female_wizard.png"),
-    //         female_lizard: asset_server.load("textures/heros/female_lizard.png"),
-    //     },
-    // };
+    let ingame_materials: InGameMaterials = InGameMaterials {
+        heros_materials: HerosMaterials {
+            male_elf: asset_server.load("ingame/heros/male_elf.png"),
+            male_knight: asset_server.load("ingame/heros/male_knight.png"),
+            male_wizard: asset_server.load("ingame/heros/male_wizard.png"),
+            male_lizard: asset_server.load("ingame/heros/male_lizard.png"),
+            female_elf: asset_server.load("ingame/heros/female_elf.png"),
+            female_knight: asset_server.load("ingame/heros/female_knight.png"),
+            female_wizard: asset_server.load("ingame/heros/female_wizard.png"),
+            female_lizard: asset_server.load("ingame/heros/female_lizard.png"),
+        },
+    };
 
     commands.insert_resource(materials);
     commands.insert_resource(scenes_materials);
-    // commands.insert_resource(ingame_materials);
+    commands.insert_resource(ingame_materials);
 }

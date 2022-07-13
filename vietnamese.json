@@ -25,7 +25,8 @@
     "female": "Gái",
     "classic_mode": "Chế độ cổ điển",
     "survival_mode": "Chế độ sinh tồn",
-    "game_mode_select": "Chọn chế độ chơi"
+    "select_game_mode": "Chọn chế độ chơi",
+    "select_hero": "Chọn nhân vật"
   },
   "options_scene_text": {
     "options": "Cài đặt",

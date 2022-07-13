@@ -74,7 +74,7 @@ fn setup(
         .spawn_bundle(root(&materials))
         .with_children(|parent| {
             menu_box(parent, &scenes_materials.menu_box_materials);
-            game_mode_select_text(parent, &materials, &dictionary);
+            select_game_mode_text(parent, &materials, &dictionary);
             buttons(parent, &scenes_materials, &materials, &dictionary);
         })
         .id();
@@ -149,7 +149,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     }
 }
 
-fn game_mode_select_text(root: &mut ChildBuilder, materials: &Materials, dictionary: &Dictionary) {
+fn select_game_mode_text(root: &mut ChildBuilder, materials: &Materials, dictionary: &Dictionary) {
     let font = materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
 
@@ -170,7 +170,7 @@ fn game_mode_select_text(root: &mut ChildBuilder, materials: &Materials, diction
             ..Default::default()
         },
         text: Text::with_section(
-            glossary.shared_text.game_mode_select.clone(),
+            glossary.shared_text.select_game_mode.clone(),
             TextStyle {
                 font: font.clone(),
                 font_size: 50.0,

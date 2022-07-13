@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::ingame::resources::game_mode::GameMode;
 use crate::ingame::resources::hero::{Gender, HeroClass};
+use crate::scenes::hero_select_scene::HeroSelectSceneButton;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Profile {
@@ -33,5 +34,42 @@ impl Profile {
 
     pub fn set_game_mode(&mut self, game_mode: GameMode) {
         self.game_mode = game_mode;
+    }
+
+    pub fn set_hero(&mut self, button: HeroSelectSceneButton) {
+        match button {
+            HeroSelectSceneButton::MaleElf => {
+                self.hero_class = HeroClass::Elf;
+                self.gender = Gender::Male;
+            }
+            HeroSelectSceneButton::FemaleElf => {
+                self.hero_class = HeroClass::Elf;
+                self.gender = Gender::Female;
+            }
+            HeroSelectSceneButton::MaleKnight => {
+                self.hero_class = HeroClass::Knight;
+                self.gender = Gender::Male;
+            }
+            HeroSelectSceneButton::FemaleKnight => {
+                self.hero_class = HeroClass::Knight;
+                self.gender = Gender::Female;
+            }
+            HeroSelectSceneButton::MaleLizard => {
+                self.hero_class = HeroClass::Lizard;
+                self.gender = Gender::Male;
+            }
+            HeroSelectSceneButton::FemaleLizard => {
+                self.hero_class = HeroClass::Lizard;
+                self.gender = Gender::Female;
+            }
+            HeroSelectSceneButton::MaleWizard => {
+                self.hero_class = HeroClass::Wizard;
+                self.gender = Gender::Male;
+            }
+            HeroSelectSceneButton::FemaleWizard => {
+                self.hero_class = HeroClass::Wizard;
+                self.gender = Gender::Female;
+            }
+        }
     }
 }

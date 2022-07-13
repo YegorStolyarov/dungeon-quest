@@ -25,7 +25,8 @@
     "female": "Female",
     "classic_mode": "Classic Mode",
     "survival_mode": "Survival Mode",
-    "game_mode_select": "Game Mode Select"
+    "select_game_mode": "Select Game Mode",
+    "select_hero": "Select Hero"
   },
   "options_scene_text": {
     "options": "Options",
