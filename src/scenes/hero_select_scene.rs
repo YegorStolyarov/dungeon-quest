@@ -1,11 +1,11 @@
 use bevy::prelude::*;
 use std::slice::Iter;
 
+use crate::ingame::materials::InGameMaterials;
 use crate::ingame::resources::gender::Gender;
 use crate::ingame::resources::hero_class::HeroClass;
 use crate::ingame::resources::profile::Profile;
 use crate::resources::dictionary::Dictionary;
-use crate::resources::materials::ingame::InGameMaterials;
 use crate::resources::materials::scenes::MenuBoxMaterials;
 use crate::resources::materials::scenes::ScenesMaterials;
 use crate::resources::materials::Materials;

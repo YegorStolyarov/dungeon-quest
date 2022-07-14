@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::resources::materials::ingame::heros::HerosMaterials;
+use crate::ingame::materials::heros::HerosMaterials;
 
 pub struct ScenesMaterials {
     pub menu_box_materials: MenuBoxMaterials,

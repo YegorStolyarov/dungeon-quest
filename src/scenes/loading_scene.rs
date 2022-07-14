@@ -3,11 +3,11 @@ use bevy::prelude::*;
 use crate::config::*;
 use crate::scenes::SceneState;
 
+use crate::ingame::materials::{heros::HerosMaterials, weapons::WeaponsMaterials, InGameMaterials};
 use crate::ingame::resources::data::Data;
 use crate::resources::dictionary::Dictionary;
 use crate::resources::language::Language;
 use crate::resources::materials::{
-    ingame::{heros::HerosMaterials, InGameMaterials},
     scenes::{FlagMaterials, IconMaterials, MenuBoxMaterials, ScenesMaterials},
     Materials,
 };
@@ -294,6 +294,20 @@ fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
             female_knight: asset_server.load("ingame/heros/female_knight.png"),
             female_wizard: asset_server.load("ingame/heros/female_wizard.png"),
             female_lizard: asset_server.load("ingame/heros/female_lizard.png"),
+        },
+        weapons_materials: WeaponsMaterials {
+            bow: asset_server.load("ingame/weapons/bow.png"),
+            arrow: asset_server.load("ingame/weapons/arrow.png"),
+            short_sword: asset_server.load("ingame/weapons/short_sword.png"),
+            sword: asset_server.load("ingame/weapons/sword.png"),
+            machete: asset_server.load("ingame/weapons/machete.png"),
+            small_hammer: asset_server.load("ingame/weapons/small_hammer.png"),
+            mace: asset_server.load("ingame/weapons/mace.png"),
+            big_hammer: asset_server.load("ingame/weapons/big_hammer.png"),
+            small_wand: asset_server.load("ingame/weapons/small_wand.png"),
+            magic_wand: asset_server.load("ingame/weapons/magic_wand.png"),
+            magic_sword: asset_server.load("ingame/weapons/magic_sword.png"),
+            spear: asset_server.load("ingame/weapons/spear.png"),
         },
     };
 

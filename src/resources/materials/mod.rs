@@ -2,7 +2,6 @@ use bevy::prelude::*;
 
 use crate::resources::language::Language;
 
-pub mod ingame;
 pub mod scenes;
 
 pub struct Materials {
