@@ -1,0 +1,310 @@
+{
+  "elf_base_stats": {
+    "power_bonus": "Strength",
+    "health_points": 3.0,
+    "speed": 15.0,
+    "strength": 2.0,
+    "intelligence": 0.0,
+    "critical_chance": 0.2,
+    "dodge_chance": 0.3,
+    "restore_chance": 0.0,
+    "weapon": "BowAndArrow",
+    "skill": "TimeToHunt"
+  },
+  "knight_base_stats": {
+    "power_bonus": "Strength",
+    "health_points": 4.0,
+    "speed": 15.0,
+    "strength": 2.0,
+    "intelligence": 0.0,
+    "critical_chance": 0.1,
+    "dodge_chance": 0.2,
+    "restore_chance": 0.0,
+    "weapon": "ShortSword",
+    "skill": "Armor"
+  },
+  "wizard_base_stats": {
+    "power_bonus": "Intelligence",
+    "health_points": 2.0,
+    "speed": 15.0,
+    "strength": 0.0,
+    "intelligence": 2.0,
+    "critical_chance": 0.3,
+    "dodge_chance": 0.05,
+    "restore_chance": 0.0,
+    "weapon": "SmallWand",
+    "skill": "Thunderstorm"
+  },
+  "lizard_base_stats": {
+    "power_bonus": "Strength",
+    "health_points": 5.0,
+    "speed": 15.0,
+    "strength": 2.0,
+    "intelligence": 0.0,
+    "critical_chance": 0.07,
+    "dodge_chance": 0.1,
+    "restore_chance": 0.0,
+    "weapon": "SmallHammer",
+    "skill": "AnimalInstinct"
+  },
+  "weapons": [
+    {
+      "name": "BowAndArrow",
+      "strength": 2.0,
+      "intelligence": 0.0,
+      "power_bonus": "Strength",
+      "effects": []
+    },
+    {
+      "name": "Spear",
+      "strength": 3.0,
+      "intelligence": 0.0,
+      "power_bonus": "Strength",
+      "effects": [
+        "SpeedUp"
+      ]
+    },
+    {
+      "name": "ShortSword",
+      "strength": 1.0,
+      "intelligence": 0.0,
+      "power_bonus": "Strength",
+      "effects": []
+    },
+    {
+      "name": "Sword",
+      "strength": 2.0,
+      "intelligence": 0.0,
+      "power_bonus": "Strength",
+      "effects": []
+    },
+    {
+      "name": "BigMachete",
+      "strength": 3.0,
+      "intelligence": 0.0,
+      "power_bonus": "Strength",
+      "effects": [
+        "ReduceDamage"
+      ]
+    },
+    {
+      "name": "SmallWand",
+      "strength": 0.0,
+      "intelligence": 1.0,
+      "power_bonus": "Intelligence",
+      "effects": []
+    },
+    {
+      "name": "MagicWand",
+      "strength": 0.0,
+      "intelligence": 2.0,
+      "power_bonus": "Intelligence",
+      "effects": []
+    },
+    {
+      "name": "MagicSword",
+      "strength": 0.0,
+      "intelligence": 3.0,
+      "power_bonus": "Intelligence",
+      "effects": []
+    },
+    {
+      "name": "SmallHammer",
+      "strength": 1.0,
+      "intelligence": 0.0,
+      "power_bonus": "Strength",
+      "effects": []
+    },
+    {
+      "name": "Mace",
+      "strength": 2.0,
+      "intelligence": 0.0,
+      "power_bonus": "Strength",
+      "effects": []
+    },
+    {
+      "name": "BigHammer",
+      "strength": 3.0,
+      "intelligence": 0.0,
+      "power_bonus": "Strength",
+      "effects": [
+        "Stun"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "name": "None",
+      "duration": 0.0,
+      "speed_bonus": 0.0,
+      "critical_chance_bonus": 0.0,
+      "dodge_chance_bonus": 0.0,
+      "restore_chance_bonus": 0.0,
+      "damage_bonus": 0.0,
+      "disarm_status": false,
+      "confuse_status": false,
+      "stun_status": false,
+      "target_status": true
+    },
+    {
+      "name": "SpeedUp",
+      "duration": 5.0,
+      "speed_bonus": 0.3,
+      "critical_chance_bonus": 0.0,
+      "dodge_chance_bonus": 0.0,
+      "restore_chance_bonus": 0.0,
+      "damage_bonus": 0.0,
+      "disarm_status": false,
+      "confuse_status": false,
+      "stun_status": false,
+      "target_status": true
+    },
+    {
+      "name": "QuickUp",
+      "duration": 5.0,
+      "speed_bonus": 0.0,
+      "critical_chance_bonus": 0.0,
+      "dodge_chance_bonus": 0.2,
+      "restore_chance_bonus": 0.0,
+      "damage_bonus": 0.0,
+      "disarm_status": false,
+      "confuse_status": false,
+      "stun_status": false,
+      "target_status": true
+    },
+    {
+      "name": "Focus",
+      "duration": 10.0,
+      "speed_bonus": 0.0,
+      "critical_chance_bonus": 0.5,
+      "dodge_chance_bonus": 0.0,
+      "restore_chance_bonus": 0.0,
+      "damage_bonus": 0.0,
+      "disarm_status": false,
+      "confuse_status": false,
+      "stun_status": false,
+      "target_status": true
+    },
+    {
+      "name": "Slow",
+      "duration": 5.0,
+      "speed_bonus": -0.3,
+      "critical_chance_bonus": 0.0,
+      "dodge_chance_bonus": 0.0,
+      "restore_chance_bonus": 0.0,
+      "damage_bonus": 0.0,
+      "disarm_status": false,
+      "confuse_status": false,
+      "stun_status": false,
+      "target_status": true
+    },
+    {
+      "name": "Disarm",
+      "duration": 0.0,
+      "speed_bonus": 0.0,
+      "critical_chance_bonus": 0.0,
+      "dodge_chance_bonus": 0.0,
+      "restore_chance_bonus": 0.0,
+      "damage_bonus": 0.0,
+      "disarm_status": true,
+      "confuse_status": false,
+      "stun_status": false,
+      "target_status": true
+    },
+    {
+      "name": "ReduceDamage",
+      "duration": 10.0,
+      "speed_bonus": 0.0,
+      "critical_chance_bonus": 0.0,
+      "dodge_chance_bonus": 0.0,
+      "restore_chance_bonus": 0.0,
+      "damage_bonus": -0.5,
+      "disarm_status": false,
+      "confuse_status": false,
+      "stun_status": false,
+      "target_status": true
+    },
+    {
+      "name": "Confuse",
+      "duration": 3.0,
+      "speed_bonus": 0.0,
+      "critical_chance_bonus": 0.0,
+      "dodge_chance_bonus": 0.0,
+      "restore_chance_bonus": 0.0,
+      "damage_bonus": 0.0,
+      "disarm_status": false,
+      "confuse_status": true,
+      "stun_status": false,
+      "target_status": true
+    },
+    {
+      "name": "Stun",
+      "duration": 0.0,
+      "speed_bonus": 0.0,
+      "critical_chance_bonus": 0.0,
+      "dodge_chance_bonus": 0.0,
+      "restore_chance_bonus": 0.0,
+      "damage_bonus": 0.0,
+      "disarm_status": false,
+      "confuse_status": false,
+      "stun_status": true,
+      "target_status": true
+    },
+    {
+      "name": "TimeToHunt",
+      "duration": 10.0,
+      "speed_bonus": 0.3,
+      "critical_chance_bonus": 0.5,
+      "dodge_chance_bonus": 0.0,
+      "restore_chance_bonus": 0.0,
+      "damage_bonus": 0.0,
+      "disarm_status": false,
+      "confuse_status": false,
+      "stun_status": false,
+      "target_status": false
+    },
+    {
+      "name": "AnimalInstinct",
+      "duration": 10.0,
+      "speed_bonus": 0.3,
+      "critical_chance_bonus": 0.3,
+      "dodge_chance_bonus": 0.3,
+      "restore_chance_bonus": 0.3,
+      "damage_bonus": 0.5,
+      "disarm_status": false,
+      "confuse_status": false,
+      "stun_status": false,
+      "target_status": true
+    }
+  ],  
+  "skills": [
+    {
+      "name": "TimeToHunt",
+      "cooldown": 30.0,
+      "required_monster": 0.0,
+      "required_health": 0.0,
+      "effect": "TimeToHunt"
+    },
+    {
+      "name": "Armor",
+      "cooldown": 0.0,
+      "required_monster": 10.0,
+      "required_health": 0.0,
+      "effect": "None"
+    },
+    {
+      "name": "Thunderstorm",
+      "cooldown": 30.0,
+      "required_monster": 0.0,
+      "required_health": 0.0,
+      "effect": "None"
+    },
+    {
+      "name": "AnimalInstinct",
+      "cooldown": 60.0,
+      "required_monster": 0.0,
+      "required_health": 2.0,
+      "effect": "AnimalInstinct"
+    }
+  ]
+}

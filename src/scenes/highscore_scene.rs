@@ -6,11 +6,9 @@ use std::io::prelude::*;
 use std::slice::Iter;
 
 use crate::config::HIGHSCORE_FILE;
-use crate::ingame::resources::{
-    game_mode::GameMode,
-    hero::{Gender, HeroClass},
-    stored_profile::StoredProfile,
-};
+use crate::ingame::resources::gender::Gender;
+use crate::ingame::resources::hero_class::HeroClass;
+use crate::ingame::resources::{game_mode::GameMode, stored_profile::StoredProfile};
 use crate::resources::dictionary::Dictionary;
 use crate::resources::language::Language;
 use crate::resources::materials::scenes::ScenesMaterials;

@@ -1,5 +1,14 @@
+pub mod base_stats;
+pub mod data;
+pub mod effect;
+pub mod effect_type;
 pub mod game_mode;
-pub mod hero;
+pub mod gender;
+pub mod hero_class;
+pub mod power_bonus;
 pub mod profile;
+pub mod skill;
+pub mod skill_type;
 pub mod stored_profile;
 pub mod weapon;
+pub mod weapon_type;

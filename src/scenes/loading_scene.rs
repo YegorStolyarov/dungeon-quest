@@ -3,6 +3,7 @@ use bevy::prelude::*;
 use crate::config::*;
 use crate::scenes::SceneState;
 
+use crate::ingame::resources::data::Data;
 use crate::resources::dictionary::Dictionary;
 use crate::resources::language::Language;
 use crate::resources::materials::{
@@ -34,7 +35,8 @@ impl Plugin for LoadingScenePlugin {
         app.add_system_set(
             SystemSet::on_enter(SceneState::LoadingScene)
                 .with_system(setup)
-                .with_system(load_materials),
+                .with_system(load_materials)
+                .with_system(load_data),
         );
         app.add_system_set(
             SystemSet::on_update(SceneState::LoadingScene).with_system(update_loader),
@@ -298,4 +300,9 @@ fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.insert_resource(materials);
     commands.insert_resource(scenes_materials);
     commands.insert_resource(ingame_materials);
+}
+
+fn load_data(mut commands: Commands) {
+    let data = Data::new();
+    commands.insert_resource(data);
 }

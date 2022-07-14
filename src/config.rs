@@ -18,3 +18,4 @@ pub const ENGLISH_LANGUAGE_FILE: &str = "english.json";
 pub const HIGHSCORE_FILE: &str = "highscores.json";
 pub const SETTING_FILE: &str = "setting.json";
 pub const CREDITS_FILE: &str = "credits.txt";
+pub const DATA_FILE: &str = "data.json";
