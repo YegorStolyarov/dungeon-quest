@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::slice::Iter;
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub enum HeroClass {
     Elf,
     Knight,

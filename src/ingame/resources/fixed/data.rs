@@ -3,20 +3,18 @@ use std::fs::File;
 use std::io::prelude::*;
 
 use crate::config::DATA_FILE;
-use crate::ingame::resources::base_stats::BaseStats;
-use crate::ingame::resources::effect::Effect;
-use crate::ingame::resources::skill::Skill;
-use crate::ingame::resources::weapon::Weapon;
+
+use crate::ingame::resources::fixed::effect::Effect;
+use crate::ingame::resources::fixed::hero::Hero;
+use crate::ingame::resources::fixed::skill::Skill;
+use crate::ingame::resources::fixed::weapon::Weapon;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Data {
-    elf_base_stats: BaseStats,
-    knight_base_stats: BaseStats,
-    wizard_base_stats: BaseStats,
-    lizard_base_stats: BaseStats,
-    weapons: [Weapon; 11],
-    effects: [Effect; 11],
-    skills: [Skill; 4],
+    pub heros: [Hero; 4],
+    pub weapons: [Weapon; 11],
+    pub effects: [Effect; 10],
+    pub skills: [Skill; 4],
 }
 
 impl Data {

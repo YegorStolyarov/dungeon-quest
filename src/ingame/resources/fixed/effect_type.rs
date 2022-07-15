@@ -1,14 +1,13 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum EffectType {
-    None,
     SpeedUp,
     QuickUp,
     Focus,
     Slow,
-    Disarm,
     ReduceDamage,
+    Disarm,
     Confuse,
     Stun,
     TimeToHunt,

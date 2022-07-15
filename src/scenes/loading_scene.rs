@@ -4,7 +4,7 @@ use crate::config::*;
 use crate::scenes::SceneState;
 
 use crate::ingame::materials::{heros::HerosMaterials, weapons::WeaponsMaterials, InGameMaterials};
-use crate::ingame::resources::data::Data;
+use crate::ingame::resources::fixed::data::Data;
 use crate::resources::dictionary::Dictionary;
 use crate::resources::language::Language;
 use crate::resources::materials::{
