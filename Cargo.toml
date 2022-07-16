@@ -20,6 +20,7 @@ serde_json = "1.0"
 bevy_kira_audio = { version = "0.9" }
 bevy-inspector-egui = "0.10"
 chrono = "0.4"
+rand = "0.8.5"
 
 
 

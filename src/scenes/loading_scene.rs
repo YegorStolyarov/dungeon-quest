@@ -4,6 +4,7 @@ use crate::config::*;
 use crate::scenes::SceneState;
 
 use crate::ingame::materials::{heros::HerosMaterials, weapons::WeaponsMaterials, InGameMaterials};
+use crate::ingame::resources::dungeon::rooms::Rooms;
 use crate::ingame::resources::fixed::data::Data;
 use crate::resources::dictionary::Dictionary;
 use crate::resources::language::Language;
@@ -317,6 +318,6 @@ fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
 }
 
 fn load_data(mut commands: Commands) {
-    let data = Data::new();
-    commands.insert_resource(data);
+    commands.insert_resource(Data::new());
+    Rooms::new();
 }

@@ -2,7 +2,6 @@ use bevy::prelude::*;
 use std::slice::Iter;
 
 use crate::ingame::materials::InGameMaterials;
-use crate::ingame::resources::fixed::data::Data;
 use crate::ingame::resources::fixed::gender::Gender;
 use crate::ingame::resources::fixed::hero_class::HeroClass;
 use crate::ingame::resources::profile::Profile;

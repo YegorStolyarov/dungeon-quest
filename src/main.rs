@@ -42,6 +42,7 @@ fn main() {
         .add_plugin(scenes::credits_scene::CreditsScenePlugin)
         .add_plugin(scenes::game_mode_select_scene::GameModeSelectScenePlugin)
         .add_plugin(scenes::hero_select_scene::HeroSelectScenePlugin)
+        .add_plugin(ingame::plugin::InGameScenePlugin)
         .add_plugin(plugins::debug::DebugPlugin)
         .run();
 }
