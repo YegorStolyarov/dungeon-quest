@@ -19,3 +19,6 @@ resources/results/heros/*
 
 resources/results/GUIs/*
 !resources/results/GUIs/note.txt
+
+resources/results/walls/*
+!resources/results/walls/note.txt
