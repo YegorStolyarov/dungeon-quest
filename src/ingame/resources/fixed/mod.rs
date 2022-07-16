@@ -1,3 +1,4 @@
+pub mod animation_state;
 pub mod data;
 pub mod effect;
 pub mod effect_bonus;

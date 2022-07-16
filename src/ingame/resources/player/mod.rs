@@ -1,3 +1,6 @@
+use bevy::prelude::*;
+
+use crate::ingame::resources::fixed::animation_state::AnimationState;
 use crate::ingame::resources::fixed::data::Data;
 use crate::ingame::resources::fixed::hero_class::HeroClass;
 use crate::ingame::resources::fixed::power::Power;
@@ -9,6 +12,7 @@ pub mod player_effect;
 
 use player_effect::PlayerEffect;
 
+#[derive(Component)]
 pub struct Player {
     class: HeroClass,
 
@@ -27,6 +31,9 @@ pub struct Player {
     skill: Skill,
 
     effects: Vec<PlayerEffect>,
+
+    pub animation_timer: Timer,
+    pub animation_state: AnimationState,
 }
 
 impl Player {
@@ -69,6 +76,8 @@ impl Player {
             weapon,
             skill,
             effects: Vec::new(),
+            animation_timer: Timer::from_seconds(0.1, true),
+            animation_state: AnimationState::Idle,
         }
     }
 }

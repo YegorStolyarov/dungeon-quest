@@ -4,6 +4,7 @@ use std::io::BufReader;
 
 use crate::ingame::resources::dungeon::position::Position;
 
+#[derive(Clone)]
 pub struct Floor {
     pub map: Vec<Vec<f32>>,
     pub total_rows: usize,

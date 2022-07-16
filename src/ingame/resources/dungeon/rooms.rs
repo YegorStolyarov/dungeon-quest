@@ -4,9 +4,9 @@ use std::io::{self, BufRead};
 use crate::config::LIST_ROOM_FILE;
 use crate::ingame::resources::dungeon::room::Room;
 
+#[derive(Clone)]
 pub struct Rooms {
     rooms: Vec<Room>,
-    total_rooms: usize,
 }
 
 impl Rooms {
@@ -18,7 +18,6 @@ impl Rooms {
 
         let buffered = io::BufReader::new(file);
         let lines: Vec<_> = buffered.lines().collect();
-        let total_rooms: usize = lines.len();
 
         let mut rooms: Vec<Room> = Vec::new();
 
@@ -27,6 +26,16 @@ impl Rooms {
             rooms.push(Room::new(file_name));
         }
 
-        Rooms { rooms, total_rooms }
+        Rooms { rooms }
+    }
+
+    pub fn get_room(&self, room_id: f32) -> Room {
+        let result = self
+            .rooms
+            .iter()
+            .find(|room| room.id == room_id.floor())
+            .expect(format!("Can't find room: {}", room_id).as_str());
+
+        result.clone()
     }
 }

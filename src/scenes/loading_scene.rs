@@ -3,7 +3,9 @@ use bevy::prelude::*;
 use crate::config::*;
 use crate::scenes::SceneState;
 
-use crate::ingame::materials::{heros::HerosMaterials, weapons::WeaponsMaterials, InGameMaterials};
+use crate::ingame::materials::{
+    dungeon::DungeonMaterials, heros::HerosMaterials, weapons::WeaponsMaterials, InGameMaterials,
+};
 use crate::ingame::resources::dungeon::rooms::Rooms;
 use crate::ingame::resources::fixed::data::Data;
 use crate::resources::dictionary::Dictionary;
@@ -310,6 +312,25 @@ fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
             magic_sword: asset_server.load("ingame/weapons/magic_sword.png"),
             spear: asset_server.load("ingame/weapons/spear.png"),
         },
+        dungeon_materials: DungeonMaterials {
+            floor: asset_server.load("ingame/dungeon/floor.png"),
+            wall: asset_server.load("ingame/dungeon/wall.png"),
+            wall_border_mid: asset_server.load("ingame/dungeon/wall_border_mid.png"),
+            wall_border_corner_top_left: asset_server
+                .load("ingame/dungeon/wall_border_corner_top_left.png"),
+            wall_border_corner_top_right: asset_server
+                .load("ingame/dungeon/wall_border_corner_top_right.png"),
+            wall_border_corner_bottom_left: asset_server
+                .load("ingame/dungeon/wall_border_corner_bottom_left.png"),
+            wall_border_corner_bottom_right: asset_server
+                .load("ingame/dungeon/wall_border_corner_bottom_right.png"),
+            wall_border_left: asset_server.load("ingame/dungeon/wall_border_left.png"),
+            wall_border_right: asset_server.load("ingame/dungeon/wall_border_right.png"),
+            wall_border_corner_left: asset_server
+                .load("ingame/dungeon/wall_border_corner_left.png"),
+            wall_border_corner_right: asset_server
+                .load("ingame/dungeon/wall_border_corner_right.png"),
+        },
     };
 
     commands.insert_resource(materials);
@@ -319,5 +340,5 @@ fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
 
 fn load_data(mut commands: Commands) {
     commands.insert_resource(Data::new());
-    Rooms::new();
+    commands.insert_resource(Rooms::new());
 }

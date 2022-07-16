@@ -21,7 +21,7 @@ impl Dungeon {
     pub fn new() -> Self {
         let file = match File::open(LIST_FLOOR_FILE) {
             Ok(file) => file,
-            Err(err) => panic!("Can't open list maps file: {}", err.to_string()),
+            Err(err) => panic!("Can't open list floor file: {}", err.to_string()),
         };
 
         let buffered = io::BufReader::new(file);

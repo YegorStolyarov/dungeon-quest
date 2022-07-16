@@ -4,9 +4,10 @@ use std::io::BufReader;
 
 const PREFIX: &str = "./assets/rooms/";
 
+#[derive(Clone)]
 pub struct Room {
-    id: f32,
-    tilemap: Vec<Vec<i32>>,
+    pub id: f32,
+    pub tilemap: Vec<Vec<i32>>,
 }
 
 impl Room {
@@ -18,7 +19,7 @@ impl Room {
         let path = format!("{}{}", PREFIX, file_name);
         let file = match File::open(path) {
             Ok(file) => file,
-            Err(err) => panic!("Can't open map file {}: {}", file_name, err.to_string()),
+            Err(err) => panic!("Can't open room file {}: {}", file_name, err.to_string()),
         };
 
         let reader = BufReader::new(file);
