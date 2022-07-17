@@ -88,7 +88,7 @@ pub fn draw_doors(
                                         ..Default::default()
                                     },
                                     transform: Transform {
-                                        translation: Vec3::new(x, y, 0.1),
+                                        translation: Vec3::new(x, y, 0.2),
                                         ..Default::default()
                                     },
                                     texture: image,
@@ -151,7 +151,8 @@ fn front_door(
     let left_door_part_x = -96.0;
     let right_door_part_x = 96.0;
 
-    let y = if *door == Door::Bottom { -225.0 } else { 225.0 };
+    let y = if *door == Door::Bottom { -224.0 } else { 224.0 };
+    let z = if *door == Door::Bottom { 0.2 } else { 0.1 };
 
     parent.spawn_bundle(SpriteBundle {
         sprite: Sprite {
@@ -159,7 +160,7 @@ fn front_door(
             ..Default::default()
         },
         transform: Transform {
-            translation: Vec3::new(left_door_part_x, y, 0.1),
+            translation: Vec3::new(left_door_part_x, y, z),
             ..Default::default()
         },
         texture: left_part,
@@ -172,7 +173,7 @@ fn front_door(
             ..Default::default()
         },
         transform: Transform {
-            translation: Vec3::new(right_door_part_x, y, 0.1),
+            translation: Vec3::new(right_door_part_x, y, z),
             ..Default::default()
         },
         texture: right_part,
@@ -186,7 +187,7 @@ fn front_door(
                 ..Default::default()
             },
             transform: Transform {
-                translation: Vec3::new(0.0, y, 0.1),
+                translation: Vec3::new(0.0, y, z),
                 ..Default::default()
             },
             texture: if is_room_cleared {

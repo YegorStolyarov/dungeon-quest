@@ -2,7 +2,9 @@ use bevy::prelude::*;
 
 use crate::config::*;
 use crate::ingame::materials::InGameMaterials;
+use crate::ingame::resources::dungeon::border_layer::BorderLayer;
 use crate::ingame::resources::dungeon::ladder::Ladder;
+use crate::ingame::resources::dungeon::layer::Layer;
 use crate::ingame::resources::dungeon::Dungeon;
 
 use crate::ingame::dungeon::{TILE_SIZE, TOTAL_TILE_HEIGHT, TOTAL_TILE_WIDTH};
@@ -49,24 +51,68 @@ pub fn draw_layer(mut commands: Commands, ingame_materials: Res<InGameMaterials>
                                     })
                                     .insert(Ladder);
                             } else {
-                                parent.spawn_bundle(SpriteBundle {
+                                if row_index == 1 || row_index == 8 {
+                                    parent
+                                        .spawn_bundle(SpriteBundle {
+                                            sprite: Sprite {
+                                                custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
+                                                ..Default::default()
+                                            },
+                                            transform: Transform {
+                                                translation: Vec3::new(x, y, 0.0),
+                                                ..Default::default()
+                                            },
+                                            texture: floor_image.clone(),
+                                            ..Default::default()
+                                        })
+                                        .insert(if row_index == 1 {
+                                            BorderLayer::Top
+                                        } else {
+                                            BorderLayer::Bottom
+                                        })
+                                        .insert(Name::new("BorderLayer"));
+                                } else {
+                                    parent.spawn_bundle(SpriteBundle {
+                                        sprite: Sprite {
+                                            custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
+                                            ..Default::default()
+                                        },
+                                        transform: Transform {
+                                            translation: Vec3::new(x, y, 0.0),
+                                            ..Default::default()
+                                        },
+                                        texture: floor_image,
+                                        ..Default::default()
+                                    });
+                                }
+                            }
+                        } else {
+                            parent
+                                .spawn_bundle(SpriteBundle {
                                     sprite: Sprite {
                                         custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
+                                        color: Color::NONE,
                                         ..Default::default()
                                     },
                                     transform: Transform {
                                         translation: Vec3::new(x, y, 0.0),
                                         ..Default::default()
                                     },
-                                    texture: floor_image,
                                     ..Default::default()
-                                });
-                            }
+                                })
+                                .insert(if column_index == 0 {
+                                    BorderLayer::Left
+                                } else {
+                                    BorderLayer::Right
+                                })
+                                .insert(Name::new("BorderLayer"));
                         }
                     }
                 }
             }
-        });
+        })
+        .insert(Name::new("Layer"))
+        .insert(Layer);
 }
 
 pub fn change_floor_to_ladder(

@@ -4,6 +4,7 @@ use crate::config::*;
 use crate::ingame::materials::InGameMaterials;
 use crate::ingame::resources::dungeon::position::Position;
 use crate::ingame::resources::dungeon::rooms::Rooms;
+use crate::ingame::resources::dungeon::wall::Wall;
 use crate::ingame::resources::dungeon::walls::Walls;
 use crate::ingame::resources::dungeon::Dungeon;
 use crate::ingame::resources::player::player_dungeon_stats::PlayerDungeonStats;
@@ -96,6 +97,7 @@ pub fn draw_walls(
                                     texture: image,
                                     ..Default::default()
                                 })
+                                .insert(Wall)
                                 .insert(Name::new("Wall"));
                         }
 
