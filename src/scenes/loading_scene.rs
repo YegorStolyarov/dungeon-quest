@@ -314,6 +314,7 @@ fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
         },
         dungeon_materials: DungeonMaterials {
             floor: asset_server.load("ingame/dungeon/floor.png"),
+            ladder: asset_server.load("ingame/dungeon/ladder.png"),
             wall: asset_server.load("ingame/dungeon/wall.png"),
             wall_border_mid: asset_server.load("ingame/dungeon/wall_border_mid.png"),
             wall_border_corner_top_left: asset_server
@@ -330,6 +331,13 @@ fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
                 .load("ingame/dungeon/wall_border_corner_left.png"),
             wall_border_corner_right: asset_server
                 .load("ingame/dungeon/wall_border_corner_right.png"),
+            wall_left: asset_server.load("ingame/dungeon/wall_left.png"),
+            wall_right: asset_server.load("ingame/dungeon/wall_right.png"),
+            door_opened: asset_server.load("ingame/dungeon/door_opened.png"),
+            door_closed: asset_server.load("ingame/dungeon/door_closed.png"),
+            door_top_part: asset_server.load("ingame/dungeon/door_top_part.png"),
+            door_left_part: asset_server.load("ingame/dungeon/door_left_part.png"),
+            door_right_part: asset_server.load("ingame/dungeon/door_right_part.png"),
         },
     };
 

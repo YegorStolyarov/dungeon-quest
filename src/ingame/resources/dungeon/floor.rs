@@ -66,12 +66,15 @@ impl Floor {
         let total_rows = map.len();
         let total_columns = map[0].len();
 
+        let mut cleared_positions = Vec::new();
+        cleared_positions.push(start_room_position);
+
         Floor {
             map,
             start_room_position,
             end_room_position,
             current_position: start_room_position,
-            cleared_positions: Vec::new(),
+            cleared_positions,
             total_rows,
             total_columns,
         }

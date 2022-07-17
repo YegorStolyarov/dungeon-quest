@@ -2,10 +2,14 @@ use rand::distributions::{Distribution, Uniform};
 use std::fs::File;
 use std::io::{self, BufRead};
 
+pub mod door;
+pub mod doors;
 pub mod floor;
+pub mod ladder;
 pub mod position;
 pub mod room;
 pub mod rooms;
+pub mod walls;
 
 use crate::config::LIST_FLOOR_FILE;
 use floor::Floor;
@@ -14,7 +18,7 @@ const TOTAL_DUNGEON_FLOORS: usize = 4;
 
 pub struct Dungeon {
     pub floors: Vec<Floor>,
-    pub current_floor: usize,
+    pub current_floor: Floor,
 }
 
 impl Dungeon {
@@ -53,9 +57,11 @@ impl Dungeon {
             }
         }
 
+        let current_floor = floors[0].clone();
+
         Dungeon {
             floors,
-            current_floor: 0,
+            current_floor,
         }
     }
 }

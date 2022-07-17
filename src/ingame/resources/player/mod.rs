@@ -8,6 +8,7 @@ use crate::ingame::resources::fixed::skill::Skill;
 use crate::ingame::resources::fixed::stats::Stats;
 use crate::ingame::resources::fixed::weapon::Weapon;
 
+pub mod player_dungeon_stats;
 pub mod player_effect;
 
 use player_effect::PlayerEffect;
@@ -18,7 +19,7 @@ pub struct Player {
 
     current_health_points: f32,
     max_health_points: f32,
-    speed: f32,
+    pub speed: f32,
     strength: f32,
     intelligence: f32,
     critical_chance: f32,
