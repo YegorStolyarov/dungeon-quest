@@ -1,4 +1,10 @@
 use bevy::prelude::*;
 
-#[derive(Component)]
-pub struct Layer;
+#[derive(Component, PartialEq, Eq)]
+pub enum Layer {
+    None,
+    BorderLeft,
+    BorderRight,
+    BorderBottom,
+    BorderTop,
+}

@@ -2,12 +2,15 @@ use bevy::prelude::*;
 
 use crate::config::*;
 use crate::ingame::materials::InGameMaterials;
-use crate::ingame::resources::dungeon::border_layer::BorderLayer;
+use crate::ingame::resources::dungeon::ground::Ground;
 use crate::ingame::resources::dungeon::ladder::Ladder;
 use crate::ingame::resources::dungeon::layer::Layer;
 use crate::ingame::resources::dungeon::Dungeon;
 
 use crate::ingame::dungeon::{TILE_SIZE, TOTAL_TILE_HEIGHT, TOTAL_TILE_WIDTH};
+
+const START_Y: f32 = 0.0 + WINDOW_HEIGHT / 2.0 - TILE_SIZE / 2.0;
+const START_X: f32 = 0.0 - WINDOW_HEIGHT * RESOLUTION / 2.0 + TILE_SIZE / 2.0;
 
 pub fn draw_layer(mut commands: Commands, ingame_materials: Res<InGameMaterials>) {
     commands
@@ -20,99 +23,127 @@ pub fn draw_layer(mut commands: Commands, ingame_materials: Res<InGameMaterials>
             ..Default::default()
         })
         .with_children(|parent| {
-            let start_y = 0.0 + WINDOW_HEIGHT / 2.0 - TILE_SIZE / 2.0;
-            let start_x = 0.0 - WINDOW_HEIGHT * RESOLUTION / 2.0 + TILE_SIZE / 2.0;
-
             let center_row = TOTAL_TILE_HEIGHT / 2;
             let center_column = TOTAL_TILE_WIDTH / 2;
 
             for row_index in 0..TOTAL_TILE_HEIGHT {
                 for column_index in 0..TOTAL_TILE_WIDTH {
-                    let x = start_x + column_index as f32 * TILE_SIZE;
-                    let y = start_y - row_index as f32 * TILE_SIZE;
-
                     let floor_image = ingame_materials.dungeon_materials.floor.clone();
 
                     if row_index >= 1 {
                         if column_index > 0 && column_index < 15 {
                             if row_index == center_row && column_index == center_column {
-                                parent
-                                    .spawn_bundle(SpriteBundle {
-                                        sprite: Sprite {
-                                            custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
-                                            ..Default::default()
-                                        },
-                                        transform: Transform {
-                                            translation: Vec3::new(x, y, 0.0),
-                                            ..Default::default()
-                                        },
-                                        texture: floor_image,
-                                        ..Default::default()
-                                    })
-                                    .insert(Ladder);
+                                ladder(parent, row_index, column_index, floor_image.clone());
                             } else {
-                                if row_index == 1 || row_index == 8 {
-                                    parent
-                                        .spawn_bundle(SpriteBundle {
-                                            sprite: Sprite {
-                                                custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
-                                                ..Default::default()
-                                            },
-                                            transform: Transform {
-                                                translation: Vec3::new(x, y, 0.0),
-                                                ..Default::default()
-                                            },
-                                            texture: floor_image.clone(),
-                                            ..Default::default()
-                                        })
-                                        .insert(if row_index == 1 {
-                                            BorderLayer::Top
-                                        } else {
-                                            BorderLayer::Bottom
-                                        })
-                                        .insert(Name::new("BorderLayer"));
-                                } else {
-                                    parent.spawn_bundle(SpriteBundle {
-                                        sprite: Sprite {
-                                            custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
-                                            ..Default::default()
-                                        },
-                                        transform: Transform {
-                                            translation: Vec3::new(x, y, 0.0),
-                                            ..Default::default()
-                                        },
-                                        texture: floor_image,
-                                        ..Default::default()
-                                    });
-                                }
+                                block_layer(
+                                    parent,
+                                    row_index,
+                                    column_index,
+                                    Some(floor_image.clone()),
+                                );
                             }
                         } else {
-                            parent
-                                .spawn_bundle(SpriteBundle {
-                                    sprite: Sprite {
-                                        custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
-                                        color: Color::NONE,
-                                        ..Default::default()
-                                    },
-                                    transform: Transform {
-                                        translation: Vec3::new(x, y, 0.0),
-                                        ..Default::default()
-                                    },
-                                    ..Default::default()
-                                })
-                                .insert(if column_index == 0 {
-                                    BorderLayer::Left
-                                } else {
-                                    BorderLayer::Right
-                                })
-                                .insert(Name::new("BorderLayer"));
+                            block_layer(parent, row_index, column_index, None);
                         }
                     }
                 }
             }
         })
-        .insert(Name::new("Layer"))
-        .insert(Layer);
+        .insert(Name::new("Ground"))
+        .insert(Ground);
+}
+
+fn block_layer(
+    parent: &mut ChildBuilder,
+    row_index: usize,
+    column_index: usize,
+    floor_image: Option<Handle<Image>>,
+) {
+    let layer = if row_index == 1 {
+        Layer::BorderTop
+    } else if row_index == 8 {
+        Layer::BorderBottom
+    } else if column_index == 0 {
+        Layer::BorderLeft
+    } else if column_index == 15 {
+        Layer::BorderRight
+    } else {
+        Layer::None
+    };
+
+    let x = START_X + column_index as f32 * TILE_SIZE;
+    let y = START_Y - row_index as f32 * TILE_SIZE;
+
+    let component_name = if layer == Layer::None {
+        "Layer"
+    } else {
+        "BorderLayer"
+    };
+
+    match floor_image {
+        None => {
+            parent
+                .spawn_bundle(SpriteBundle {
+                    sprite: Sprite {
+                        custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
+                        color: Color::NONE,
+                        ..Default::default()
+                    },
+                    transform: Transform {
+                        translation: Vec3::new(x, y, 0.0),
+                        ..Default::default()
+                    },
+                    ..Default::default()
+                })
+                .insert(layer)
+                .insert(Name::new(component_name));
+        }
+        _ => {
+            parent
+                .spawn_bundle(SpriteBundle {
+                    sprite: Sprite {
+                        custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
+                        ..Default::default()
+                    },
+                    transform: Transform {
+                        translation: Vec3::new(x, y, 0.0),
+                        ..Default::default()
+                    },
+                    texture: floor_image.unwrap(),
+                    ..Default::default()
+                })
+                .insert(layer)
+                .insert(Name::new(component_name));
+        }
+    }
+}
+
+fn ladder(
+    parent: &mut ChildBuilder,
+    row_index: usize,
+    column_index: usize,
+    floor_image: Handle<Image>,
+) {
+    parent
+        .spawn_bundle(SpriteBundle {
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
+                ..Default::default()
+            },
+            transform: Transform {
+                translation: Vec3::new(
+                    START_X + column_index as f32 * TILE_SIZE,
+                    START_Y - row_index as f32 * TILE_SIZE,
+                    0.0,
+                ),
+                ..Default::default()
+            },
+            texture: floor_image,
+            ..Default::default()
+        })
+        .insert(Layer::None)
+        .insert(Name::new("Ladder"))
+        .insert(Ladder);
 }
 
 pub fn change_floor_to_ladder(

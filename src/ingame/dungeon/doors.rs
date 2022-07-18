@@ -76,9 +76,17 @@ pub fn draw_doors(
                             // is blocked only when not having a next room and current room isn't cleared
 
                             let is_blocked = if *door == Door::Right {
-                                !has_right_room && is_room_cleared
+                                if has_right_room {
+                                    !is_room_cleared
+                                } else {
+                                    true
+                                }
                             } else {
-                                !has_left_room && is_room_cleared
+                                if has_left_room {
+                                    !is_room_cleared
+                                } else {
+                                    true
+                                }
                             };
 
                             parent

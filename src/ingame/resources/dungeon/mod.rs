@@ -2,13 +2,12 @@ use rand::distributions::{Distribution, Uniform};
 use std::fs::File;
 use std::io::{self, BufRead};
 
-pub mod border_layer;
 pub mod door;
 pub mod doors;
 pub mod floor;
+pub mod ground;
 pub mod ladder;
 pub mod layer;
-pub mod layer_block;
 pub mod position;
 pub mod room;
 pub mod rooms;

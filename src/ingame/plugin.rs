@@ -16,7 +16,6 @@ impl Plugin for InGameScenePlugin {
         app.add_system_set(
             SystemSet::on_enter(SceneState::InGameScene)
                 .with_system(initiate_dungeon)
-                .with_system(initiate_player)
                 .with_system(draw_layer),
         );
         app.add_system_set(

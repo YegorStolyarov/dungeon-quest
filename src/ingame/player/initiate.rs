@@ -45,5 +45,6 @@ pub fn initiate_player(
             },
             ..Default::default()
         })
-        .insert(player);
+        .insert(player)
+        .insert(Name::new("Player"));
 }

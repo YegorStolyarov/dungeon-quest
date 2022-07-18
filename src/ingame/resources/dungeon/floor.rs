@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
@@ -12,7 +13,7 @@ pub struct Floor {
     pub current_position: Position,
     pub end_room_position: Position,
     pub start_room_position: Position,
-    pub cleared_positions: Vec<Position>,
+    pub cleared_positions: HashMap<Position, usize>,
 }
 
 const PREFIX: &str = "./assets/floors/";
@@ -66,8 +67,8 @@ impl Floor {
         let total_rows = map.len();
         let total_columns = map[0].len();
 
-        let mut cleared_positions = Vec::new();
-        cleared_positions.push(start_room_position);
+        let mut cleared_positions = HashMap::new();
+        cleared_positions.insert(start_room_position, 0);
 
         Floor {
             map,
