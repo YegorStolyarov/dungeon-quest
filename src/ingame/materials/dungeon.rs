@@ -5,6 +5,7 @@ pub struct DungeonMaterials {
     pub floor: Handle<Image>,
     pub ladder: Handle<Image>,
     pub wall: Handle<Image>,
+    pub treasure: Handle<Image>,
     pub wall_border_mid: Handle<Image>,
     pub wall_border_corner_bottom_left: Handle<Image>,
     pub wall_border_corner_bottom_right: Handle<Image>,

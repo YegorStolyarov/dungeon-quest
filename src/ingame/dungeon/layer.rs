@@ -12,7 +12,7 @@ use crate::ingame::dungeon::{TILE_SIZE, TOTAL_TILE_HEIGHT, TOTAL_TILE_WIDTH};
 const START_Y: f32 = 0.0 + WINDOW_HEIGHT / 2.0 - TILE_SIZE / 2.0;
 const START_X: f32 = 0.0 - WINDOW_HEIGHT * RESOLUTION / 2.0 + TILE_SIZE / 2.0;
 
-pub fn draw_layer(mut commands: Commands, ingame_materials: Res<InGameMaterials>) {
+pub fn layer(mut commands: Commands, ingame_materials: Res<InGameMaterials>) {
     commands
         .spawn_bundle(SpriteBundle {
             sprite: Sprite {
@@ -156,7 +156,13 @@ pub fn change_floor_to_ladder(
         let end_room_position = dungeon.current_floor.end_room_position;
 
         if end_room_position == current_position {
-            *handle_image = ingame_materials.dungeon_materials.ladder.clone();
+            if dungeon.current_floor.is_last_floor {
+                *handle_image = ingame_materials.dungeon_materials.floor.clone();
+            } else {
+                *handle_image = ingame_materials.dungeon_materials.ladder.clone();
+            }
+        } else {
+            *handle_image = ingame_materials.dungeon_materials.floor.clone();
         }
     }
 }

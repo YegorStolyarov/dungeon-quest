@@ -316,6 +316,7 @@ fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
             floor: asset_server.load("ingame/dungeon/floor.png"),
             ladder: asset_server.load("ingame/dungeon/ladder.png"),
             wall: asset_server.load("ingame/dungeon/wall.png"),
+            treasure: asset_server.load("ingame/dungeon/treasure.png"),
             wall_border_mid: asset_server.load("ingame/dungeon/wall_border_mid.png"),
             wall_border_corner_top_left: asset_server
                 .load("ingame/dungeon/wall_border_corner_top_left.png"),

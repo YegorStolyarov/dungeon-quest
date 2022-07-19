@@ -12,7 +12,7 @@ const TILE_SIZE: f32 = 64.0;
 
 pub fn input_handle_system(
     mut player_query: Query<(&mut Player, &mut Transform, &TextureAtlasSprite)>,
-    mut wall_query: Query<(&Layer, &Transform), Without<Player>>,
+    mut layer_block_query: Query<(&Layer, &Transform), Without<Player>>,
     mut player_dungeon_stats: ResMut<PlayerDungeonStats>,
     keyboard_input: Res<Input<KeyCode>>,
     mut dungeon: ResMut<Dungeon>,
@@ -29,10 +29,10 @@ pub fn input_handle_system(
 
     player_stats.animation_state = AnimationState::Idle;
 
-    for (layer_block_type, layer_block_transform) in wall_query.iter_mut() {
+    for (layer_block_type, layer_block_transform) in layer_block_query.iter_mut() {
         let layer_block_size = match *layer_block_type {
             Layer::BorderTop => Vec2::new(64.0, -64.0),
-            Layer::BorderBottom => Vec2::new(TILE_SIZE, 100.0),
+            Layer::BorderBottom => Vec2::new(TILE_SIZE, 103.0),
             Layer::BorderRight => Vec2::new(TILE_SIZE, TILE_SIZE),
             Layer::BorderLeft => Vec2::new(TILE_SIZE, TILE_SIZE),
             Layer::None => Vec2::new(0.0, 0.0),

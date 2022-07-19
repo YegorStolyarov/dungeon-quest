@@ -14,12 +14,13 @@ pub struct Floor {
     pub end_room_position: Position,
     pub start_room_position: Position,
     pub cleared_positions: HashMap<Position, usize>,
+    pub is_last_floor: bool,
 }
 
 const PREFIX: &str = "./assets/floors/";
 
 impl Floor {
-    pub fn new(file_name: String) -> Floor {
+    pub fn new(file_name: String, is_last_floor: bool) -> Floor {
         let path = format!("{}{}", PREFIX, file_name);
         let file = match File::open(path) {
             Ok(file) => file,
@@ -78,6 +79,7 @@ impl Floor {
             cleared_positions,
             total_rows,
             total_columns,
+            is_last_floor,
         }
     }
 }

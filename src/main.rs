@@ -44,6 +44,7 @@ fn main() {
         .add_plugin(scenes::hero_select_scene::HeroSelectScenePlugin)
         .add_plugin(ingame::plugin::InGameScenePlugin)
         .add_plugin(ingame::player::PlayerPlugin)
+        .add_plugin(ingame::dungeon::DungeonPlugin)
         .add_plugin(plugins::debug::DebugPlugin)
         .run();
 }

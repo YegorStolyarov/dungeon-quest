@@ -11,6 +11,7 @@ pub mod layer;
 pub mod position;
 pub mod room;
 pub mod rooms;
+pub mod treasure;
 pub mod wall;
 pub mod walls;
 
@@ -53,10 +54,17 @@ impl Dungeon {
             }
         }
 
+        let mut floor_index = 0;
+
         for (index, line) in lines.into_iter().enumerate() {
             if floors_indexes.contains(&index) {
                 let map_name = line.unwrap();
-                floors.push(Floor::new(map_name));
+                if floor_index == TOTAL_DUNGEON_FLOORS - 1 {
+                    floors.push(Floor::new(map_name, true));
+                } else {
+                    floors.push(Floor::new(map_name, false));
+                }
+                floor_index += 1;
             }
         }
 
