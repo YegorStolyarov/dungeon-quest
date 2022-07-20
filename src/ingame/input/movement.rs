@@ -1,16 +1,14 @@
 use bevy::prelude::*;
+use bevy::sprite::collide_aabb::collide;
 
+use crate::config::*;
 use crate::ingame::resources::dungeon::layer::Layer;
 use crate::ingame::resources::dungeon::Dungeon;
 use crate::ingame::resources::fixed::animation_state::AnimationState;
 use crate::ingame::resources::player::player_dungeon_stats::PlayerDungeonStats;
 use crate::ingame::resources::player::Player;
 
-use bevy::sprite::collide_aabb::collide;
-
-const TILE_SIZE: f32 = 64.0;
-
-pub fn input_handle_system(
+pub fn player_movement_handle_system(
     mut player_query: Query<(&mut Player, &mut Transform, &TextureAtlasSprite)>,
     mut layer_block_query: Query<(&Layer, &Transform), Without<Player>>,
     mut player_dungeon_stats: ResMut<PlayerDungeonStats>,

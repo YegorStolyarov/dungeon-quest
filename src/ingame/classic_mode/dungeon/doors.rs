@@ -8,9 +8,7 @@ use crate::ingame::resources::dungeon::position::Position;
 use crate::ingame::resources::dungeon::Dungeon;
 use crate::ingame::resources::player::player_dungeon_stats::PlayerDungeonStats;
 
-use crate::ingame::dungeon::TILE_SIZE;
-
-pub fn draw_doors(
+pub fn doors(
     mut commands: Commands,
     dungeon: Res<Dungeon>,
     player_dungeon_stats: Res<PlayerDungeonStats>,

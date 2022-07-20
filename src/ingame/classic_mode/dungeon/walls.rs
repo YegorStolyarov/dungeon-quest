@@ -9,9 +9,7 @@ use crate::ingame::resources::dungeon::walls::Walls;
 use crate::ingame::resources::dungeon::Dungeon;
 use crate::ingame::resources::player::player_dungeon_stats::PlayerDungeonStats;
 
-use crate::ingame::dungeon::TILE_SIZE;
-
-pub fn draw_walls(
+pub fn walls(
     mut commands: Commands,
     dungeon: Res<Dungeon>,
     rooms: Res<Rooms>,

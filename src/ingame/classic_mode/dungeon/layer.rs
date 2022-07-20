@@ -7,8 +7,6 @@ use crate::ingame::resources::dungeon::ladder::Ladder;
 use crate::ingame::resources::dungeon::layer::Layer;
 use crate::ingame::resources::dungeon::Dungeon;
 
-use crate::ingame::dungeon::{TILE_SIZE, TOTAL_TILE_HEIGHT, TOTAL_TILE_WIDTH};
-
 const START_Y: f32 = 0.0 + WINDOW_HEIGHT / 2.0 - TILE_SIZE / 2.0;
 const START_X: f32 = 0.0 - WINDOW_HEIGHT * RESOLUTION / 2.0 + TILE_SIZE / 2.0;
 

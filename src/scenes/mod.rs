@@ -17,7 +17,7 @@ pub enum SceneState {
     CreditsScene,
     GameModeSelectScene,
     HeroSelectScene,
-    InGameScene,
+    InGameClassicModeScene,
     LuckySpinScene,
     RandomRewardScene,
     ResultScene,

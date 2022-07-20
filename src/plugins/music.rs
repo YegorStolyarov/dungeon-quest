@@ -41,7 +41,7 @@ pub fn play_background_music(
             );
         } else {
             match *state.current() {
-                SceneState::InGameScene => {
+                SceneState::InGameClassicModeScene => {
                     background_audio_channel.loop_started = false;
                     audio.stop_channel(&background_audio_channel.channel);
                 }
