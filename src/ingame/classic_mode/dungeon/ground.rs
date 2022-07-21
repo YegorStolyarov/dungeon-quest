@@ -10,7 +10,7 @@ use crate::ingame::resources::dungeon::Dungeon;
 const START_Y: f32 = 0.0 + WINDOW_HEIGHT / 2.0 - TILE_SIZE / 2.0;
 const START_X: f32 = 0.0 - WINDOW_HEIGHT * RESOLUTION / 2.0 + TILE_SIZE / 2.0;
 
-pub fn layer(mut commands: Commands, ingame_materials: Res<InGameMaterials>) {
+pub fn ground(mut commands: Commands, ingame_materials: Res<InGameMaterials>) {
     commands
         .spawn_bundle(SpriteBundle {
             sprite: Sprite {
@@ -27,21 +27,15 @@ pub fn layer(mut commands: Commands, ingame_materials: Res<InGameMaterials>) {
             for row_index in 0..TOTAL_TILE_HEIGHT {
                 for column_index in 0..TOTAL_TILE_WIDTH {
                     let floor_image = ingame_materials.dungeon_materials.floor.clone();
-
                     if row_index >= 1 {
                         if column_index > 0 && column_index < 15 {
                             if row_index == center_row && column_index == center_column {
                                 ladder(parent, row_index, column_index, floor_image.clone());
                             } else {
-                                block_layer(
-                                    parent,
-                                    row_index,
-                                    column_index,
-                                    Some(floor_image.clone()),
-                                );
+                                layer(parent, row_index, column_index, Some(floor_image.clone()));
                             }
                         } else {
-                            block_layer(parent, row_index, column_index, None);
+                            layer(parent, row_index, column_index, None);
                         }
                     }
                 }
@@ -51,7 +45,7 @@ pub fn layer(mut commands: Commands, ingame_materials: Res<InGameMaterials>) {
         .insert(Ground);
 }
 
-fn block_layer(
+fn layer(
     parent: &mut ChildBuilder,
     row_index: usize,
     column_index: usize,
@@ -144,7 +138,7 @@ fn ladder(
         .insert(Ladder);
 }
 
-pub fn change_floor_to_ladder(
+pub fn ladder_system(
     mut query: Query<(&Ladder, &mut Handle<Image>)>,
     ingame_materials: Res<InGameMaterials>,
     dungeon: Res<Dungeon>,

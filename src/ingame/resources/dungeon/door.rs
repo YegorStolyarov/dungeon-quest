@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_inspector_egui::Inspectable;
 use std::slice::Iter;
 
-#[derive(PartialEq, Eq, Component, Clone, Inspectable)]
+#[derive(PartialEq, Eq, Component, Clone, Inspectable, Debug)]
 pub enum Door {
     Left,
     Right,
@@ -16,3 +16,12 @@ impl Door {
         DOORS.iter()
     }
 }
+
+#[derive(PartialEq, Eq, Component, Clone, Debug)]
+pub enum VerticaltDoor {
+    Top,
+    Bottom,
+}
+
+#[derive(PartialEq, Eq, Component, Clone)]
+pub struct HorizontalDoor;

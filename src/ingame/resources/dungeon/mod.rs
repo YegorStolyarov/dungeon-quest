@@ -13,6 +13,7 @@ pub mod room;
 pub mod rooms;
 pub mod treasure;
 pub mod wall;
+pub mod wall_type;
 pub mod walls;
 
 use crate::config::LIST_FLOOR_FILE;

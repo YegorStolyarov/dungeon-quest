@@ -9,7 +9,7 @@ use crate::resources::materials::Materials;
 use crate::scenes::SceneState;
 
 const RETURN_BUTTON_SIDE: f32 = 50.0;
-const OPTIONS_MENU_BOX_TILE_SIZE: f32 = 60.0;
+const MENU_BOX_TILE_SIZE: f32 = 60.0;
 
 const HELP_BOX_WIDTH_TILES: f32 = 9.0;
 const HELP_BOX_HEIGHT_TILES: f32 = 8.0;
@@ -87,20 +87,19 @@ fn root(materials: &Materials) -> NodeBundle {
 
 fn help_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     let size: Size<Val> = Size {
-        width: Val::Px(OPTIONS_MENU_BOX_TILE_SIZE),
-        height: Val::Px(OPTIONS_MENU_BOX_TILE_SIZE),
+        width: Val::Px(MENU_BOX_TILE_SIZE),
+        height: Val::Px(MENU_BOX_TILE_SIZE),
     };
 
-    let start_left =
-        (WINDOW_HEIGHT * RESOLUTION - OPTIONS_MENU_BOX_TILE_SIZE * HELP_BOX_WIDTH_TILES) / 2.0;
+    let start_left = (WINDOW_HEIGHT * RESOLUTION - MENU_BOX_TILE_SIZE * HELP_BOX_WIDTH_TILES) / 2.0;
 
-    let start_top = (WINDOW_HEIGHT - OPTIONS_MENU_BOX_TILE_SIZE * HELP_BOX_HEIGHT_TILES) / 2.0;
+    let start_top = (WINDOW_HEIGHT - MENU_BOX_TILE_SIZE * HELP_BOX_HEIGHT_TILES) / 2.0;
 
     for (row_index, row) in HELP_BOX_ARRAY.iter().enumerate() {
         for (column_index, value) in row.iter().enumerate() {
             let position: Rect<Val> = Rect {
-                left: Val::Px(start_left + OPTIONS_MENU_BOX_TILE_SIZE * column_index as f32),
-                top: Val::Px(start_top + OPTIONS_MENU_BOX_TILE_SIZE * row_index as f32),
+                left: Val::Px(start_left + MENU_BOX_TILE_SIZE * column_index as f32),
+                top: Val::Px(start_top + MENU_BOX_TILE_SIZE * row_index as f32),
                 bottom: Val::Auto,
                 right: Val::Auto,
             };

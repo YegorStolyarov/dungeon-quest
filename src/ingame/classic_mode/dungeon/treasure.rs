@@ -34,7 +34,7 @@ pub fn treasure(mut commands: Commands, ingame_materials: Res<InGameMaterials>) 
         .insert(Name::new("Treasure"));
 }
 
-pub fn enable_treasure(mut query: Query<(&Treasure, &mut Visibility)>, dungeon: Res<Dungeon>) {
+pub fn treasure_system(mut query: Query<(&Treasure, &mut Visibility)>, dungeon: Res<Dungeon>) {
     for (_treasure, mut visibility) in query.iter_mut() {
         let current_position = dungeon.current_floor.current_position;
         let end_room_position = dungeon.current_floor.end_room_position;

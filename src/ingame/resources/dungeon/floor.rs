@@ -7,6 +7,7 @@ use crate::ingame::resources::dungeon::position::Position;
 
 #[derive(Clone)]
 pub struct Floor {
+    pub map_name: String,
     pub map: Vec<Vec<f32>>,
     pub total_rows: usize,
     pub total_columns: usize,
@@ -22,6 +23,7 @@ const PREFIX: &str = "./assets/floors/";
 impl Floor {
     pub fn new(file_name: String, is_last_floor: bool) -> Floor {
         let path = format!("{}{}", PREFIX, file_name);
+        let map_name = path.clone();
         let file = match File::open(path) {
             Ok(file) => file,
             Err(err) => panic!("Can't open map file {}: {}", file_name, err.to_string()),
@@ -72,6 +74,7 @@ impl Floor {
         cleared_positions.insert(start_room_position, 0);
 
         Floor {
+            map_name,
             map,
             start_room_position,
             end_room_position,

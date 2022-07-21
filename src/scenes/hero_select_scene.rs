@@ -443,7 +443,7 @@ fn hero_select_handle(
             Interaction::Clicked => {
                 profile.set_hero(button.clone());
                 state
-                    .set(SceneState::InGameClassicModeScene)
+                    .set(SceneState::PreInGameScene)
                     .expect("Couldn't switch state to In Game Scene");
             }
         }
