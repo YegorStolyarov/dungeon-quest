@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 use crate::config::*;
+use crate::ingame::classic_mode::ClassicModeData;
 use crate::ingame::materials::InGameMaterials;
 use crate::ingame::resources::dungeon::rooms::Rooms;
 use crate::ingame::resources::dungeon::wall::Wall;
@@ -17,6 +18,7 @@ pub fn walls(
     dungeon: Res<Dungeon>,
     rooms: Res<Rooms>,
     ingame_materials: Res<InGameMaterials>,
+    mut data: ResMut<ClassicModeData>,
 ) {
     let current_floor = dungeon.current_floor.clone();
     let current_position = current_floor.current_position;
@@ -25,7 +27,7 @@ pub fn walls(
 
     let room = rooms.get_room(if room_id == 1.0 { 1.0 } else { 1.0 });
 
-    commands
+    let walls = commands
         .spawn_bundle(SpriteBundle {
             ..Default::default()
         })
@@ -39,7 +41,10 @@ pub fn walls(
             }
         })
         .insert(Walls)
-        .insert(Name::new("Walls"));
+        .insert(Name::new("Walls"))
+        .id();
+
+    data.walls = Some(walls);
 }
 
 fn wall(

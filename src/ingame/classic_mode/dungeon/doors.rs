@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 use crate::config::*;
+use crate::ingame::classic_mode::ClassicModeData;
 use crate::ingame::materials::InGameMaterials;
 use crate::ingame::resources::dungeon::door::{Door, HorizontalDoor, VerticaltDoor};
 use crate::ingame::resources::dungeon::doors::Doors;
@@ -10,8 +11,12 @@ use crate::ingame::resources::player::player_dungeon_stats::PlayerDungeonStats;
 const START_Y: f32 = 0.0 + WINDOW_HEIGHT / 2.0 - TILE_SIZE / 2.0;
 const START_X: f32 = 0.0 - WINDOW_HEIGHT * RESOLUTION / 2.0 + TILE_SIZE / 2.0;
 
-pub fn doors(mut commands: Commands, ingame_materials: Res<InGameMaterials>) {
-    commands
+pub fn doors(
+    mut commands: Commands,
+    ingame_materials: Res<InGameMaterials>,
+    mut data: ResMut<ClassicModeData>,
+) {
+    let doors = commands
         .spawn_bundle(SpriteBundle {
             ..Default::default()
         })
@@ -24,7 +29,10 @@ pub fn doors(mut commands: Commands, ingame_materials: Res<InGameMaterials>) {
             }
         })
         .insert(Doors)
-        .insert(Name::new("Doors"));
+        .insert(Name::new("Doors"))
+        .id();
+
+    data.doors = Some(doors);
 }
 
 pub fn horizontal_door(parent: &mut ChildBuilder, door: &Door, ingame_materials: &InGameMaterials) {

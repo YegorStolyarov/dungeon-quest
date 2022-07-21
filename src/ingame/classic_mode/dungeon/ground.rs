@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 use crate::config::*;
+use crate::ingame::classic_mode::ClassicModeData;
 use crate::ingame::materials::InGameMaterials;
 use crate::ingame::resources::dungeon::ground::Ground;
 use crate::ingame::resources::dungeon::ladder::Ladder;
@@ -10,8 +11,12 @@ use crate::ingame::resources::dungeon::Dungeon;
 const START_Y: f32 = 0.0 + WINDOW_HEIGHT / 2.0 - TILE_SIZE / 2.0;
 const START_X: f32 = 0.0 - WINDOW_HEIGHT * RESOLUTION / 2.0 + TILE_SIZE / 2.0;
 
-pub fn ground(mut commands: Commands, ingame_materials: Res<InGameMaterials>) {
-    commands
+pub fn ground(
+    mut commands: Commands,
+    ingame_materials: Res<InGameMaterials>,
+    mut data: ResMut<ClassicModeData>,
+) {
+    let ground = commands
         .spawn_bundle(SpriteBundle {
             sprite: Sprite {
                 color: Color::BLACK,
@@ -42,7 +47,10 @@ pub fn ground(mut commands: Commands, ingame_materials: Res<InGameMaterials>) {
             }
         })
         .insert(Name::new("Ground"))
-        .insert(Ground);
+        .insert(Ground)
+        .id();
+
+    data.ground = Some(ground);
 }
 
 fn layer(

@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+use crate::ingame::classic_mode::ClassicModeData;
 use crate::ingame::resources::dungeon::Dungeon;
 use crate::ingame::resources::player::player_dungeon_stats::PlayerDungeonStats;
 use crate::scenes::SceneState;
@@ -13,8 +14,16 @@ pub fn initiate_classic_mode(mut commands: Commands, mut state: ResMut<State<Sce
         current_floor_index: 0,
     };
 
+    let classic_mode_data = ClassicModeData {
+        doors: None,
+        walls: None,
+        ground: None,
+        treasure: None,
+    };
+
     commands.insert_resource(dungeon);
     commands.insert_resource(player_dungeon_stats);
+    commands.insert_resource(classic_mode_data);
 
     state
         .set(SceneState::InGameClassicModeScene)
