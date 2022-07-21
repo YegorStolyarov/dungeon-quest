@@ -17,5 +17,10 @@ impl Plugin for PlayerPlugin {
             SystemSet::on_update(SceneState::InGameClassicModeScene)
                 .with_system(animation::player_animation_system),
         );
+
+        app.add_system_set(
+            SystemSet::on_exit(SceneState::InGameClassicModeScene)
+                .with_system(initiate::clean_up_player),
+        );
     }
 }

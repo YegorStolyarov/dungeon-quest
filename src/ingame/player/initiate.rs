@@ -8,6 +8,10 @@ use crate::ingame::resources::profile::Profile;
 const PLAYER_SIZE_WIDTH: f32 = 16.0;
 const PLAYER_SIZE_HEIGHT: f32 = 28.0;
 
+pub struct PlayerEntity {
+    pub entity: Entity,
+}
+
 pub fn initiate_player(
     mut commands: Commands,
     profile: Res<Profile>,
@@ -32,7 +36,7 @@ pub fn initiate_player(
     );
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
-    commands
+    let entity = commands
         .spawn_bundle(SpriteSheetBundle {
             texture_atlas: texture_atlas_handle,
             sprite: TextureAtlasSprite {
@@ -46,5 +50,12 @@ pub fn initiate_player(
             ..Default::default()
         })
         .insert(player)
-        .insert(Name::new("Player"));
+        .insert(Name::new("Player"))
+        .id();
+
+    commands.insert_resource(PlayerEntity { entity });
+}
+
+pub fn clean_up_player(mut commands: Commands, player_entity: Res<PlayerEntity>) {
+    commands.entity(player_entity.entity).despawn_recursive();
 }
