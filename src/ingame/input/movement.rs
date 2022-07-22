@@ -3,17 +3,13 @@ use bevy::sprite::collide_aabb::collide;
 
 use crate::config::*;
 use crate::ingame::resources::dungeon::layer::Layer;
-use crate::ingame::resources::dungeon::Dungeon;
 use crate::ingame::resources::fixed::animation_state::AnimationState;
-use crate::ingame::resources::player::player_dungeon_stats::PlayerDungeonStats;
 use crate::ingame::resources::player::Player;
 
 pub fn player_movement_handle_system(
     mut player_query: Query<(&mut Player, &mut Transform, &TextureAtlasSprite)>,
     mut layer_block_query: Query<(&Layer, &Transform), Without<Player>>,
-    mut player_dungeon_stats: ResMut<PlayerDungeonStats>,
     keyboard_input: Res<Input<KeyCode>>,
-    mut dungeon: ResMut<Dungeon>,
     time: Res<Time>,
 ) {
     let (mut player_stats, mut transform, sprite) = player_query.single_mut();
@@ -78,21 +74,6 @@ pub fn player_movement_handle_system(
         transform.translation.x += player_stats.speed * TILE_SIZE * time.delta_seconds();
         transform.rotation = Quat::default();
         is_move = true;
-    }
-
-    if keyboard_input.pressed(KeyCode::H) {
-        dungeon.current_floor.current_position = dungeon.current_floor.end_room_position.clone();
-        player_dungeon_stats.current_room_position =
-            dungeon.current_floor.end_room_position.clone();
-    }
-
-    if keyboard_input.pressed(KeyCode::C) {
-        let current_position = dungeon.current_floor.current_position;
-        dungeon
-            .current_floor
-            .cleared_positions
-            .insert(current_position, 1);
-        player_dungeon_stats.is_room_cleared = true;
     }
 
     if is_move {

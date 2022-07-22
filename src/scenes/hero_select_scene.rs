@@ -4,6 +4,7 @@ use std::slice::Iter;
 use crate::ingame::materials::InGameMaterials;
 use crate::ingame::resources::fixed::gender::Gender;
 use crate::ingame::resources::fixed::hero_class::HeroClass;
+use crate::ingame::resources::game_mode::GameMode;
 use crate::ingame::resources::profile::Profile;
 use crate::resources::dictionary::Dictionary;
 use crate::resources::materials::scenes::MenuBoxMaterials;
@@ -442,9 +443,15 @@ fn hero_select_handle(
             }
             Interaction::Clicked => {
                 profile.set_hero(button.clone());
-                state
-                    .set(SceneState::PreInGameScene)
-                    .expect("Couldn't switch state to In Game Scene");
+                if profile.game_mode == GameMode::ClassicMode {
+                    state
+                        .set(SceneState::PreClassicMode)
+                        .expect("Couldn't switch state to Pre Classic Mode");
+                } else {
+                    state
+                        .set(SceneState::PreSurvivalMode)
+                        .expect("Couldn't switch state to Pre Survival Mode");
+                }
             }
         }
     }

@@ -1,16 +1,13 @@
 use bevy::prelude::*;
 
 use crate::ingame::materials::InGameMaterials;
+use crate::ingame::player::PlayerEntity;
 use crate::ingame::resources::fixed::data::Data;
 use crate::ingame::resources::player::Player;
 use crate::ingame::resources::profile::Profile;
 
 const PLAYER_SIZE_WIDTH: f32 = 16.0;
 const PLAYER_SIZE_HEIGHT: f32 = 28.0;
-
-pub struct PlayerEntity {
-    pub entity: Entity,
-}
 
 pub fn initiate_player(
     mut commands: Commands,
@@ -54,8 +51,4 @@ pub fn initiate_player(
         .id();
 
     commands.insert_resource(PlayerEntity { entity });
-}
-
-pub fn clean_up_player(mut commands: Commands, player_entity: Res<PlayerEntity>) {
-    commands.entity(player_entity.entity).despawn_recursive();
 }

@@ -17,19 +17,19 @@ pub struct ClassicModeData {
 impl Plugin for ClassicModePlugin {
     fn build(&self, app: &mut App) {
         app.add_system_set(
-            SystemSet::on_enter(SceneState::PreInGameScene)
+            SystemSet::on_enter(SceneState::PreClassicMode)
                 .with_system(dungeon::initiate::initiate_classic_mode.label("Initiate")),
         );
 
         app.add_system_set(
-            SystemSet::on_enter(SceneState::InGameClassicModeScene)
+            SystemSet::on_enter(SceneState::InGameClassicMode)
                 .with_system(dungeon::ground::ground)
                 .with_system(dungeon::doors::doors)
                 .with_system(dungeon::walls::walls)
                 .with_system(dungeon::treasure::treasure),
         );
         app.add_system_set(
-            SystemSet::on_update(SceneState::InGameClassicModeScene)
+            SystemSet::on_update(SceneState::InGameClassicMode)
                 .with_system(dungeon::doors::horizontal_doors_system)
                 .with_system(dungeon::doors::vertical_doors_system)
                 .with_system(dungeon::walls::temporary_walls_system)
@@ -42,8 +42,7 @@ impl Plugin for ClassicModePlugin {
         );
 
         app.add_system_set(
-            SystemSet::on_exit(SceneState::InGameClassicModeScene)
-                .with_system(clean_up_classic_mode),
+            SystemSet::on_exit(SceneState::InGameClassicMode).with_system(clean_up_classic_mode),
         );
     }
 }

@@ -10,7 +10,13 @@ pub struct InputHandlePlugin;
 impl Plugin for InputHandlePlugin {
     fn build(&self, app: &mut App) {
         app.add_system_set(
-            SystemSet::on_update(SceneState::InGameClassicModeScene)
+            SystemSet::on_update(SceneState::InGameClassicMode)
+                .with_system(movement::player_movement_handle_system)
+                .with_system(keyboard::escape),
+        );
+
+        app.add_system_set(
+            SystemSet::on_update(SceneState::InGameSurvivalMode)
                 .with_system(movement::player_movement_handle_system)
                 .with_system(keyboard::escape),
         );

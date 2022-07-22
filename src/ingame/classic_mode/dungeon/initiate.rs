@@ -26,6 +26,6 @@ pub fn initiate_classic_mode(mut commands: Commands, mut state: ResMut<State<Sce
     commands.insert_resource(classic_mode_data);
 
     state
-        .set(SceneState::InGameClassicModeScene)
+        .set(SceneState::InGameClassicMode)
         .expect("Can't change to InGame Classic Mode Scene");
 }

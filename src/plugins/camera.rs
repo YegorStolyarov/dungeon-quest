@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 
 use crate::config::*;
+use crate::ingame::resources::player::Player;
+use crate::scenes::SceneState;
 
 #[derive(Component)]
 pub struct UserInterfaceCamera;
@@ -14,6 +16,10 @@ impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
         app.add_startup_system(spawn_user_interface_camera);
         app.add_startup_system(spawn_2d_camera);
+
+        app.add_system_set(
+            SystemSet::on_update(SceneState::InGameSurvivalMode).with_system(camera_follow),
+        );
     }
 }
 
@@ -32,4 +38,15 @@ fn spawn_2d_camera(mut commands: Commands) {
     camera.orthographic_projection.left = -1.0 * RESOLUTION;
 
     commands.spawn_bundle(camera).insert(Orthographic2DCamera);
+}
+
+fn camera_follow(
+    player_query: Query<&Transform, With<Player>>,
+    mut camera_query: Query<&mut Transform, (Without<Player>, With<Orthographic2DCamera>)>,
+) {
+    let player_transform = player_query.single();
+    let mut camera_transform = camera_query.single_mut();
+
+    camera_transform.translation.x = player_transform.translation.x;
+    camera_transform.translation.y = player_transform.translation.y;
 }

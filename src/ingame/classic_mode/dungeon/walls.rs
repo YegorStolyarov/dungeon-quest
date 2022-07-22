@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 use crate::config::*;
+use crate::ingame::classic_mode::dungeon::TOTAL_TILE_HEIGHT;
 use crate::ingame::classic_mode::ClassicModeData;
 use crate::ingame::materials::InGameMaterials;
 use crate::ingame::resources::dungeon::rooms::Rooms;
