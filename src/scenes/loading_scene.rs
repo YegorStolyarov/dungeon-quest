@@ -269,6 +269,10 @@ fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
             sound_icon_on: asset_server.load("icons/sound_icon_on.png"),
             sound_icon_off: asset_server.load("icons/sound_icon_off.png"),
             sound_icon_hovered: asset_server.load("icons/sound_icon_hovered.png"),
+            leaderboard: asset_server.load("icons/leaderboard.png"),
+            leaderboard_hovered: asset_server.load("icons/leaderboard_hovered.png"),
+            restart: asset_server.load("icons/restart.png"),
+            restart_hovered: asset_server.load("icons/restart_hovered.png"),
         },
         book_tileset: asset_server.load("scenes/book.png"),
         heros_materials: HerosMaterials {

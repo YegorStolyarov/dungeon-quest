@@ -89,7 +89,7 @@ impl OptionsScenePairButton {
     }
 }
 
-#[derive(Component, Clone)]
+#[derive(Component, Copy, Clone)]
 enum OptionsSceneButton {
     Return,
     EnableSound,

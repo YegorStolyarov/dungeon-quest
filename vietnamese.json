@@ -43,5 +43,15 @@
     "use_skill": "Sử dụng kỹ năng",
     "attack": "Tấn công",
     "aim": "Nhắm"
+  },
+  "result_scene_text": {
+    "result": "Kết quả",
+    "date": "Ngày: ",
+    "start_time": "Thời gian bắt đầu: ",
+    "end_time": "Thời gian kết thúc: ",
+    "total_killed_monsters": "Số quái vật tiêu diệt: ",
+    "total_cleared_rooms": "Căn phòng đã mở: ",
+    "total_cleared_waves": "Vòng chơi đã vượt qua: ",
+    "playtime": "Thời gian chơi: "
   }
 }

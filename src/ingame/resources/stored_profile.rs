@@ -14,5 +14,5 @@ pub struct StoredProfile {
     pub total_cleared_rooms: usize,
     pub total_cleared_waves: usize,
     pub date: String,
-    pub playtime: u64,
+    pub playtime: i64,
 }

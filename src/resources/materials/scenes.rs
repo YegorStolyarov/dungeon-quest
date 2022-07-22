@@ -38,4 +38,8 @@ pub struct IconMaterials {
     pub home_icon_hovered: Handle<Image>,
     pub home_icon_clicked: Handle<Image>,
     pub home_icon_normal: Handle<Image>,
+    pub leaderboard: Handle<Image>,
+    pub leaderboard_hovered: Handle<Image>,
+    pub restart: Handle<Image>,
+    pub restart_hovered: Handle<Image>,
 }

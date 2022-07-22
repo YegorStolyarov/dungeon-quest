@@ -43,5 +43,15 @@
     "use_skill": "Use skill",
     "attack": "Attack",
     "aim": "Aim"
+  },
+  "result_scene_text": {
+    "result": "Result",
+    "date": "Date: ",
+    "start_time": "Start time: ",
+    "end_time": "End time: ",
+    "total_killed_monsters": "Killed monsters: ",
+    "total_cleared_rooms": "Cleared rooms: ",
+    "total_cleared_waves": "Cleared waves: ",
+    "playtime": "Played time: "
   }
 }
