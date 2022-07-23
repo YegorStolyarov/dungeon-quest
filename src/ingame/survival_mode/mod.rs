@@ -19,7 +19,8 @@ impl Plugin for SurvivalModePlugin {
 
         app.add_system_set(
             SystemSet::on_enter(SceneState::InGameSurvivalMode)
-                .with_system(dungeon::ground::ground), // .with_system(dungeon::walls::walls),
+                .with_system(dungeon::ground::ground)
+                .with_system(dungeon::walls::walls),
         );
 
         app.add_system_set(
