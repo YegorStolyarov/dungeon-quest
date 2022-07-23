@@ -11,7 +11,7 @@ pub struct ClassicModeData {
     pub doors: Option<Entity>,
     pub ground: Option<Entity>,
     pub walls: Option<Entity>,
-    pub treasure: Option<Entity>,
+    pub end_point: Option<Entity>,
 }
 
 impl Plugin for ClassicModePlugin {
@@ -26,19 +26,17 @@ impl Plugin for ClassicModePlugin {
                 .with_system(dungeon::ground::ground)
                 .with_system(dungeon::doors::doors)
                 .with_system(dungeon::walls::walls)
-                .with_system(dungeon::treasure::treasure),
+                .with_system(dungeon::end_point::end_point),
         );
         app.add_system_set(
             SystemSet::on_update(SceneState::InGameClassicMode)
                 .with_system(dungeon::doors::horizontal_doors_system)
                 .with_system(dungeon::doors::vertical_doors_system)
                 .with_system(dungeon::walls::temporary_walls_system)
-                .with_system(dungeon::ground::ladder_system)
-                .with_system(dungeon::treasure::treasure_system)
+                .with_system(dungeon::end_point::end_point_handle_system)
                 .with_system(interactions::door::horizontal_door_interaction_handle)
                 .with_system(interactions::door::vertical_door_interaction_handle)
-                .with_system(interactions::ladder::ladder_interaction_handle_system)
-                .with_system(interactions::treasure::treasure_interaction_handle_system),
+                .with_system(interactions::end_point::end_point_interaction_handle_system),
         );
 
         app.add_system_set(
@@ -57,7 +55,7 @@ fn clean_up_classic_mode(mut commands: Commands, classic_mode_data: Res<ClassicM
         .despawn_recursive();
 
     commands
-        .entity(classic_mode_data.treasure.unwrap())
+        .entity(classic_mode_data.end_point.unwrap())
         .despawn_recursive();
 
     commands

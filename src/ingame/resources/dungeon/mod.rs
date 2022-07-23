@@ -2,16 +2,16 @@ use rand::distributions::{Distribution, Uniform};
 use std::fs::File;
 use std::io::{self, BufRead};
 
+pub mod block_type;
 pub mod door;
 pub mod doors;
+pub mod end_point;
 pub mod floor;
 pub mod ground;
-pub mod ladder;
 pub mod layer;
 pub mod position;
 pub mod room;
 pub mod rooms;
-pub mod treasure;
 pub mod wall;
 pub mod wall_type;
 pub mod walls;

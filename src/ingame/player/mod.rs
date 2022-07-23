@@ -4,6 +4,7 @@ use crate::scenes::SceneState;
 
 mod animation;
 mod cleanup;
+pub mod collisions;
 mod initiate;
 
 pub struct PlayerPlugin;
@@ -11,6 +12,9 @@ pub struct PlayerPlugin;
 pub struct PlayerEntity {
     pub entity: Entity,
 }
+
+pub const PLAYER_SIZE_WIDTH: f32 = 16.0 * 3.5;
+pub const PLAYER_SIZE_HEIGHT: f32 = 28.0 * 3.5;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {

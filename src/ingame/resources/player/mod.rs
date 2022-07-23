@@ -8,6 +8,7 @@ use crate::ingame::resources::fixed::skill::Skill;
 use crate::ingame::resources::fixed::stats::Stats;
 use crate::ingame::resources::fixed::weapon::Weapon;
 
+pub mod player_available_movement;
 pub mod player_dungeon_stats;
 pub mod player_effect;
 

@@ -7,4 +7,5 @@ pub struct Wall {
     pub wall_type: WallType,
     pub row_index: usize,
     pub column_index: usize,
+    pub value: i32,
 }

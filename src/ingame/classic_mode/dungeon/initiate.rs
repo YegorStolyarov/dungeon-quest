@@ -18,7 +18,7 @@ pub fn initiate_classic_mode(mut commands: Commands, mut state: ResMut<State<Sce
         doors: None,
         walls: None,
         ground: None,
-        treasure: None,
+        end_point: None,
     };
 
     commands.insert_resource(dungeon);

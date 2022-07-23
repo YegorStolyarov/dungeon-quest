@@ -2,12 +2,13 @@ use bevy::prelude::*;
 
 use crate::ingame::materials::InGameMaterials;
 use crate::ingame::player::PlayerEntity;
+use crate::ingame::player::{PLAYER_SIZE_HEIGHT, PLAYER_SIZE_WIDTH};
 use crate::ingame::resources::fixed::data::Data;
 use crate::ingame::resources::player::Player;
 use crate::ingame::resources::profile::Profile;
 
-const PLAYER_SIZE_WIDTH: f32 = 16.0;
-const PLAYER_SIZE_HEIGHT: f32 = 28.0;
+const PLAYER_ORIGIN_SIZE_WIDTH: f32 = 16.0;
+const PLAYER_ORIGIN_SIZE_HEIGHT: f32 = 28.0;
 
 pub fn initiate_player(
     mut commands: Commands,
@@ -27,7 +28,7 @@ pub fn initiate_player(
 
     let texture_atlas = TextureAtlas::from_grid(
         hero_tileset,
-        Vec2::new(PLAYER_SIZE_WIDTH, PLAYER_SIZE_HEIGHT),
+        Vec2::new(PLAYER_ORIGIN_SIZE_WIDTH, PLAYER_ORIGIN_SIZE_HEIGHT),
         9,
         1,
     );
@@ -37,7 +38,7 @@ pub fn initiate_player(
         .spawn_bundle(SpriteSheetBundle {
             texture_atlas: texture_atlas_handle,
             sprite: TextureAtlasSprite {
-                custom_size: Some(Vec2::new(PLAYER_SIZE_WIDTH * 3.5, PLAYER_SIZE_HEIGHT * 3.5)),
+                custom_size: Some(Vec2::new(PLAYER_SIZE_WIDTH, PLAYER_SIZE_HEIGHT)),
                 ..Default::default()
             },
             transform: Transform {

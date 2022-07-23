@@ -4,6 +4,7 @@ use crate::config::*;
 use crate::ingame::classic_mode::dungeon::TOTAL_TILE_HEIGHT;
 use crate::ingame::classic_mode::ClassicModeData;
 use crate::ingame::materials::InGameMaterials;
+use crate::ingame::resources::dungeon::block_type::BlockType;
 use crate::ingame::resources::dungeon::rooms::Rooms;
 use crate::ingame::resources::dungeon::wall::Wall;
 use crate::ingame::resources::dungeon::wall_type::WallType;
@@ -55,6 +56,19 @@ fn wall(
     value: i32,
     ingame_materials: &InGameMaterials,
 ) {
+    let block_type = match value.abs() {
+        1 => {
+            if row_index == 1 {
+                BlockType::WallTop
+            } else {
+                BlockType::WallBottom
+            }
+        }
+        7 => BlockType::WallLeft,
+        8 => BlockType::WallRight,
+        _ => BlockType::None,
+    };
+
     let x = START_X + column_index as f32 * TILE_SIZE;
     let y = START_Y - row_index as f32 * TILE_SIZE;
 
@@ -71,12 +85,26 @@ fn wall(
             .clone(),
         5 => ingame_materials.dungeon_materials.wall_left.clone(),
         6 => ingame_materials.dungeon_materials.wall_right.clone(),
-        7 => ingame_materials.dungeon_materials.wall_border_left.clone(),
-        8 => ingame_materials.dungeon_materials.wall_border_right.clone(),
+        -7 | 7 => ingame_materials.dungeon_materials.wall_border_left.clone(),
+        -8 | 8 => ingame_materials.dungeon_materials.wall_border_right.clone(),
         _ => panic!("Unknow room value: {}", value),
     };
 
-    let component_name = if value < 0 { "Temporary Wall" } else { "_" };
+    // let component_name = if value < 0 {
+    // "TemporaryWall" +
+    // } else {
+    //     "PermanentWall"
+    // };
+
+    let test = format!("{}:{}", row_index.clone(), column_index.clone());
+
+    let component_name = test.to_string();
+
+    let z = if block_type == BlockType::WallTop {
+        0.1
+    } else {
+        0.2
+    };
 
     parent
         .spawn_bundle(SpriteBundle {
@@ -85,7 +113,7 @@ fn wall(
                 ..Default::default()
             },
             transform: Transform {
-                translation: Vec3::new(x, y, 0.1),
+                translation: Vec3::new(x, y, z),
                 ..Default::default()
             },
             texture: image,
@@ -99,7 +127,9 @@ fn wall(
             },
             row_index,
             column_index,
+            value,
         })
+        .insert(block_type)
         .insert(Name::new(component_name));
 }
 
@@ -111,7 +141,10 @@ pub fn temporary_walls_system(
     if player_dungeon_stats.is_changed() {
         let current_floor = dungeon.current_floor.clone();
         let current_position = current_floor.current_position;
+
         let total_rows = current_floor.total_rows;
+        let total_columns = current_floor.total_columns;
+
         let total_room_rows = TOTAL_TILE_HEIGHT;
 
         let has_above_room = if current_position.row_index > 0 {
@@ -128,6 +161,20 @@ pub fn temporary_walls_system(
             false
         };
 
+        let has_left_room = if current_position.column_index > 0 {
+            let left_room_row_index = current_position.column_index - 1;
+            current_floor.map[current_position.row_index][left_room_row_index] != 0.0
+        } else {
+            false
+        };
+
+        let has_right_room = if current_position.column_index < total_columns - 1 {
+            let right_room_row_index = current_position.column_index + 1;
+            current_floor.map[current_position.row_index][right_room_row_index] != 0.0
+        } else {
+            false
+        };
+
         for (wall, mut visibility) in wall_query.iter_mut() {
             if wall.wall_type == WallType::Temporary {
                 if wall.row_index == 0 || wall.row_index == 1 {
@@ -136,6 +183,14 @@ pub fn temporary_walls_system(
 
                 if wall.row_index == total_room_rows - 1 || wall.row_index == total_room_rows - 2 {
                     visibility.is_visible = !has_below_room;
+                }
+
+                if wall.value == -8 {
+                    visibility.is_visible = !has_right_room;
+                }
+
+                if wall.value == -7 {
+                    visibility.is_visible = !has_left_room;
                 }
             }
         }
