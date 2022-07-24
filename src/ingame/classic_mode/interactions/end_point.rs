@@ -8,6 +8,7 @@ use crate::ingame::resources::dungeon::Dungeon;
 use crate::ingame::resources::player::player_dungeon_stats::PlayerDungeonStats;
 use crate::ingame::resources::player::Player;
 use crate::ingame::resources::profile::Profile;
+use crate::scenes::SceneState;
 
 pub fn end_point_interaction_handle_system(
     mut player_query: Query<(&Transform, &TextureAtlasSprite), With<Player>>,
@@ -15,8 +16,9 @@ pub fn end_point_interaction_handle_system(
         (&Transform, &Sprite, &Visibility),
         (With<EndPoint>, Without<Player>),
     >,
-    mut ui_center_text_query: Query<&mut CenterText>,
     mut player_dungeon_stats: ResMut<PlayerDungeonStats>,
+    mut ui_center_text_query: Query<&mut CenterText>,
+    mut state: ResMut<State<SceneState>>,
     mut dungeon: ResMut<Dungeon>,
     mut profile: ResMut<Profile>,
 ) {
@@ -48,6 +50,8 @@ pub fn end_point_interaction_handle_system(
 
                         ui_center_text_query.single_mut().timer =
                             Timer::new(Duration::from_secs(1), false);
+
+                        state.push(SceneState::RewardScene).unwrap();
                     }
                 }
             }

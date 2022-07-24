@@ -37,9 +37,9 @@ struct RewardsSceneData {
     user_interface_root: Entity,
 }
 
-pub struct RewardScenePlugin;
+pub struct RewardsScenePlugin;
 
-impl Plugin for RewardScenePlugin {
+impl Plugin for RewardsScenePlugin {
     fn build(&self, app: &mut App) {
         app.add_system_set(SystemSet::on_enter(SceneState::RewardsScene).with_system(setup));
         app.add_system_set(
