@@ -3,6 +3,7 @@ use bevy::prelude::*;
 use crate::scenes::SceneState;
 
 pub mod dungeon;
+pub mod ui;
 
 pub struct SurvivalModeData {
     pub ground: Option<Entity>,

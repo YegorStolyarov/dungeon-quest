@@ -15,6 +15,7 @@ pub mod rooms;
 pub mod wall;
 pub mod wall_type;
 pub mod walls;
+pub mod wave;
 
 use crate::config::LIST_FLOOR_FILE;
 use floor::Floor;

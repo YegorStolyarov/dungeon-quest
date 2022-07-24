@@ -48,6 +48,7 @@ fn main() {
         .add_plugin(ingame::classic_mode::ClassicModePlugin)
         .add_plugin(ingame::classic_mode::ui::ClassicModeUIPlugin)
         .add_plugin(ingame::survival_mode::SurvivalModePlugin)
+        .add_plugin(ingame::survival_mode::ui::SurvivalModeUIPlugin)
         .add_plugin(plugins::debug::DebugPlugin)
         .run();
 }
