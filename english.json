@@ -59,6 +59,9 @@
   "ingame_text": {
     "floor": "Floor",
     "wave": "Wave",
-    "congratulation": "Congratulation"
+    "congratulation": "Congratulation",
+    "stats": "Stats",
+    "weapon": "Weapon",
+    "effect": "Effect"
   }
 }

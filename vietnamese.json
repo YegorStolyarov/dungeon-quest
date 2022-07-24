@@ -59,6 +59,9 @@
   "ingame_text": {
     "floor": "Tầng",
     "wave": "Vòng",
-    "congratulation": "Chúc mừng"
+    "congratulation": "Chúc mừng",
+    "stats": "Chỉ số",
+    "weapon": "Vũ khí",
+    "effect": "Hiệu ứng"
   }
 }

@@ -25,12 +25,18 @@ impl Plugin for SurvivalModePlugin {
         );
 
         app.add_system_set(
-            SystemSet::on_exit(SceneState::InGameSurvivalMode).with_system(clean_up_survival_mode),
+            SystemSet::on_update(SceneState::InGameSurvivalMode)
+                .with_system(dungeon::wave::countdown),
+        );
+
+        app.add_system_set(
+            SystemSet::on_exit(SceneState::InGameSurvivalMode)
+                .with_system(cleanup_survival_mode_data),
         );
     }
 }
 
-fn clean_up_survival_mode(mut commands: Commands, survival_mode_data: Res<SurvivalModeData>) {
+fn cleanup_survival_mode_data(mut commands: Commands, survival_mode_data: Res<SurvivalModeData>) {
     commands
         .entity(survival_mode_data.walls.unwrap())
         .despawn_recursive();

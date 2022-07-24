@@ -94,6 +94,9 @@ pub struct InGameText {
     pub floor: String,
     pub wave: String,
     pub congratulation: String,
+    pub stats: String,
+    pub weapon: String,
+    pub effect: String,
 }
 
 impl Glossary {
