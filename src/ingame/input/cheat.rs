@@ -1,10 +1,6 @@
 use bevy::prelude::*;
-use bevy::sprite::collide_aabb::collide;
 
-use crate::config::*;
-use crate::ingame::resources::dungeon::layer::Layer;
 use crate::ingame::resources::dungeon::Dungeon;
-use crate::ingame::resources::fixed::animation_state::AnimationState;
 use crate::ingame::resources::player::player_dungeon_stats::PlayerDungeonStats;
 
 pub fn cheat_move(

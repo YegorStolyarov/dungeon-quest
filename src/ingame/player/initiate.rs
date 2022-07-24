@@ -3,7 +3,8 @@ use bevy::prelude::*;
 use crate::ingame::materials::InGameMaterials;
 use crate::ingame::player::PlayerEntity;
 use crate::ingame::player::{PLAYER_SIZE_HEIGHT, PLAYER_SIZE_WIDTH};
-use crate::ingame::resources::fixed::data::Data;
+use crate::ingame::resources::data::Data;
+use crate::ingame::resources::player::player_skill::PlayerSkill;
 use crate::ingame::resources::player::Player;
 use crate::ingame::resources::profile::Profile;
 
@@ -34,6 +35,8 @@ pub fn initiate_player(
     );
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
+    let skill = data.get_skill(class);
+
     let entity = commands
         .spawn_bundle(SpriteSheetBundle {
             texture_atlas: texture_atlas_handle,
@@ -48,6 +51,7 @@ pub fn initiate_player(
             ..Default::default()
         })
         .insert(player)
+        .insert(PlayerSkill::new(skill))
         .insert(Name::new("Player"))
         .id();
 

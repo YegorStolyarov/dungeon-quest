@@ -7,7 +7,7 @@ use crate::ingame::materials::{
     dungeon::DungeonMaterials, heros::HerosMaterials, weapons::WeaponsMaterials, InGameMaterials,
 };
 use crate::ingame::resources::dungeon::rooms::Rooms;
-use crate::ingame::resources::fixed::data::Data;
+use crate::ingame::resources::data::Data;
 use crate::resources::dictionary::Dictionary;
 use crate::resources::language::Language;
 use crate::resources::materials::{

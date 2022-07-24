@@ -1,0 +1,35 @@
+[
+  {
+    "name": "SpeedUp",
+    "duration": 5.0,
+    "speed": 0.3,
+  },
+  {
+    "name": "QuickUp",
+    "duration": 5.0,
+    "bonus": 0.2
+  },
+  {
+    "name": "Focus",
+    "duration": 10.0,
+    "bonus": 0.5
+  },
+  {
+    "name": "Slow",
+    "duration": 5.0,
+    "bonus": -0.3,
+    "trigger_chance": 0.3
+  },
+  {
+    "name": "Stun",
+    "duration": 3.0,
+    "bonus": 0.0
+    "trigger_chance": 0.3
+  },
+  {
+    "name": "ReduceDamage",
+    "duration": 10.0,
+    "bonus": -0.5,
+    "trigger_chance": 0.3 
+  },
+],

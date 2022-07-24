@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::ingame::resources::fixed::animation_state::AnimationState;
+use crate::ingame::resources::animation_state::AnimationState;
 use crate::ingame::resources::player::Player;
 
 pub fn player_animation_system(

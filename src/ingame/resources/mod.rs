@@ -1,6 +1,11 @@
+pub mod animation_state;
+pub mod data;
 pub mod dungeon;
-pub mod fixed;
+pub mod effect;
 pub mod game_mode;
+pub mod hero;
 pub mod player;
 pub mod profile;
+pub mod skill;
 pub mod stored_profile;
+pub mod weapon;

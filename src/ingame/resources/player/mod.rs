@@ -1,18 +1,17 @@
 use bevy::prelude::*;
+use std::collections::HashMap;
 
-use crate::ingame::resources::fixed::animation_state::AnimationState;
-use crate::ingame::resources::fixed::data::Data;
-use crate::ingame::resources::fixed::hero_class::HeroClass;
-use crate::ingame::resources::fixed::power::Power;
-use crate::ingame::resources::fixed::skill::Skill;
-use crate::ingame::resources::fixed::stats::Stats;
-use crate::ingame::resources::fixed::weapon::Weapon;
+use crate::ingame::resources::animation_state::AnimationState;
+use crate::ingame::resources::data::Data;
+use crate::ingame::resources::effect::effect_type::EffectType;
+use crate::ingame::resources::hero::hero_class::HeroClass;
+use crate::ingame::resources::hero::power::Power;
+use crate::ingame::resources::hero::stats::Stats;
+use crate::ingame::resources::weapon::Weapon;
 
 pub mod player_available_movement;
 pub mod player_dungeon_stats;
-pub mod player_effect;
-
-use player_effect::PlayerEffect;
+pub mod player_skill;
 
 #[derive(Component)]
 pub struct Player {
@@ -30,9 +29,8 @@ pub struct Player {
     power: Power,
     base_stats: Stats,
     weapon: Weapon,
-    skill: Skill,
 
-    effects: Vec<PlayerEffect>,
+    pub effects: HashMap<EffectType, Timer>,
 
     pub animation_timer: Timer,
     pub animation_state: AnimationState,
@@ -40,26 +38,8 @@ pub struct Player {
 
 impl Player {
     pub fn new(hero_class: HeroClass, data: Data) -> Self {
-        let hero = data
-            .heros
-            .iter()
-            .find(|hero| hero.hero_class == hero_class)
-            .unwrap()
-            .clone();
-
-        let weapon = data
-            .weapons
-            .iter()
-            .find(|weapon| weapon.name == hero.weapon)
-            .unwrap()
-            .clone();
-
-        let skill = data
-            .skills
-            .iter()
-            .find(|skill| skill.name == hero.skill)
-            .unwrap()
-            .clone();
+        let hero = data.get_hero(hero_class.clone());
+        let weapon = data.get_weapon(hero_class.clone());
 
         let base_stats = hero.stats;
 
@@ -76,8 +56,7 @@ impl Player {
             power: hero.power,
             base_stats: base_stats.clone(),
             weapon,
-            skill,
-            effects: Vec::new(),
+            effects: HashMap::new(),
             animation_timer: Timer::from_seconds(0.1, true),
             animation_state: AnimationState::Idle,
         }

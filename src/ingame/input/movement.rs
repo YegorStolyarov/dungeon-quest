@@ -2,8 +2,8 @@ use bevy::prelude::*;
 
 use crate::config::*;
 use crate::ingame::player::collisions::wall_collision_check;
+use crate::ingame::resources::animation_state::AnimationState;
 use crate::ingame::resources::dungeon::block_type::BlockType;
-use crate::ingame::resources::fixed::animation_state::AnimationState;
 use crate::ingame::resources::player::Player;
 
 pub fn player_movement_handle_system(

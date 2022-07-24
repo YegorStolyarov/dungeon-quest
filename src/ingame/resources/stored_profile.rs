@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-use crate::ingame::resources::fixed::gender::Gender;
-use crate::ingame::resources::fixed::hero_class::HeroClass;
 use crate::ingame::resources::game_mode::GameMode;
+use crate::ingame::resources::hero::gender::Gender;
+use crate::ingame::resources::hero::hero_class::HeroClass;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct StoredProfile {

@@ -61,6 +61,32 @@
       "skill": "AnimalInstinct"
     }
   ],
+  "skills": [
+    {
+      "name": "TimeToHunt",
+      "cooldown": 30.0,
+      "required_monster": 0.0,
+      "required_health": 0.0
+    },
+    {
+      "name": "Armor",
+      "cooldown": 0.0,
+      "required_monster": 10.0,
+      "required_health": 0.0
+    },
+    {
+      "name": "Thunderstorm",
+      "cooldown": 30.0,
+      "required_monster": 0.0,
+      "required_health": 0.0
+    },
+    {
+      "name": "AnimalInstinct",
+      "cooldown": 60.0,
+      "required_monster": 0.0,
+      "required_health": 2.0
+    }
+  ],
   "weapons": [
     {
       "name": "BowAndArrow",
@@ -71,10 +97,7 @@
       "name": "Spear",
       "strength": 3.0,
       "intelligence": 0.0,
-      "trigger_effect": {
-        "chance_to_trigger": 0.3,
-        "effect": "SpeedUp"
-      }
+      "effect": "SpeedUp"
     },
     {
       "name": "ShortSword",
@@ -90,10 +113,7 @@
       "name": "BigMachete",
       "strength": 3.0,
       "intelligence": 0.0,
-      "trigger_effect": {
-        "chance_to_trigger": 0.3,
-        "effect": "ReduceDamage"
-      }
+      "effect": "ReduceDamage"
     },
     {
       "name": "SmallWand",
@@ -104,10 +124,7 @@
       "name": "MagicWand",
       "strength": 0.0,
       "intelligence": 2.0,
-      "trigger_effect": {
-        "chance_to_trigger": 0.3,
-        "effect": "Slow"
-      }
+      "effect": "Slow"
     },
     {
       "name": "MagicSword",
@@ -128,129 +145,7 @@
       "name": "BigHammer",
       "strength": 3.0,
       "intelligence": 0.0,
-      "trigger_effect": {
-        "chance_to_trigger": 0.3,
-        "effect": "Stun"
-      }
-    }
-  ],
-  "effects": [
-    {
-      "name": "SpeedUp",
-      "duration": 5.0,
-      "bonus": {
-        "speed_bonus": 0.3,
-        "critical_chance_bonus": 0.0,
-        "dodge_chance_bonus": 0.0,
-        "restore_chance_bonus": 0.0,
-        "damage_bonus": 0.0
-      }
-    },
-    {
-      "name": "QuickUp",
-      "duration": 5.0,
-      "bonus": {
-        "speed_bonus": 0.0,
-        "critical_chance_bonus": 0.0,
-        "dodge_chance_bonus": 0.2,
-        "restore_chance_bonus": 0.0,
-        "damage_bonus": 0.0
-      }
-    },
-    {
-      "name": "Focus",
-      "duration": 10.0,
-      "bonus": {
-        "speed_bonus": 0.0,
-        "critical_chance_bonus": 0.5,
-        "dodge_chance_bonus": 0.0,
-        "restore_chance_bonus": 0.0,
-        "damage_bonus": 0.0
-      }
-    },
-    {
-      "name": "Slow",
-      "duration": 5.0,
-      "bonus": {
-        "speed_bonus": -0.3,
-        "critical_chance_bonus": 0.0,
-        "dodge_chance_bonus": 0.0,
-        "restore_chance_bonus": 0.0,
-        "damage_bonus": 0.0
-      }
-    },
-    {
-      "name": "Disarm",
-      "duration": 5.0
-    },
-    {
-      "name": "Confuse",
-      "duration": 5.0
-    },
-    {
-      "name": "Stun",
-      "duration": 3.0
-    },
-    {
-      "name": "ReduceDamage",
-      "duration": 10.0,
-      "bonus": {
-        "speed_bonus": 0.0,
-        "critical_chance_bonus": 0.0,
-        "dodge_chance_bonus": 0.0,
-        "restore_chance_bonus": 0.0,
-        "damage_bonus": -0.5
-      }
-    },
-    {
-      "name": "TimeToHunt",
-      "duration": 10.0,
-      "bonus": {
-        "speed_bonus": 0.3,
-        "critical_chance_bonus": 0.5,
-        "dodge_chance_bonus": 0.0,
-        "restore_chance_bonus": 0.0,
-        "damage_bonus": 0.0
-      }
-    },
-    {
-      "name": "AnimalInstinct",
-      "duration": 10.0,
-      "bonus": {
-        "speed_bonus": 0.3,
-        "critical_chance_bonus": 0.3,
-        "dodge_chance_bonus": 0.3,
-        "restore_chance_bonus": 0.3,
-        "damage_bonus": 0.5
-      }
-    }
-  ],
-  "skills": [
-    {
-      "name": "TimeToHunt",
-      "cooldown": 30.0,
-      "required_monster": 0.0,
-      "required_health": 0.0,
-      "effect": "TimeToHunt"
-    },
-    {
-      "name": "Armor",
-      "cooldown": 0.0,
-      "required_monster": 10.0,
-      "required_health": 0.0
-    },
-    {
-      "name": "Thunderstorm",
-      "cooldown": 30.0,
-      "required_monster": 0.0,
-      "required_health": 0.0
-    },
-    {
-      "name": "AnimalInstinct",
-      "cooldown": 60.0,
-      "required_monster": 0.0,
-      "required_health": 2.0,
-      "effect": "AnimalInstinct"
+      "effect": "Stun"
     }
   ]
 }
