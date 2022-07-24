@@ -25,12 +25,12 @@ impl Plugin for SurvivalModePlugin {
         );
 
         app.add_system_set(
-            SystemSet::on_exit(SceneState::InGameSurvivalMode).with_system(clean_up_classic_mode),
+            SystemSet::on_exit(SceneState::InGameSurvivalMode).with_system(clean_up_survival_mode),
         );
     }
 }
 
-fn clean_up_classic_mode(mut commands: Commands, survival_mode_data: Res<SurvivalModeData>) {
+fn clean_up_survival_mode(mut commands: Commands, survival_mode_data: Res<SurvivalModeData>) {
     commands
         .entity(survival_mode_data.walls.unwrap())
         .despawn_recursive();

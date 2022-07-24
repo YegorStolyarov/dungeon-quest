@@ -26,7 +26,9 @@
     "classic_mode": "Chế độ cổ điển",
     "survival_mode": "Chế độ sinh tồn",
     "select_game_mode": "Chọn chế độ chơi",
-    "select_hero": "Chọn nhân vật"
+    "select_hero": "Chọn nhân vật",
+    "continue_": "Tiếp tục",
+    "quit": "Thoát"
   },
   "options_scene_text": {
     "options": "Cài đặt",

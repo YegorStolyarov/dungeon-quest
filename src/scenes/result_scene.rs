@@ -479,7 +479,7 @@ fn save_profile_button(
     scenes_materials: &ScenesMaterials,
     profile: Res<Profile>,
 ) {
-    if profile.game_mode == GameMode::ClassicMode && !profile.is_run_finished {
+    if profile.game_mode == GameMode::ClassicMode && !profile.is_run_completed {
         return;
     }
 

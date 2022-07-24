@@ -73,6 +73,8 @@ pub struct SharedText {
     pub survival_mode: String,
     pub select_game_mode: String,
     pub select_hero: String,
+    pub continue_: String,
+    pub quit: String,
 }
 
 #[derive(Component, Serialize, Deserialize, Debug, Clone)]

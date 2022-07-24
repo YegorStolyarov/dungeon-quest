@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 use bevy::sprite::collide_aabb::collide;
-use chrono::{DateTime, Local};
 use std::time::Duration;
 
 use crate::ingame::classic_mode::ui::CenterText;
@@ -9,7 +8,6 @@ use crate::ingame::resources::dungeon::Dungeon;
 use crate::ingame::resources::player::player_dungeon_stats::PlayerDungeonStats;
 use crate::ingame::resources::player::Player;
 use crate::ingame::resources::profile::Profile;
-use crate::scenes::SceneState;
 
 pub fn end_point_interaction_handle_system(
     mut player_query: Query<(&Transform, &TextureAtlasSprite), With<Player>>,
@@ -19,7 +17,6 @@ pub fn end_point_interaction_handle_system(
     >,
     mut ui_center_text_query: Query<&mut CenterText>,
     mut player_dungeon_stats: ResMut<PlayerDungeonStats>,
-    mut state: ResMut<State<SceneState>>,
     mut dungeon: ResMut<Dungeon>,
     mut profile: ResMut<Profile>,
 ) {
@@ -38,13 +35,8 @@ pub fn end_point_interaction_handle_system(
         if visibility.is_visible {
             if collide(p_translation, p_size, ep_translation, ep_size).is_some() {
                 if dungeon.current_floor.is_last_floor {
+                    profile.is_run_completed = true;
                     profile.is_run_finished = true;
-                    let end_time: DateTime<Local> = Local::now();
-                    profile.end_time = end_time.to_rfc3339();
-
-                    state
-                        .set(SceneState::ResultScene)
-                        .expect("Couldn't switch state to Result Scene");
                 } else {
                     let current_floor_index = player_dungeon_stats.current_floor_index;
 

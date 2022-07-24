@@ -18,6 +18,7 @@ pub struct Profile {
     pub total_cleared_waves: usize,
     pub start_time: String,
     pub end_time: String,
+    pub is_run_completed: bool,
     pub is_run_finished: bool,
 }
 
@@ -35,6 +36,7 @@ impl Profile {
             total_cleared_waves: 0,
             end_time: start_time.to_rfc3339(),
             start_time: start_time.to_rfc3339(),
+            is_run_completed: false,
             is_run_finished: false,
         }
     }

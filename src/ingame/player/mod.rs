@@ -6,6 +6,7 @@ mod animation;
 mod cleanup;
 pub mod collisions;
 mod initiate;
+mod profile;
 
 pub struct PlayerPlugin;
 
@@ -24,7 +25,8 @@ impl Plugin for PlayerPlugin {
         );
         app.add_system_set(
             SystemSet::on_update(SceneState::InGameClassicMode)
-                .with_system(animation::player_animation_system),
+                .with_system(animation::player_animation_system)
+                .with_system(profile::finish_run),
         );
 
         app.add_system_set(
@@ -37,7 +39,8 @@ impl Plugin for PlayerPlugin {
         );
         app.add_system_set(
             SystemSet::on_update(SceneState::InGameSurvivalMode)
-                .with_system(animation::player_animation_system),
+                .with_system(animation::player_animation_system)
+                .with_system(profile::finish_run),
         );
 
         app.add_system_set(
