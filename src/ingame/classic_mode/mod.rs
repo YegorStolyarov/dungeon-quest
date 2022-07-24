@@ -4,6 +4,7 @@ use crate::scenes::SceneState;
 
 pub mod dungeon;
 pub mod interactions;
+pub mod ui;
 
 pub struct ClassicModePlugin;
 
@@ -28,6 +29,7 @@ impl Plugin for ClassicModePlugin {
                 .with_system(dungeon::walls::walls)
                 .with_system(dungeon::end_point::end_point),
         );
+
         app.add_system_set(
             SystemSet::on_update(SceneState::InGameClassicMode)
                 .with_system(dungeon::doors::horizontal_doors_system)

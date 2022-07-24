@@ -53,5 +53,10 @@
     "total_cleared_rooms": "Căn phòng đã mở: ",
     "total_cleared_waves": "Vòng chơi đã vượt qua: ",
     "playtime": "Thời gian chơi: "
+  },
+  "ingame_text": {
+    "floor": "Tầng",
+    "wave": "Vòng",
+    "congratulation": "Chúc mừng"
   }
 }

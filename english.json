@@ -53,5 +53,10 @@
     "total_cleared_rooms": "Cleared rooms: ",
     "total_cleared_waves": "Cleared waves: ",
     "playtime": "Played time: "
+  },
+  "ingame_text": {
+    "floor": "Floor",
+    "wave": "Wave",
+    "congratulation": "Congratulation"
   }
 }

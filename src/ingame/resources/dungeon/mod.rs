@@ -19,7 +19,7 @@ pub mod walls;
 use crate::config::LIST_FLOOR_FILE;
 use floor::Floor;
 
-const TOTAL_DUNGEON_FLOORS: usize = 4;
+const TOTAL_DUNGEON_FLOORS: usize = 5;
 
 pub struct Dungeon {
     pub floors: Vec<Floor>,

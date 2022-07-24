@@ -14,6 +14,7 @@ pub struct Glossary {
     pub options_scene_text: OptionsSceneText,
     pub result_scene_text: ResultSceneText,
     pub help_scene_text: HelpSceneText,
+    pub ingame_text: InGameText,
     pub shared_text: SharedText,
 }
 
@@ -84,6 +85,13 @@ pub struct ResultSceneText {
     pub total_cleared_rooms: String,
     pub total_cleared_waves: String,
     pub playtime: String,
+}
+
+#[derive(Component, Serialize, Deserialize, Debug, Clone)]
+pub struct InGameText {
+    pub floor: String,
+    pub wave: String,
+    pub congratulation: String,
 }
 
 impl Glossary {
