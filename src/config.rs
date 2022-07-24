@@ -22,6 +22,4 @@ pub const DATA_FILE: &str = "data.json";
 pub const LIST_FLOOR_FILE: &str = "list_floor.txt";
 pub const LIST_ROOM_FILE: &str = "list_room.txt";
 
-pub const EFFECTS_FILE: &str = "effects.json";
-
 pub const TILE_SIZE: f32 = 64.0;

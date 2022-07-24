@@ -1,9 +1,8 @@
 use bevy::prelude::*;
-use std::collections::HashMap;
 
 use crate::ingame::resources::animation_state::AnimationState;
 use crate::ingame::resources::data::Data;
-use crate::ingame::resources::effect::effect_type::EffectType;
+
 use crate::ingame::resources::hero::hero_class::HeroClass;
 use crate::ingame::resources::hero::power::Power;
 use crate::ingame::resources::hero::stats::Stats;
@@ -11,6 +10,7 @@ use crate::ingame::resources::weapon::Weapon;
 
 pub mod player_available_movement;
 pub mod player_dungeon_stats;
+pub mod player_effect;
 pub mod player_skill;
 
 #[derive(Component)]
@@ -29,8 +29,6 @@ pub struct Player {
     power: Power,
     base_stats: Stats,
     weapon: Weapon,
-
-    pub effects: HashMap<EffectType, Timer>,
 
     pub animation_timer: Timer,
     pub animation_state: AnimationState,
@@ -56,7 +54,6 @@ impl Player {
             power: hero.power,
             base_stats: base_stats.clone(),
             weapon,
-            effects: HashMap::new(),
             animation_timer: Timer::from_seconds(0.1, true),
             animation_state: AnimationState::Idle,
         }

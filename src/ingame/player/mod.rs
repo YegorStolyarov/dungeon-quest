@@ -30,7 +30,7 @@ impl Plugin for PlayerPlugin {
         );
 
         app.add_system_set(
-            SystemSet::on_exit(SceneState::InGameClassicMode).with_system(cleanup::clean_up_player),
+            SystemSet::on_exit(SceneState::InGameClassicMode).with_system(cleanup::cleanup_player),
         );
 
         app.add_system_set(
@@ -44,8 +44,7 @@ impl Plugin for PlayerPlugin {
         );
 
         app.add_system_set(
-            SystemSet::on_exit(SceneState::InGameSurvivalMode)
-                .with_system(cleanup::clean_up_player),
+            SystemSet::on_exit(SceneState::InGameSurvivalMode).with_system(cleanup::cleanup_player),
         );
     }
 }

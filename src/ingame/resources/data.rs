@@ -3,6 +3,7 @@ use std::fs::File;
 use std::io::prelude::*;
 
 use crate::config::DATA_FILE;
+use crate::ingame::resources::effect::effect_information::EffectInformation;
 use crate::ingame::resources::hero::hero_class::HeroClass;
 use crate::ingame::resources::hero::Hero;
 use crate::ingame::resources::skill::Skill;
@@ -13,6 +14,7 @@ pub struct Data {
     heros: [Hero; 4],
     weapons: [Weapon; 11],
     skills: [Skill; 4],
+    player_effect_information: [EffectInformation; 6],
 }
 
 impl Data {
@@ -52,5 +54,9 @@ impl Data {
             .find(|weapon| weapon.name == hero.weapon)
             .unwrap()
             .clone()
+    }
+
+    pub fn get_player_effect_information(&self) -> Vec<EffectInformation> {
+        self.player_effect_information.to_vec().clone()
     }
 }

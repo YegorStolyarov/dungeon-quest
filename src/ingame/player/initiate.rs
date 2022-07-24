@@ -4,6 +4,7 @@ use crate::ingame::materials::InGameMaterials;
 use crate::ingame::player::PlayerEntity;
 use crate::ingame::player::{PLAYER_SIZE_HEIGHT, PLAYER_SIZE_WIDTH};
 use crate::ingame::resources::data::Data;
+use crate::ingame::resources::player::player_effect::PlayerEffects;
 use crate::ingame::resources::player::player_skill::PlayerSkill;
 use crate::ingame::resources::player::Player;
 use crate::ingame::resources::profile::Profile;
@@ -55,5 +56,6 @@ pub fn initiate_player(
         .insert(Name::new("Player"))
         .id();
 
+    commands.insert_resource(PlayerEffects::new(data.get_player_effect_information()));
     commands.insert_resource(PlayerEntity { entity });
 }
