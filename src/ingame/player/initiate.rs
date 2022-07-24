@@ -4,7 +4,8 @@ use crate::ingame::materials::InGameMaterials;
 use crate::ingame::player::PlayerEntity;
 use crate::ingame::player::{PLAYER_SIZE_HEIGHT, PLAYER_SIZE_WIDTH};
 use crate::ingame::resources::data::Data;
-use crate::ingame::resources::player::player_effect::PlayerEffects;
+use crate::ingame::resources::player::player_animation::PlayerAnimation;
+use crate::ingame::resources::player::player_effects::PlayerEffects;
 use crate::ingame::resources::player::player_skill::PlayerSkill;
 use crate::ingame::resources::player::Player;
 use crate::ingame::resources::profile::Profile;
@@ -37,6 +38,7 @@ pub fn initiate_player(
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
     let skill = data.get_skill(class);
+    let weapon = data.get_weapon(class);
 
     let entity = commands
         .spawn_bundle(SpriteSheetBundle {
@@ -51,11 +53,19 @@ pub fn initiate_player(
             },
             ..Default::default()
         })
+        // .with_children(|parent| => {
+            // initiate_weapon(parent, weapon)
+        // })
         .insert(player)
-        .insert(PlayerSkill::new(skill))
+        .insert(PlayerAnimation::new())
         .insert(Name::new("Player"))
         .id();
 
     commands.insert_resource(PlayerEffects::new(data.get_player_effect_information()));
+    commands.insert_resource(PlayerSkill::new(skill));
     commands.insert_resource(PlayerEntity { entity });
 }
+
+// fn initiate_weapon(player: &mut ChildBuilder, weapon: Weapon) {
+    // 
+// }

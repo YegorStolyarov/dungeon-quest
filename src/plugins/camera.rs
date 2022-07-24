@@ -20,6 +20,10 @@ impl Plugin for CameraPlugin {
         app.add_system_set(
             SystemSet::on_update(SceneState::InGameSurvivalMode).with_system(camera_follow),
         );
+
+        app.add_system_set(
+            SystemSet::on_exit(SceneState::InGameSurvivalMode).with_system(reset_camera),
+        );
     }
 }
 
@@ -49,4 +53,10 @@ fn camera_follow(
 
     camera_transform.translation.x = player_transform.translation.x;
     camera_transform.translation.y = player_transform.translation.y;
+}
+
+fn reset_camera(mut camera_query: Query<&mut Transform, With<Orthographic2DCamera>>) {
+    let mut camera_transform = camera_query.single_mut();
+    camera_transform.translation.x = 0.0;
+    camera_transform.translation.y = 0.0;
 }

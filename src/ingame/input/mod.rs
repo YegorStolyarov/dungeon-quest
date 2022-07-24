@@ -12,15 +12,18 @@ impl Plugin for InputHandlePlugin {
     fn build(&self, app: &mut App) {
         app.add_system_set(
             SystemSet::on_update(SceneState::InGameClassicMode)
-                .with_system(movement::player_movement_handle_system)
+                .with_system(movement::player_movement_handle_system.after("Stats"))
                 .with_system(feature::pause)
-                .with_system(cheat::cheat_move),
+                .with_system(feature::use_skill)
+                .with_system(cheat::unlock_room_cheat),
         );
 
         app.add_system_set(
             SystemSet::on_update(SceneState::InGameSurvivalMode)
-                .with_system(movement::player_movement_handle_system)
-                .with_system(feature::pause),
+                .with_system(movement::player_movement_handle_system.after("Stats"))
+                .with_system(feature::use_skill)
+                .with_system(feature::pause)
+                .with_system(cheat::knight_skill_cheat),
         );
     }
 }

@@ -4,20 +4,21 @@ use crate::config::*;
 use crate::ingame::player::collisions::wall_collision_check;
 use crate::ingame::resources::animation_state::AnimationState;
 use crate::ingame::resources::dungeon::block_type::BlockType;
+use crate::ingame::resources::player::player_animation::PlayerAnimation;
 use crate::ingame::resources::player::Player;
 
 pub fn player_movement_handle_system(
-    mut player_query: Query<(&mut Player, &mut Transform)>,
+    mut player_query: Query<(&Player, &mut PlayerAnimation, &mut Transform)>,
     block_type_query: Query<(&BlockType, &Transform), Without<Player>>,
     keyboard_input: Res<Input<KeyCode>>,
     time: Res<Time>,
 ) {
-    let (mut player_stats, mut transform) = player_query.single_mut();
+    let (player_stats, mut player_animation, mut transform) = player_query.single_mut();
 
     let mut delta = Vec3::new(0.0, 0.0, 0.0);
 
     let player_position = transform.translation;
-    player_stats.animation_state = AnimationState::Idle;
+    player_animation.animation_state = AnimationState::Idle;
 
     let player_availalbe_movement = wall_collision_check(player_position, &block_type_query);
 
@@ -54,6 +55,6 @@ pub fn player_movement_handle_system(
     }
 
     if delta != Vec3::ZERO {
-        player_stats.animation_state = AnimationState::Moving;
+        player_animation.animation_state = AnimationState::Moving;
     }
 }

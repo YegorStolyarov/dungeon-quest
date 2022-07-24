@@ -4,8 +4,8 @@ use crate::ingame::resources::effect::effect_type::EffectType;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct EffectInformation {
-    name: EffectType,
-    duration: f32,
-    bonus: f32,
-    trigger_chance: Option<f32>,
+    pub name: EffectType,
+    pub duration: f32,
+    pub bonus: f32,
+    pub trigger_chance: Option<f32>,
 }

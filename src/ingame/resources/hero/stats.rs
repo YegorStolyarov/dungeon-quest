@@ -1,6 +1,7 @@
+use bevy_inspector_egui::Inspectable;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Inspectable)]
 pub struct Stats {
     pub health_points: f32,
     pub speed: f32,

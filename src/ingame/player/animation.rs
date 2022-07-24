@@ -1,18 +1,22 @@
 use bevy::prelude::*;
 
 use crate::ingame::resources::animation_state::AnimationState;
-use crate::ingame::resources::player::Player;
+use crate::ingame::resources::player::player_animation::PlayerAnimation;
 
 pub fn player_animation_system(
     time: Res<Time>,
     texture_atlases: Res<Assets<TextureAtlas>>,
-    mut query: Query<(&mut Player, &mut TextureAtlasSprite, &Handle<TextureAtlas>)>,
+    mut query: Query<(
+        &mut PlayerAnimation,
+        &mut TextureAtlasSprite,
+        &Handle<TextureAtlas>,
+    )>,
 ) {
-    for (mut player, mut sprite, texture_atlas_handle) in query.iter_mut() {
-        player.animation_timer.tick(time.delta());
-        if player.animation_timer.just_finished() {
+    for (mut player_animation, mut sprite, texture_atlas_handle) in query.iter_mut() {
+        player_animation.animation_timer.tick(time.delta());
+        if player_animation.animation_timer.just_finished() {
             let texture_atlas = texture_atlases.get(texture_atlas_handle).unwrap();
-            match player.animation_state {
+            match player_animation.animation_state {
                 AnimationState::Idle => {
                     let min_index = 0;
                     let max_index = 3;
