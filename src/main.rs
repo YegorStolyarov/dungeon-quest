@@ -5,6 +5,7 @@ use config::*;
 
 mod config;
 mod ingame;
+mod materials;
 mod plugins;
 mod resources;
 mod scenes;

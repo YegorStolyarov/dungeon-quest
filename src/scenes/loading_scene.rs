@@ -6,14 +6,14 @@ use crate::scenes::SceneState;
 use crate::ingame::materials::{
     dungeon::DungeonMaterials, heros::HerosMaterials, weapons::WeaponsMaterials, InGameMaterials,
 };
-use crate::ingame::resources::dungeon::rooms::Rooms;
 use crate::ingame::resources::data::Data;
-use crate::resources::dictionary::Dictionary;
-use crate::resources::language::Language;
-use crate::resources::materials::{
+use crate::ingame::resources::dungeon::rooms::Rooms;
+use crate::materials::{
     scenes::{FlagMaterials, IconMaterials, MenuBoxMaterials, ScenesMaterials},
     Materials,
 };
+use crate::resources::dictionary::Dictionary;
+use crate::resources::language::Language;
 
 const LOADING_TEXT_FONT_SIZE: f32 = 30.0;
 const TEXT_FONT_SIZE: f32 = 40.0;

@@ -38,7 +38,6 @@ pub fn initiate_player(
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
     let skill = data.get_skill(class);
-    let weapon = data.get_weapon(class);
 
     let entity = commands
         .spawn_bundle(SpriteSheetBundle {
@@ -53,9 +52,6 @@ pub fn initiate_player(
             },
             ..Default::default()
         })
-        // .with_children(|parent| => {
-            // initiate_weapon(parent, weapon)
-        // })
         .insert(player)
         .insert(PlayerAnimation::new())
         .insert(Name::new("Player"))
@@ -65,7 +61,3 @@ pub fn initiate_player(
     commands.insert_resource(PlayerSkill::new(skill));
     commands.insert_resource(PlayerEntity { entity });
 }
-
-// fn initiate_weapon(player: &mut ChildBuilder, weapon: Weapon) {
-    // 
-// }

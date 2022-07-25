@@ -3,10 +3,10 @@ use std::slice::Iter;
 
 use crate::config::*;
 use crate::ingame::resources::dungeon::wave::Wave;
+use crate::materials::scenes::MenuBoxMaterials;
+use crate::materials::scenes::ScenesMaterials;
+use crate::materials::Materials;
 use crate::resources::dictionary::Dictionary;
-use crate::resources::materials::scenes::MenuBoxMaterials;
-use crate::resources::materials::scenes::ScenesMaterials;
-use crate::resources::materials::Materials;
 use crate::scenes::SceneState;
 
 const BOX_TILE_SIZE: f32 = 60.0;

@@ -9,10 +9,10 @@ use crate::config::HIGHSCORE_FILE;
 use crate::ingame::resources::hero::gender::Gender;
 use crate::ingame::resources::hero::hero_class::HeroClass;
 use crate::ingame::resources::{game_mode::GameMode, stored_profile::StoredProfile};
+use crate::materials::scenes::ScenesMaterials;
+use crate::materials::Materials;
 use crate::resources::dictionary::Dictionary;
 use crate::resources::language::Language;
-use crate::resources::materials::scenes::ScenesMaterials;
-use crate::resources::materials::Materials;
 use crate::resources::tile_size::TileSize;
 use crate::scenes::SceneState;
 

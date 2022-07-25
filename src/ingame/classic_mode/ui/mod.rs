@@ -2,8 +2,8 @@ use bevy::prelude::*;
 use std::time::Duration;
 
 use crate::ingame::resources::player::player_dungeon_stats::PlayerDungeonStats;
+use crate::materials::Materials;
 use crate::resources::dictionary::Dictionary;
-use crate::resources::materials::Materials;
 use crate::scenes::SceneState;
 
 pub struct ClassicModeUIPlugin;

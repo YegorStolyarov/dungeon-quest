@@ -7,11 +7,11 @@ use std::slice::Iter;
 use crate::config::*;
 use crate::ingame::resources::game_mode::GameMode;
 use crate::ingame::resources::stored_profile::StoredProfile;
+use crate::materials::scenes::MenuBoxMaterials;
+use crate::materials::scenes::ScenesMaterials;
+use crate::materials::Materials;
 use crate::resources::dictionary::Dictionary;
 use crate::resources::language::Language;
-use crate::resources::materials::scenes::MenuBoxMaterials;
-use crate::resources::materials::scenes::ScenesMaterials;
-use crate::resources::materials::Materials;
 use crate::scenes::SceneState;
 
 use crate::ingame::resources::profile::Profile;

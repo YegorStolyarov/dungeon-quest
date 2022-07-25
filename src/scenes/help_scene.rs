@@ -1,11 +1,11 @@
 use bevy::prelude::*;
 
 use crate::config::*;
+use crate::materials::scenes::MenuBoxMaterials;
+use crate::materials::scenes::ScenesMaterials;
+use crate::materials::Materials;
 use crate::resources::dictionary::Dictionary;
 use crate::resources::language::Language;
-use crate::resources::materials::scenes::MenuBoxMaterials;
-use crate::resources::materials::scenes::ScenesMaterials;
-use crate::resources::materials::Materials;
 use crate::scenes::SceneState;
 
 const RETURN_BUTTON_SIDE: f32 = 50.0;

@@ -2,9 +2,9 @@ use bevy::app::AppExit;
 use bevy::prelude::*;
 use std::slice::Iter;
 
+use crate::materials::scenes::{MenuBoxMaterials, ScenesMaterials};
+use crate::materials::Materials;
 use crate::resources::dictionary::Dictionary;
-use crate::resources::materials::scenes::{MenuBoxMaterials, ScenesMaterials};
-use crate::resources::materials::Materials;
 use crate::scenes::SceneState;
 
 const MAIN_MENU_BOX_ARRAY: [[i8; 5]; 8] = [
