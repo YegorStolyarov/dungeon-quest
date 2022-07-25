@@ -1,7 +1,6 @@
 use bevy::prelude::*;
 
 use crate::ingame::resources::effect::effect_type::EffectType;
-use crate::ingame::resources::hero::power::Power;
 use crate::ingame::resources::player::player_effects::PlayerEffects;
 use crate::ingame::resources::player::player_skill::PlayerSkill;
 use crate::ingame::resources::player::Player;
@@ -69,13 +68,5 @@ pub fn update_stats(
     player.critical_chance = base_critical_chance + critical_chance_bonus;
     player.dodge_chance = base_dodge_chance + dodge_chance_bonus;
     player.restore_chance = base_restore_chance + restore_chance_bonus;
-
-    let weapon = player.weapon.clone();
-
-    let player_base_damage = match player.power {
-        Power::Intelligence => player.intelligence + weapon.intelligence,
-        Power::Strength => player.strength + weapon.strength,
-    };
-
-    player.bonus_damage = player_base_damage * damage_percent_bonus;
+    player.damage_percent_bonus = damage_percent_bonus;
 }

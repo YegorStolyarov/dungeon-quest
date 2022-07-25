@@ -97,6 +97,13 @@ pub struct InGameText {
     pub stats: String,
     pub weapon: String,
     pub effect: String,
+    pub movement_speed: String,
+    pub strength: String,
+    pub intelligence: String,
+    pub critical_chance: String,
+    pub dodge_chance: String,
+    pub restore_chance: String,
+    pub damage_percent_bonus: String,
 }
 
 impl Glossary {

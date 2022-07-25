@@ -62,6 +62,13 @@
     "congratulation": "Congratulation",
     "stats": "Stats",
     "weapon": "Weapon",
-    "effect": "Effect"
+    "effect": "Effect",
+    "movement_speed": "Movement Speed",
+    "strength": "Strength",
+    "intelligence": "Intelligence",
+    "critical_chance": "Critical Hit Chance",
+    "dodge_chance": "Dodge chance",
+    "restore_chance": "Restore chance per kill",
+    "damage_percent_bonus": "Damage Bonus"
   }
 }

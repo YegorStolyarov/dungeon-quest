@@ -4,7 +4,8 @@ use crate::config::*;
 use crate::scenes::SceneState;
 
 use crate::ingame::materials::{
-    dungeon::DungeonMaterials, heros::HerosMaterials, weapons::WeaponsMaterials, InGameMaterials,
+    dungeon::DungeonMaterials, hearts::HeartsMaterials, heros::HerosMaterials,
+    weapons::WeaponsMaterials, InGameMaterials,
 };
 use crate::ingame::resources::data::Data;
 use crate::ingame::resources::dungeon::rooms::Rooms;
@@ -343,6 +344,11 @@ fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
             door_top_part: asset_server.load("ingame/dungeon/door_top_part.png"),
             door_left_part: asset_server.load("ingame/dungeon/door_left_part.png"),
             door_right_part: asset_server.load("ingame/dungeon/door_right_part.png"),
+        },
+        hearts_materials: HeartsMaterials {
+            full_heart: asset_server.load("ingame/hearts/full_heart.png"),
+            half_heart: asset_server.load("ingame/hearts/half_heart.png"),
+            empty_heart: asset_server.load("ingame/hearts/empty_heart.png"),
         },
     };
 

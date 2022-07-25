@@ -62,6 +62,13 @@
     "congratulation": "Chúc mừng",
     "stats": "Chỉ số",
     "weapon": "Vũ khí",
-    "effect": "Hiệu ứng"
+    "effect": "Hiệu ứng",
+    "movement_speed": "Tốc độ di chuyển",
+    "strength": "Sức mạnh",
+    "intelligence": "Trí tuệ",
+    "critical_chance": "Tỉ lệ chí mạng",
+    "dodge_chance": "Tỉ lệ né tránh",
+    "restore_chance": "Tỉ lệ hồi phục",
+    "damage_percent_bonus": "Phần trăm sát thương cộng thêm"
   }
 }

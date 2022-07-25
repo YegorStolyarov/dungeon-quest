@@ -23,7 +23,8 @@ impl Plugin for InputHandlePlugin {
                 .with_system(movement::player_movement_handle_system.after("Stats"))
                 .with_system(feature::use_skill)
                 .with_system(feature::pause)
-                .with_system(cheat::knight_skill_cheat),
+                .with_system(cheat::knight_skill_cheat)
+                .with_system(cheat::damage_player_cheat),
         );
     }
 }

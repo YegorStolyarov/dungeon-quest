@@ -28,7 +28,7 @@ pub struct Player {
     pub dodge_chance: f32,
     pub restore_chance: f32,
 
-    pub bonus_damage: f32,
+    pub damage_percent_bonus: f32,
 
     pub power: Power,
     pub base_stats: Stats,
@@ -53,7 +53,7 @@ impl Player {
             dodge_chance: base_stats.dodge_chance,
             restore_chance: base_stats.restore_chance,
             power: hero.power,
-            bonus_damage: 0.0,
+            damage_percent_bonus: 0.0,
             base_stats: base_stats.clone(),
             weapon,
         }

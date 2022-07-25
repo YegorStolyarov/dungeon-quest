@@ -69,7 +69,7 @@ fn setup(
             menu_box(parent, &scenes_materials.menu_box_materials);
             buttons(parent, &materials, &dictionary);
         })
-        .insert(Name::new("PauseUI"))
+        .insert(Name::new("RewardsUI"))
         .id();
 
     commands.insert_resource(RewardsSceneData {

@@ -13,9 +13,12 @@ pub struct PlayerSkill {
 
 impl PlayerSkill {
     pub fn new(skill: Skill) -> Self {
+        let mut duration = Timer::new(Duration::from_secs(0), false);
+        duration.tick(Duration::from_secs(0));
+
         PlayerSkill {
-            cooldown: Timer::new(Duration::from_secs(0), false),
-            duration: Timer::new(Duration::from_secs(0), false),
+            cooldown: Timer::new(Duration::from_secs(5), false),
+            duration,
             require_monsters: skill.require_monsters.unwrap_or(0),
             monster_counter: 0,
             skill,

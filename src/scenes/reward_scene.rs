@@ -53,7 +53,7 @@ fn setup(
             menu_box(parent, &scenes_materials.menu_box_materials);
             button(parent, &materials, &dictionary);
         })
-        .insert(Name::new("RewardSceneUI"))
+        .insert(Name::new("RewardUI"))
         .id();
 
     commands.insert_resource(RewardSceneData {

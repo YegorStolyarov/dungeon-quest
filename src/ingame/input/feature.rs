@@ -14,14 +14,13 @@ pub fn pause(mut keyboard_input: ResMut<Input<KeyCode>>, mut state: ResMut<State
 }
 
 pub fn use_skill(
-    keyboard_input: Res<Input<KeyCode>>,
+    mut keyboard_input: ResMut<Input<KeyCode>>,
     mut player_query: Query<&mut Player>,
     mut player_skill: ResMut<PlayerSkill>,
 ) {
     if keyboard_input.pressed(KeyCode::Space) {
         if player_skill.cooldown.finished() {
             let mut player = player_query.single_mut();
-
             match player_skill.skill.name {
                 SkillType::Armor => {}
                 SkillType::Thunderstorm => {
@@ -31,11 +30,9 @@ pub fn use_skill(
                 }
                 SkillType::TimeToHunt => {
                     let skill = player_skill.skill.clone();
-
                     let duration = skill.duration.unwrap();
-                    let cooldown = skill.cooldown.unwrap();
-
                     player_skill.duration = Timer::new(Duration::from_secs(duration), false);
+                    let cooldown = skill.cooldown.unwrap();
                     player_skill.cooldown = Timer::new(Duration::from_secs(cooldown), false);
                 }
                 SkillType::AnimalInstinct => {
@@ -44,13 +41,13 @@ pub fn use_skill(
                     if player.current_health_points > require_health {
                         player.current_health_points -= require_health;
                         let duration = skill.duration.unwrap();
-                        let cooldown = skill.cooldown.unwrap();
-
                         player_skill.duration = Timer::new(Duration::from_secs(duration), false);
+                        let cooldown = skill.cooldown.unwrap();
                         player_skill.cooldown = Timer::new(Duration::from_secs(cooldown), false);
                     }
                 }
             }
         }
+        keyboard_input.reset(KeyCode::Space);
     }
 }
