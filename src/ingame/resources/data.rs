@@ -14,7 +14,7 @@ pub struct Data {
     heros: [Hero; 4],
     weapons: [Weapon; 11],
     skills: [Skill; 4],
-    player_effect_information: [EffectInformation; 6],
+    player_effect_information: [EffectInformation; 8],
 }
 
 impl Data {

@@ -59,7 +59,8 @@
   "ingame_text": {
     "floor": "Tầng",
     "wave": "Vòng",
-    "congratulation": "Chúc mừng",
+    "upgrade": "Nâng cấp",
+    "skill": "Kỹ năng",
     "stats": "Chỉ số",
     "weapon": "Vũ khí",
     "effect": "Hiệu ứng",

@@ -13,4 +13,5 @@ pub struct Weapon {
     pub strength: f32,
     pub intelligence: f32,
     pub effect: Option<EffectType>,
+    pub level: u8,
 }

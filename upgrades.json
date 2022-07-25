@@ -1,0 +1,299 @@
+[
+  {
+    "upgrade_type": "Skill",
+    "skill_upgrade": {
+      "name": "Armor",
+      "require_monsters_reduce": 2
+    }
+  },
+  {
+    "upgrade_type": "Skill",
+    "skill_upgrade": {
+      "name": "Armor",
+      "require_monsters_reduce": 1
+    }
+  },
+  {
+    "upgrade_type": "Skill",
+    "skill_upgrade": {
+      "name": "Thunderstorm",
+      "cooldown_reduce": 10
+    }
+  },
+  {
+    "upgrade_type": "Skill",
+    "skill_upgrade": {
+      "name": "Thunderstorm",
+      "cooldown_reduce": 5
+    }
+  },
+  {
+    "upgrade_type": "Skill",
+    "skill_upgrade": {
+      "name": "TimeToHunt",
+      "cooldown_reduce": 7,
+      "duration_bonus": 5,
+      "speed_percent_bonus": 0.08,
+      "critical_chance_bonus": 0.15
+    }
+  },
+  {
+    "upgrade_type": "Skill",
+    "skill_upgrade": {
+      "name": "TimeToHunt",
+      "cooldown_reduce": 5,
+      "duration_bonus": 2,
+      "speed_percent_bonus": 0.16,
+      "critical_chance_bonus": 0.05
+    }
+  },
+  {
+    "upgrade_type": "Skill",
+    "skill_upgrade": {
+      "name": "AnimalInstinct",
+      "cooldown_reduce": 10,
+      "duration_bonus": 10,
+      "speed_percent_bonus": 0.05,
+      "critical_chance_bonus": 0.05,
+      "dodge_chance_bonus": 0.05,
+      "restore_chance_bonus": 0.05
+    }
+  },
+  {
+    "upgrade_type": "Skill",
+    "skill_upgrade": {
+      "name": "AnimalInstinct",
+      "cooldown_reduce": 15,
+      "duration_bonus": 5,
+      "speed_percent_bonus": 0.2,
+      "critical_chance_bonus": 0.15,
+      "dodge_chance_bonus": 0.05,
+      "restore_chance_bonus": 0.1
+    }
+  },
+  {
+    "upgrade_type": "Weapon"
+  },
+  {
+    "upgrade_type": "Stats",
+    "stats_upgrade": {
+      "max_health_bonus": 1
+    }
+  },
+  {
+    "upgrade_type": "Stats",
+    "stats_upgrade": {
+      "speed_percent_bonus": 0.2
+    }
+  },
+  {
+    "upgrade_type": "Stats",
+    "stats_upgrade": {
+      "speed_percent_bonus": 0.3
+    }
+  },
+  {
+    "upgrade_type": "Stats",
+    "stats_upgrade": {
+      "speed_percent_bonus": 0.4
+    }
+  },
+  {
+    "upgrade_type": "Stats",
+    "stats_upgrade": {
+      "speed_percent_bonus": 0.5
+    }
+  },
+  {
+    "upgrade_type": "Stats",
+    "stats_upgrade": {
+      "critical_chance_bonus": 0.1
+    }
+  },
+  {
+    "upgrade_type": "Stats",
+    "stats_upgrade": {
+      "critical_chance_bonus": 0.15
+    }
+  },
+  {
+    "upgrade_type": "Stats",
+    "stats_upgrade": {
+      "critical_chance_bonus": 0.2
+    }
+  },
+  {
+    "upgrade_type": "Stats",
+    "stats_upgrade": {
+      "strength_bonus": 1
+    }
+  },
+  {
+    "upgrade_type": "Stats",
+    "stats_upgrade": {
+      "intelligence_bonus": 1
+    }
+  },
+  {
+    "upgrade_type": "Stats",
+    "stats_upgrade": {
+      "dodge_chance_bonus": 0.05
+    }
+  },
+  {
+    "upgrade_type": "Stats",
+    "stats_upgrade": {
+      "dodge_chance_bonus": 0.1
+    }
+  },
+  {
+    "upgrade_type": "Stats",
+    "stats_upgrade": {
+      "dodge_chance_bonus": 0.15
+    }
+  },
+  {
+    "upgrade_type": "Stats",
+    "stats_upgrade": {
+      "restore_chance_bonus": 0.1
+    }
+  },
+  {
+    "upgrade_type": "Stats",
+    "stats_upgrade": {
+      "restore_chance_bonus": 0.16
+    }
+  },
+  {
+    "upgrade_type": "Stats",
+    "stats_upgrade": {
+      "restore_chance_bonus": 0.22
+    }
+  },
+  {
+    "upgrade_type": "Effect",
+    "effect_upgrade": {
+      "name": "SpeedUp",
+      "duration_bonus": 2
+    }
+  },
+  {
+    "upgrade_type": "Effect",
+    "effect_upgrade": {
+      "name": "SpeedUp",
+      "speed_percent_bonus": 0.15
+    }
+  },
+  {
+    "upgrade_type": "Effect",
+    "effect_upgrade": {
+      "name": "SpeedUp",
+      "speed_percent_bonus": 0.2
+    }
+  },
+  {
+    "upgrade_type": "Effect",
+    "effect_upgrade": {
+      "name": "EvasionUp",
+      "duration_bonus": 2
+    }
+  },
+  {
+    "upgrade_type": "Effect",
+    "effect_upgrade": {
+      "name": "EvasionUp",
+      "dodge_chance_bonus": 0.15
+    }
+  },
+  {
+    "upgrade_type": "Effect",
+    "effect_upgrade": {
+      "name": "EvasionUp",
+      "duration_bonus": 1
+    }
+  },
+  {
+    "upgrade_type": "Effect",
+    "effect_upgrade": {
+      "name": "Focus",
+      "duration_bonus": 2
+    }
+  },
+  {
+    "upgrade_type": "Effect",
+    "effect_upgrade": {
+      "name": "Focus",
+      "critical_chance_bonus": 0.1
+    }
+  },
+  {
+    "upgrade_type": "Effect",
+    "effect_upgrade": {
+      "name": "Focus",
+      "critical_chance_bonus": 0.15
+    }
+  },
+  {
+    "upgrade_type": "Effect",
+    "effect_upgrade": {
+      "name": "Slow",
+      "duration_reduce": 1
+    }
+  },
+  {
+    "upgrade_type": "Effect",
+    "effect_upgrade": {
+      "name": "Slow",
+      "duration_reduce": 2
+    }
+  },
+  {
+    "upgrade_type": "Effect",
+    "effect_upgrade": {
+      "name": "Slow",
+      "speed_percent_reduce": 0.05
+    }
+  },
+  {
+    "upgrade_type": "Effect",
+    "effect_upgrade": {
+      "name": "ReduceDamage",
+      "duration_reduce": 2
+    }
+  },
+  {
+    "upgrade_type": "Effect",
+    "effect_upgrade": {
+      "name": "ReduceDamage",
+      "duration_reduce": 3
+    }
+  },
+  {
+    "upgrade_type": "Effect",
+    "effect_upgrade": {
+      "name": "ReduceDamage",
+      "duration_reduce": 1
+    }
+  },
+  {
+    "upgrade_type": "Effect",
+    "effect_upgrade": {
+      "name": "Disarm",
+      "duration_reduce": 1
+    }
+  },
+  {
+    "upgrade_type": "Effect",
+    "effect_upgrade": {
+      "name": "Stun",
+      "duration_reduce": 1
+    }
+  },
+  {
+    "upgrade_type": "Effect",
+    "effect_upgrade": {
+      "name": "Confuse",
+      "duration_reduce": 1
+    }
+  }
+]

@@ -93,7 +93,8 @@ pub struct ResultSceneText {
 pub struct InGameText {
     pub floor: String,
     pub wave: String,
-    pub congratulation: String,
+    pub upgrade: String,
+    pub skill: String,
     pub stats: String,
     pub weapon: String,
     pub effect: String,

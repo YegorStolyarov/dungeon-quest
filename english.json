@@ -59,7 +59,8 @@
   "ingame_text": {
     "floor": "Floor",
     "wave": "Wave",
-    "congratulation": "Congratulation",
+    "upgrade": "Upgrade",
+    "skill": "Skill",
     "stats": "Stats",
     "weapon": "Weapon",
     "effect": "Effect",

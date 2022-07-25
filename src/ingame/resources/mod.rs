@@ -8,4 +8,5 @@ pub mod player;
 pub mod profile;
 pub mod skill;
 pub mod stored_profile;
+pub mod upgrade;
 pub mod weapon;

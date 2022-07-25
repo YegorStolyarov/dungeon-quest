@@ -93,96 +93,114 @@
     {
       "name": "BowAndArrow",
       "strength": 2.0,
-      "intelligence": 0.0
+      "intelligence": 0.0,
+      "level": 1
     },
     {
       "name": "Spear",
       "strength": 3.0,
       "intelligence": 0.0,
-      "effect": "SpeedUp"
+      "effect": "SpeedUp",
+      "level": 2
     },
     {
       "name": "ShortSword",
       "strength": 1.0,
-      "intelligence": 0.0
+      "intelligence": 0.0,
+      "level": 1
     },
     {
       "name": "Sword",
       "strength": 2.0,
-      "intelligence": 0.0
+      "intelligence": 0.0,
+      "level": 2
     },
     {
       "name": "BigMachete",
       "strength": 3.0,
       "intelligence": 0.0,
-      "effect": "ReduceDamage"
+      "effect": "ReduceDamage",
+      "level": 3
     },
     {
       "name": "SmallWand",
       "strength": 0.0,
-      "intelligence": 1.0
+      "intelligence": 1.0,
+      "level": 1
     },
     {
       "name": "MagicWand",
       "strength": 0.0,
       "intelligence": 2.0,
-      "effect": "Slow"
+      "effect": "Slow",
+      "level": 2
     },
     {
       "name": "MagicSword",
       "strength": 0.0,
-      "intelligence": 3.0
+      "intelligence": 3.0,
+      "level": 3
     },
     {
       "name": "SmallHammer",
       "strength": 1.0,
-      "intelligence": 0.0
+      "intelligence": 0.0,
+      "level": 1
     },
     {
       "name": "Mace",
       "strength": 2.0,
-      "intelligence": 0.0
+      "intelligence": 0.0,
+      "level": 2
     },
     {
       "name": "BigHammer",
       "strength": 3.0,
       "intelligence": 0.0,
-      "effect": "Stun"
+      "effect": "Stun",
+      "level": 3
     }
   ],
   "player_effect_information": [
     {
       "name": "SpeedUp",
-      "duration": 5.0,
+      "duration": 5,
       "bonus": 0.3
     },
     {
       "name": "EvasionUp",
-      "duration": 5.0,
+      "duration": 5,
       "bonus": 0.2
     },
     {
       "name": "Focus",
-      "duration": 10.0,
+      "duration": 10,
       "bonus": 0.5
     },
     {
       "name": "Slow",
-      "duration": 5.0,
-      "bonus": -0.3,
-      "trigger_chance": 0.3
+      "duration": 5,
+      "bonus": -0.3
     },
     {
       "name": "Stun",
-      "duration": 3.0,
-      "bonus": 0.0,
-      "trigger_chance": 0.3
+      "duration": 3,
+      "bonus": 0.0
     },
     {
       "name": "ReduceDamage",
-      "duration": 10.0,
-      "bonus": -0.5,
-      "trigger_chance": 0.3
+      "duration": 10,
+      "bonus": -0.5
+    },
+    {
+      "name": "Disarm",
+      "duration": 3,
+      "bonus": 0.0
+    },
+    {
+      "name": "Confuse",
+      "duration": 3,
+      "bonus": 0.0
     }
   ]
 }

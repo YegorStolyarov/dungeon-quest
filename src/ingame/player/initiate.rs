@@ -9,6 +9,7 @@ use crate::ingame::resources::player::player_effects::PlayerEffects;
 use crate::ingame::resources::player::player_skill::PlayerSkill;
 use crate::ingame::resources::player::Player;
 use crate::ingame::resources::profile::Profile;
+use crate::ingame::resources::upgrade::upgrade_controller::UpgradeController;
 
 const PLAYER_ORIGIN_SIZE_WIDTH: f32 = 16.0;
 const PLAYER_ORIGIN_SIZE_HEIGHT: f32 = 28.0;
@@ -59,5 +60,6 @@ pub fn initiate_player(
 
     commands.insert_resource(PlayerEffects::new(data.get_player_effect_information()));
     commands.insert_resource(PlayerSkill::new(skill));
+    commands.insert_resource(UpgradeController::new());
     commands.insert_resource(PlayerEntity { entity });
 }
