@@ -24,6 +24,8 @@ pub fn initiate_player(
     let class = profile.hero_class.clone();
     let gender = profile.gender.clone();
 
+    let skill = data.get_skill(class.clone());
+
     let player = Player::new(class.clone(), data.clone());
 
     let hero_tileset = ingame_materials
@@ -36,9 +38,8 @@ pub fn initiate_player(
         9,
         1,
     );
-    let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
-    let skill = data.get_skill(class);
+    let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
     let entity = commands
         .spawn_bundle(SpriteSheetBundle {

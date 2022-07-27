@@ -6,7 +6,6 @@ use crate::ingame::resources::data::Data;
 use crate::ingame::resources::hero::hero_class::HeroClass;
 use crate::ingame::resources::hero::power::Power;
 use crate::ingame::resources::hero::stats::Stats;
-use crate::ingame::resources::weapon::Weapon;
 
 pub mod player_animation;
 pub mod player_available_movement;
@@ -17,28 +16,22 @@ pub mod player_skill;
 #[derive(Component, Inspectable)]
 pub struct Player {
     pub class: HeroClass,
-
     pub current_health_points: f32,
     pub max_health_points: f32,
     pub speed: f32,
     pub strength: f32,
     pub intelligence: f32,
-
     pub critical_chance: f32,
     pub dodge_chance: f32,
     pub restore_chance: f32,
-
     pub damage_percent_bonus: f32,
-
     pub power: Power,
     pub base_stats: Stats,
-    pub weapon: Weapon,
 }
 
 impl Player {
     pub fn new(hero_class: HeroClass, data: Data) -> Self {
         let hero = data.get_hero(hero_class.clone());
-        let weapon = data.get_weapon(hero_class.clone());
 
         let base_stats = hero.stats;
 
@@ -55,7 +48,6 @@ impl Player {
             power: hero.power,
             damage_percent_bonus: 0.0,
             base_stats: base_stats.clone(),
-            weapon,
         }
     }
 }

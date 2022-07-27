@@ -3,7 +3,6 @@ use bevy::prelude::*;
 #[derive(Clone)]
 pub struct WeaponsMaterials {
     pub bow: Handle<Image>,
-    pub arrow: Handle<Image>,
     pub short_sword: Handle<Image>,
     pub sword: Handle<Image>,
     pub machete: Handle<Image>,

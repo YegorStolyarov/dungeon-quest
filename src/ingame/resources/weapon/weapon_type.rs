@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Inspectable)]
 pub enum WeaponType {
-    BowAndArrow,
+    Bow,
     Spear,
     ShortSword,
     Sword,

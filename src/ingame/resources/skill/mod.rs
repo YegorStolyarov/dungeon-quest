@@ -7,8 +7,8 @@ use skill_type::SkillType;
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Skill {
     pub name: SkillType,
-    pub duration: Option<u64>,
-    pub cooldown: Option<u64>,
+    pub duration: Option<i64>,
+    pub cooldown: Option<i64>,
     pub require_health_points: Option<f32>,
     pub require_monsters: Option<u32>,
     pub speed_percent_bonus: Option<f32>,

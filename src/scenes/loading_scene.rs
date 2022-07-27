@@ -4,8 +4,8 @@ use crate::config::*;
 use crate::scenes::SceneState;
 
 use crate::ingame::materials::{
-    dungeon::DungeonMaterials, hearts::HeartsMaterials, heros::HerosMaterials,
-    weapons::WeaponsMaterials, InGameMaterials,
+    bullets::BulletsMaterials, dungeon::DungeonMaterials, hearts::HeartsMaterials,
+    heros::HerosMaterials, weapons::WeaponsMaterials, InGameMaterials,
 };
 use crate::ingame::resources::data::Data;
 use crate::ingame::resources::dungeon::rooms::Rooms;
@@ -305,7 +305,6 @@ fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
         },
         weapons_materials: WeaponsMaterials {
             bow: asset_server.load("ingame/weapons/bow.png"),
-            arrow: asset_server.load("ingame/weapons/arrow.png"),
             short_sword: asset_server.load("ingame/weapons/short_sword.png"),
             sword: asset_server.load("ingame/weapons/sword.png"),
             machete: asset_server.load("ingame/weapons/machete.png"),
@@ -316,6 +315,10 @@ fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
             magic_wand: asset_server.load("ingame/weapons/magic_wand.png"),
             magic_sword: asset_server.load("ingame/weapons/magic_sword.png"),
             spear: asset_server.load("ingame/weapons/spear.png"),
+        },
+        bullet_materials: BulletsMaterials {
+            arrow: asset_server.load("ingame/bullets/arrow.png"),
+            bullet: asset_server.load("ingame/bullets/bullet.png"),
         },
         dungeon_materials: DungeonMaterials {
             floor: asset_server.load("ingame/dungeon/floor.png"),

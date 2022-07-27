@@ -12,7 +12,7 @@
         "restore_chance": 0.0
       },
       "power": "Strength",
-      "weapon": "BowAndArrow",
+      "weapon": "Bow",
       "skill": "TimeToHunt"
     },
     {
@@ -91,74 +91,157 @@
   ],
   "weapons": [
     {
-      "name": "BowAndArrow",
+      "name": "Bow",
       "strength": 2.0,
       "intelligence": 0.0,
-      "level": 1
+      "level": 1,
+      "width": 7.0,
+      "height": 25.0,
+      "scale": 2.1,
+      "attack_type": "Shoot",
+      "bullet": {
+        "width": 7.0,
+        "height": 21.0,
+        "scale": 2.0,
+        "speed": 6.0
+      },
+      "cooldown": 1
     },
     {
       "name": "Spear",
       "strength": 3.0,
       "intelligence": 0.0,
       "effect": "SpeedUp",
-      "level": 2
+      "attack_type": "Throw",
+      "level": 2,
+      "width": 6.0,
+      "height": 30.0,
+      "scale": 3.0
     },
     {
       "name": "ShortSword",
       "strength": 1.0,
       "intelligence": 0.0,
-      "level": 1
+      "attack_type": "Swing",
+      "swing_speed": 3.0,
+      "level": 1,
+      "width": 10.0,
+      "height": 21.0,
+      "scale": 2.1
     },
     {
       "name": "Sword",
       "strength": 2.0,
       "intelligence": 0.0,
-      "level": 2
+      "attack_type": "Swing",
+      "swing_speed": 2.5,
+      "level": 2,
+      "width": 10.0,
+      "height": 25.0,
+      "scale": 2.4
     },
     {
       "name": "BigMachete",
       "strength": 3.0,
       "intelligence": 0.0,
       "effect": "ReduceDamage",
-      "level": 3
+      "swing_speed": 2.0,
+      "attack_type": "Swing",
+      "trigger_chance": 0.3,
+      "effect_bonus": 0.5,
+      "level": 3,
+      "width": 12.0,
+      "height": 30.0,
+      "scale": 2.5
     },
     {
       "name": "SmallWand",
       "strength": 0.0,
       "intelligence": 1.0,
-      "level": 1
+      "attack_type": "Shoot",
+      "level": 1,
+      "width": 8.0,
+      "height": 30.0,
+      "bullet": {
+        "width": 16.0,
+        "height": 16.0,
+        "scale": 2.0,
+        "speed": 4.0
+      },
+      "scale": 1.8,
+      "cooldown": 2
     },
     {
       "name": "MagicWand",
       "strength": 0.0,
       "intelligence": 2.0,
       "effect": "Slow",
-      "level": 2
+      "trigger_chance": 0.3,
+      "attack_type": "Shoot",
+      "effect_bonus": 0.3,
+      "level": 2,
+      "width": 8.0,
+      "height": 30.0,
+      "scale": 2.1,
+      "bullet": {
+        "width": 16.0,
+        "height": 16.0,
+        "scale": 3.0,
+        "speed": 4.0
+      },
+      "cooldown": 2
     },
     {
       "name": "MagicSword",
       "strength": 0.0,
       "intelligence": 3.0,
-      "level": 3
+      "attack_type": "Shoot",
+      "level": 3,
+      "width": 10.0,
+      "height": 30.0,
+      "scale": 2.1,
+      "bullet": {
+        "width": 16.0,
+        "height": 16.0,
+        "scale": 4.5,
+        "speed": 4.5
+      },
+      "cooldown": 2
     },
     {
       "name": "SmallHammer",
       "strength": 1.0,
       "intelligence": 0.0,
-      "level": 1
+      "swing_speed": 4.0,
+      "attack_type": "Swing",
+      "level": 1,
+      "width": 10.0,
+      "scale": 1.7,
+      "height": 24.0
     },
     {
       "name": "Mace",
       "strength": 2.0,
       "intelligence": 0.0,
-      "level": 2
+      "attack_type": "Swing",
+      "swing_speed": 2.7,
+      "level": 2,
+      "width": 10.0,
+      "scale": 2.2,
+      "height": 24.0
     },
     {
       "name": "BigHammer",
       "strength": 3.0,
       "intelligence": 0.0,
       "effect": "Stun",
-      "level": 3
+      "trigger_chance": 0.3,
+      "swing_speed": 2.0,
+      "attack_type": "Swing",
+      "level": 3,
+      "width": 10.0,
+      "scale": 2.4,
+      "height": 37.0
     }
   ],
   "player_effect_information": [

@@ -1,8 +1,12 @@
 use bevy::prelude::*;
+use bevy::sprite::Anchor;
 use std::slice::Iter;
 
 use crate::config::*;
+use crate::ingame::materials::InGameMaterials;
+use crate::ingame::resources::data::Data;
 use crate::ingame::resources::dungeon::wave::Wave;
+use crate::ingame::resources::hero::hero_class::HeroClass;
 use crate::ingame::resources::player::player_effects::PlayerEffects;
 use crate::ingame::resources::player::player_skill::PlayerSkill;
 use crate::ingame::resources::player::Player;
@@ -10,6 +14,11 @@ use crate::ingame::resources::skill::skill_type::SkillType;
 use crate::ingame::resources::upgrade::upgrade_controller::UpgradeController;
 use crate::ingame::resources::upgrade::upgrade_type::UpgradeType;
 use crate::ingame::resources::upgrade::Upgrade;
+use crate::ingame::resources::weapon::attack_type::AttackType;
+use crate::ingame::resources::weapon::bullet::Bullet;
+use crate::ingame::resources::weapon::bullet_controller::BulletController;
+use crate::ingame::resources::weapon::weapon_type::WeaponType;
+use crate::ingame::weapon::WeaponComponent;
 use crate::materials::scenes::MenuBoxMaterials;
 use crate::materials::scenes::ScenesMaterials;
 use crate::materials::Materials;
@@ -64,13 +73,15 @@ impl Plugin for RewardsScenePlugin {
 fn setup(
     upgrade_controller: Res<UpgradeController>,
     scenes_materials: Res<ScenesMaterials>,
+    weapon_query: Query<&WeaponComponent>,
     player_query: Query<&Player>,
     dictionary: Res<Dictionary>,
     materials: Res<Materials>,
     mut commands: Commands,
 ) {
     let player = player_query.single();
-    let three_upgrades = upgrade_controller.get_three_upgrades(player);
+    let weapon_component = weapon_query.single();
+    let three_upgrades = upgrade_controller.get_three_upgrades(player, weapon_component.level);
 
     let user_interface_root = commands
         .spawn_bundle(NodeBundle {
@@ -224,13 +235,17 @@ fn button_handle_system(
         (&Interaction, &RewardsSceneButton, &Reward, &Children),
         (Changed<Interaction>, With<Button>),
     >,
+    mut weapon_query: Query<(&mut WeaponComponent, &mut Sprite, &mut Handle<Image>)>,
+    mut bullet_controller: ResMut<BulletController>,
     upgrade_controller: Res<UpgradeController>,
     mut player_effects: ResMut<PlayerEffects>,
+    ingame_materials: Res<InGameMaterials>,
     mut player_skill: ResMut<PlayerSkill>,
     mut state: ResMut<State<SceneState>>,
     mut player_query: Query<&mut Player>,
     mut text_query: Query<&mut Text>,
     mut wave: ResMut<Wave>,
+    data: Res<Data>,
 ) {
     for (interaction, _button, reward, children) in button_query.iter_mut() {
         let mut text = text_query.get_mut(children[0]).unwrap();
@@ -240,7 +255,14 @@ fn button_handle_system(
             Interaction::Clicked => {
                 match reward.upgrade_type {
                     UpgradeType::Weapon => {
-                        todo!("Do weapon");
+                        let hero_class = player_query.single().class.clone();
+                        upgrade_weapon(
+                            &mut weapon_query,
+                            &mut bullet_controller,
+                            &ingame_materials,
+                            hero_class,
+                            &data,
+                        );
                     }
                     UpgradeType::Stats => {
                         let upgrade = upgrade_controller.get_stats_upgrade();
@@ -308,8 +330,13 @@ fn upgrade_effect(upgrade: Upgrade, player_effect: &mut PlayerEffects) {
     let bonus =
         speed_percent_bonus - speed_percent_reduce + critical_chance_bonus + dodge_chance_bonus;
 
-    information.duration += duration;
-    information.bonus += bonus;
+    information.duration = if information.duration + duration > 0 {
+        information.duration + duration
+    } else {
+        1
+    };
+
+    information.bonus = information.bonus + bonus;
 }
 
 fn upgrade_skill(upgrade: Upgrade, player_skill: &mut PlayerSkill) {
@@ -356,4 +383,70 @@ fn upgrade_skill(upgrade: Upgrade, player_skill: &mut PlayerSkill) {
             player_skill.skill.dodge_chance_bonus = Some(dodge_chance + dodge_chance_bonus);
         }
     };
+}
+
+fn upgrade_weapon(
+    weapon_query: &mut Query<(&mut WeaponComponent, &mut Sprite, &mut Handle<Image>)>,
+    mut bullet_controller: &mut BulletController,
+    ingame_materials: &InGameMaterials,
+    hero_class: HeroClass,
+    data: &Data,
+) {
+    let (mut weapon_component, mut weapon_sprite, mut texture) = weapon_query.single_mut();
+    let weapons = data.get_weapons(hero_class.clone());
+    let weapon_level = weapon_component.level;
+    if weapon_level >= 3 || weapon_level == 2 && hero_class == HeroClass::Elf {
+        return;
+    } else {
+        let weapon_next_level = weapon_level + 1;
+
+        let weapon = weapons
+            .iter()
+            .find(|weapon| weapon.level == weapon_next_level)
+            .expect("Cant' find weapon")
+            .clone();
+
+        weapon_component.name = weapon.name.clone();
+        weapon_component.level = weapon.level;
+        weapon_component.swing_speed = weapon.swing_speed.unwrap_or(0.0);
+        weapon_component.cooldown_second = weapon.cooldown.unwrap_or(0);
+        weapon_component.attack_type = weapon.attack_type.clone();
+        weapon_component.size_width = weapon.width;
+        weapon_component.size_height = weapon.height;
+        weapon_component.scale = weapon.scale;
+
+        let bullet = weapon.bullet.unwrap_or(Bullet {
+            width: 0.0,
+            height: 0.0,
+            speed: 0.0,
+            scale: 0.0,
+        });
+
+        bullet_controller.bullet_information = bullet;
+
+        weapon_sprite.custom_size = Some(Vec2::new(
+            weapon_component.size_width * weapon.scale,
+            weapon_component.size_height * weapon.scale,
+        ));
+
+        weapon_sprite.anchor = match weapon.attack_type {
+            AttackType::Swing => Anchor::BottomCenter,
+            AttackType::Throw => Anchor::BottomCenter,
+            AttackType::Shoot => Anchor::Center,
+        };
+
+        *texture = match weapon.name {
+            WeaponType::Spear => ingame_materials.weapons_materials.spear.clone(),
+            WeaponType::Sword => ingame_materials.weapons_materials.small_wand.clone(),
+            WeaponType::BigMachete => ingame_materials.weapons_materials.machete.clone(),
+            WeaponType::MagicWand => ingame_materials.weapons_materials.magic_wand.clone(),
+            WeaponType::MagicSword => ingame_materials.weapons_materials.magic_sword.clone(),
+            WeaponType::Mace => ingame_materials.weapons_materials.mace.clone(),
+            WeaponType::BigHammer => ingame_materials.weapons_materials.big_hammer.clone(),
+            WeaponType::Bow => ingame_materials.weapons_materials.bow.clone(),
+            WeaponType::ShortSword => ingame_materials.weapons_materials.short_sword.clone(),
+            WeaponType::SmallWand => ingame_materials.weapons_materials.small_wand.clone(),
+            WeaponType::SmallHammer => ingame_materials.weapons_materials.small_hammer.clone(),
+        };
+    }
 }

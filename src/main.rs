@@ -49,6 +49,7 @@ fn main() {
         .add_plugin(scenes::reward_scene::RewardScenePlugin)
         .add_plugin(ingame::input::InputHandlePlugin)
         .add_plugin(ingame::player::PlayerPlugin)
+        .add_plugin(ingame::weapon::WeaponPlugin)
         .add_plugin(ingame::classic_mode::ClassicModePlugin)
         .add_plugin(ingame::classic_mode::ui::ClassicModeUIPlugin)
         .add_plugin(ingame::survival_mode::SurvivalModePlugin)

@@ -210,7 +210,7 @@ fn wave_countdown_text_handle_system(
 
     let full_time_seconds = wave.wave_duration;
 
-    let seconds_left = full_time_seconds - elapsed_seconds as u64;
+    let seconds_left = full_time_seconds - elapsed_seconds as i64;
 
     let seconds = seconds_left % 60;
     let formated_seconds = match seconds {

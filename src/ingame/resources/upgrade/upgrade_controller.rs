@@ -8,6 +8,7 @@ use crate::ingame::resources::player::Player;
 use crate::ingame::resources::skill::skill_type::SkillType;
 use crate::ingame::resources::upgrade::upgrade_type::UpgradeType;
 use crate::ingame::resources::upgrade::Upgrade;
+use crate::ingame::resources::weapon::Weapon;
 
 pub struct UpgradeController {
     pub upgrades: Vec<Upgrade>,
@@ -69,7 +70,7 @@ impl UpgradeController {
         effect_upgrades[random_index].clone()
     }
 
-    pub fn get_three_upgrades(&self, player: &Player) -> Vec<UpgradeType> {
+    pub fn get_three_upgrades(&self, player: &Player, weapon_level: u8) -> Vec<UpgradeType> {
         let mut three_upgrades: Vec<UpgradeType> = Vec::new();
         let mut upgrade_types: Vec<UpgradeType> = Vec::new();
 
@@ -77,9 +78,9 @@ impl UpgradeController {
         upgrade_types.push(UpgradeType::Stats);
         upgrade_types.push(UpgradeType::Skill);
 
-        if player.class == HeroClass::Elf && player.weapon.level < 2 {
+        if player.class == HeroClass::Elf && weapon_level < 2 {
             upgrade_types.push(UpgradeType::Weapon);
-        } else if player.weapon.level < 3 {
+        } else if weapon_level < 3 {
             upgrade_types.push(UpgradeType::Weapon);
         }
 

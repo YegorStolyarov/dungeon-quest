@@ -3,14 +3,14 @@ use std::time::Duration;
 
 pub struct Wave {
     pub wave_number: usize,
-    pub wave_duration: u64,
+    pub wave_duration: i64,
     pub timer: Timer,
 }
 
 impl Wave {
     pub fn new() -> Self {
-        let wave_duration: u64 = 5;
-        let timer = Timer::new(Duration::from_secs(wave_duration), false);
+        let wave_duration: i64 = 30;
+        let timer = Timer::new(Duration::from_secs(wave_duration as u64), false);
 
         Wave {
             wave_number: 1,
@@ -21,7 +21,7 @@ impl Wave {
 
     pub fn next_wave(&mut self) {
         self.wave_number += 1;
-        self.wave_duration += 5;
-        self.timer = Timer::new(Duration::from_secs(self.wave_duration), false);
+        self.wave_duration += 30;
+        self.timer = Timer::new(Duration::from_secs(self.wave_duration as u64), false);
     }
 }

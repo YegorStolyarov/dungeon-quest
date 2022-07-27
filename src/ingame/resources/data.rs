@@ -7,6 +7,7 @@ use crate::ingame::resources::effect::effect_information::EffectInformation;
 use crate::ingame::resources::hero::hero_class::HeroClass;
 use crate::ingame::resources::hero::Hero;
 use crate::ingame::resources::skill::Skill;
+use crate::ingame::resources::weapon::weapon_type::WeaponType;
 use crate::ingame::resources::weapon::Weapon;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -54,6 +55,36 @@ impl Data {
             .find(|weapon| weapon.name == hero.weapon)
             .unwrap()
             .clone()
+    }
+
+    pub fn get_weapons(&self, hero_class: HeroClass) -> Vec<Weapon> {
+        let weapons_type: Vec<WeaponType> = match hero_class {
+            HeroClass::Elf => [WeaponType::Bow, WeaponType::Spear].to_vec(),
+            HeroClass::Knight => [
+                WeaponType::ShortSword,
+                WeaponType::Sword,
+                WeaponType::BigMachete,
+            ]
+            .to_vec(),
+            HeroClass::Wizard => [
+                WeaponType::SmallWand,
+                WeaponType::MagicWand,
+                WeaponType::MagicSword,
+            ]
+            .to_vec(),
+            HeroClass::Lizard => [
+                WeaponType::SmallHammer,
+                WeaponType::Mace,
+                WeaponType::BigHammer,
+            ]
+            .to_vec(),
+        };
+
+        self.weapons
+            .iter()
+            .filter(|weapon| weapons_type.contains(&weapon.name))
+            .cloned()
+            .collect()
     }
 
     pub fn get_player_effect_information(&self) -> Vec<EffectInformation> {
