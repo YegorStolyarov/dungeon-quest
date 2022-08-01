@@ -1,5 +1,5 @@
 // Window config
-pub const TITLE: &str = "Shoot 'em up";
+pub const TITLE: &str = "Dungeon Quest";
 pub const RESOLUTION: f32 = 16.0 / 9.0;
 pub const WINDOW_HEIGHT: f32 = 576.0;
 
