@@ -362,9 +362,9 @@ fn select_hero_text(
             ..Default::default()
         },
         text: Text::with_section(
-            glossary.shared_text.select_hero.clone(),
+            glossary.shared_text.select_hero,
             TextStyle {
-                font: font.clone(),
+                font: font,
                 font_size: 50.0,
                 color: Color::BLACK,
             },
@@ -487,17 +487,15 @@ fn hero_image_animation_handle(
     mut animation_controller: ResMut<AnimationController>,
 ) {
     for (hero_image, mut sprite) in query.iter_mut() {
-        if animation_controller.run_animation == true {
-            if *hero_image == animation_controller.hero_image {
-                animation_controller.timer.tick(time.delta());
-                if animation_controller.timer.just_finished() {
-                    let min_index = 0;
-                    let max_index = 3;
-                    if sprite.index > max_index || sprite.index < min_index {
-                        sprite.index = min_index;
-                    } else {
-                        sprite.index += 1;
-                    }
+        if animation_controller.run_animation && *hero_image == animation_controller.hero_image {
+            animation_controller.timer.tick(time.delta());
+            if animation_controller.timer.just_finished() {
+                let min_index = 0;
+                let max_index = 3;
+                if sprite.index > max_index || sprite.index < min_index {
+                    sprite.index = min_index;
+                } else {
+                    sprite.index += 1;
                 }
             }
         }

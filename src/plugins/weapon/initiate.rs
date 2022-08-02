@@ -3,6 +3,8 @@ use bevy::sprite::Anchor;
 use std::time::Duration;
 
 use crate::components::weapon::WeaponComponent;
+use crate::components::weapon_shoot_attack::WeaponShootAttackComponent;
+use crate::components::weapon_swing_attack::WeaponSwingAttackComponent;
 use crate::materials::ingame::InGameMaterials;
 use crate::plugins::weapon::WeaponEntity;
 use crate::resources::game_data::GameData;
@@ -66,19 +68,27 @@ pub fn initiate_weapon(
         })
         .insert(Name::new("Weapon"))
         .insert(WeaponComponent {
+            strength: weapon.strength,
+            intelligence: weapon.intelligence,
+            level: weapon.level,
+            name: weapon.name.clone(),
+            attack_type: weapon.attack_type.clone(),
+            scale,
+            size_width: weapon_width,
+            size_height: weapon_height,
+        })
+        .insert(WeaponSwingAttackComponent {
+            swing_speed: weapon.swing_speed.unwrap_or(0.0),
+            is_swinging: false,
+            stop_angle: 0.0,
+        })
+        .insert(WeaponShootAttackComponent {
             bullet_information: bullet,
             spawn_bullet: false,
             bullet_target_x: 0.0,
             bullet_target_y: 0.0,
-            level: weapon.level,
-            name: weapon.name.clone(),
-            attack_type: weapon.attack_type.clone(),
-            cooldown,
-            swing_speed: weapon.swing_speed.unwrap_or(0.0),
-            scale,
-            size_width: weapon_width,
-            size_height: weapon_height,
             cooldown_second: weapon.cooldown.unwrap_or(0),
+            cooldown,
         })
         .id();
 

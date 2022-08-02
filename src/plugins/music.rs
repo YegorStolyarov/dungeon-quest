@@ -48,10 +48,8 @@ pub fn play_background_music(
                 _ => (),
             }
         }
-    } else {
-        if background_audio_channel.loop_started {
-            background_audio_channel.loop_started = false;
-            audio.stop_channel(&background_audio_channel.channel);
-        }
+    } else if background_audio_channel.loop_started {
+        background_audio_channel.loop_started = false;
+        audio.stop_channel(&background_audio_channel.channel);
     }
 }

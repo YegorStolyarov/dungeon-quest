@@ -11,7 +11,7 @@ use attack_type::AttackType;
 use bullet::Bullet;
 use weapon_type::WeaponType;
 
-#[derive(Serialize, Deserialize, Debug, Clone, Inspectable)]
+#[derive(Serialize, Deserialize, Debug, Clone, Inspectable, Copy)]
 pub struct Weapon {
     pub name: WeaponType,
     pub attack_type: AttackType,

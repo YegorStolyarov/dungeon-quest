@@ -22,14 +22,13 @@ impl Dictionary {
     }
 
     pub fn get_glossary(&self) -> Glossary {
-        return match self.current_language {
+        match self.current_language {
             Language::VI => self.vi_glossary.clone(),
             Language::EN => self.en_glossary.clone(),
-        };
-    }
+        }    }
 
     pub fn get_current_language(&self) -> Language {
-        self.current_language.clone()
+        self.current_language
     }
 
     pub fn set_current_language(&mut self, language: Language) {

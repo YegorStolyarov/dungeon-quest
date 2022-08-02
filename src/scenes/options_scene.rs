@@ -294,14 +294,14 @@ fn buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &Scenes
         let handle_image = match button {
             ButtonComponent::Return => scenes_materials.icon_materials.home_icon_normal.clone(),
             ButtonComponent::EnableSound => {
-                if setting.get_enable_sound() == true {
+                if setting.get_enable_sound() {
                     scenes_materials.icon_materials.sound_icon_on.clone()
                 } else {
                     scenes_materials.icon_materials.sound_icon_off.clone()
                 }
             }
             ButtonComponent::EnableMusic => {
-                if setting.get_enable_music() == true {
+                if setting.get_enable_music() {
                     scenes_materials.icon_materials.music_icon_on.clone()
                 } else {
                     scenes_materials.icon_materials.music_icon_off.clone()
@@ -338,7 +338,7 @@ fn buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &Scenes
             ..Default::default()
         })
         .insert(Name::new(component_name))
-        .insert(button.clone());
+        .insert(*button);
     }
 }
 
@@ -427,7 +427,7 @@ fn button_handle_system(
             },
             ButtonComponent::EnableSound => match *interaction {
                 Interaction::None => {
-                    if setting.get_enable_sound() == true {
+                    if setting.get_enable_sound() {
                         ui_image.0 = scenes_materials.icon_materials.sound_icon_on.clone()
                     } else {
                         ui_image.0 = scenes_materials.icon_materials.sound_icon_off.clone()
@@ -443,7 +443,7 @@ fn button_handle_system(
             },
             ButtonComponent::EnableMusic => match *interaction {
                 Interaction::None => {
-                    if setting.get_enable_music() == true {
+                    if setting.get_enable_music() {
                         ui_image.0 = scenes_materials.icon_materials.music_icon_on.clone()
                     } else {
                         ui_image.0 = scenes_materials.icon_materials.music_icon_off.clone()

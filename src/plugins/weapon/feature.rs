@@ -1,10 +1,12 @@
 use bevy::prelude::*;
 use bevy::render::camera::RenderTarget;
+use bevy::sprite::Anchor;
 use std::f32::consts::PI;
 use std::time::Duration;
 
 use crate::components::player::PlayerComponent;
 use crate::components::weapon::WeaponComponent;
+use crate::materials::ingame::InGameMaterials;
 use crate::plugins::camera::Orthographic2DCamera;
 use crate::resources::weapon::attack_type::AttackType;
 use crate::resources::weapon::weapon_type::WeaponType;
@@ -56,13 +58,13 @@ pub fn aim(
 
         let angle = delta_y.atan2(delta_x);
 
-        if !weapon_component.cooldown.finished() {
-            weapon_component.cooldown.tick(time.delta());
-        }
+        // if !weapon_component.cooldown.finished() {
+        //     weapon_component.cooldown.tick(time.delta());
+        // }
 
         match weapon_component.attack_type {
             AttackType::Swing => {
-                let swing_speed = weapon_component.swing_speed;
+                // let swing_speed = weapon_component.swing_speed;
 
                 // if weapon_component.attack_duration.finished() {
                 //     weapon_transform.rotation = Quat::from_rotation_z(angle + PI * 3.0 / 4.0);
@@ -75,16 +77,54 @@ pub fn aim(
                 // }
             }
             AttackType::Shoot => {
-                if weapon_component.name == WeaponType::Bow {
-                    weapon_component.bullet_target_x = mouse_pos.x * -1.0;
-                    weapon_component.bullet_target_y = mouse_pos.y * -1.0;
-                    weapon_transform.rotation = Quat::from_rotation_z(angle);
-                } else {
-                    weapon_component.bullet_target_x = mouse_pos.x;
-                    weapon_component.bullet_target_y = mouse_pos.y;
-                }
+                // if weapon_component.name == WeaponType::Bow {
+                //     weapon_component.bullet_target_x = mouse_pos.x * -1.0;
+                //     weapon_component.bullet_target_y = mouse_pos.y * -1.0;
+                //     weapon_transform.rotation = Quat::from_rotation_z(angle);
+                // } else {
+                //     weapon_component.bullet_target_x = mouse_pos.x;
+                //     weapon_component.bullet_target_y = mouse_pos.y;
+                // }
             }
             AttackType::Throw => {}
         }
+    }
+}
+
+pub fn change_weapon_texture(
+    mut weapon_query: Query<(
+        &WeaponComponent,
+        &mut Sprite,
+        &mut Handle<Image>,
+        ChangeTrackers<WeaponComponent>,
+    )>,
+    ingame_materials: Res<InGameMaterials>,
+) {
+    let (weapon, mut sprite, mut texture, tracker) = weapon_query.single_mut();
+    if tracker.is_changed() {
+        sprite.custom_size = Some(Vec2::new(
+            weapon.size_width * weapon.scale,
+            weapon.size_height * weapon.scale,
+        ));
+
+        sprite.anchor = match weapon.attack_type {
+            AttackType::Swing => Anchor::BottomCenter,
+            AttackType::Throw => Anchor::BottomCenter,
+            AttackType::Shoot => Anchor::Center,
+        };
+
+        *texture = match weapon.name {
+            WeaponType::ShortSword => ingame_materials.weapons_materials.short_sword.clone(),
+            WeaponType::Sword => ingame_materials.weapons_materials.sword.clone(),
+            WeaponType::BigMachete => ingame_materials.weapons_materials.machete.clone(),
+            WeaponType::SmallWand => ingame_materials.weapons_materials.small_wand.clone(),
+            WeaponType::MagicWand => ingame_materials.weapons_materials.magic_wand.clone(),
+            WeaponType::MagicSword => ingame_materials.weapons_materials.magic_sword.clone(),
+            WeaponType::Mace => ingame_materials.weapons_materials.mace.clone(),
+            WeaponType::BigHammer => ingame_materials.weapons_materials.big_hammer.clone(),
+            WeaponType::SmallHammer => ingame_materials.weapons_materials.small_hammer.clone(),
+            WeaponType::Bow => ingame_materials.weapons_materials.bow.clone(),
+            WeaponType::Spear => ingame_materials.weapons_materials.spear.clone(),
+        };
     }
 }

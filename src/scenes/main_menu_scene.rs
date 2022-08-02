@@ -209,9 +209,9 @@ fn button_handle_system(
         let mut text = text_query.get_mut(children[0]).unwrap();
         match *interaction {
             Interaction::None => text.sections[0].style.color = Color::GRAY,
-            Interaction::Hovered => text.sections[0].style.color = Color::BLACK.into(),
+            Interaction::Hovered => text.sections[0].style.color = Color::BLACK,
             Interaction::Clicked => {
-                text.sections[0].style.color = Color::RED.into();
+                text.sections[0].style.color = Color::RED;
                 match button {
                     ButtonComponent::Play => state
                         .set(SceneState::GameModeSelectScene)

@@ -141,7 +141,7 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
         [300.0, 430.0],
     ];
 
-    for index in 0..position_of_texts.len() {
+    for (index, position) in position_of_texts.iter().enumerate() {
         let value: String = match index {
             0 => glossary.help_scene_text.help.clone(),
             1 => glossary.help_scene_text.move_up.clone(),
@@ -159,8 +159,8 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
             _ => 30.0,
         };
 
-        let mut position_left = position_of_texts[index][0];
-        let position_top = position_of_texts[index][1];
+        let mut position_left = position[0];
+        let position_top = position[1];
 
         if index == 0 && dictionary.get_current_language() == Language::VI {
             position_left = 438.0;
@@ -206,7 +206,7 @@ fn control_texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictio
         [620.0, 430.0],
     ];
 
-    for index in 0..position_of_texts.len() {
+    for (index, position) in position_of_texts.iter().enumerate() {
         let value: &str = match index {
             0 => "W",
             1 => "S",
@@ -222,8 +222,8 @@ fn control_texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictio
             style: Style {
                 position_type: PositionType::Absolute,
                 position: Rect {
-                    left: Val::Px(position_of_texts[index][0]),
-                    top: Val::Px(position_of_texts[index][1]),
+                    left: Val::Px(position[0]),
+                    top: Val::Px(position[1]),
                     ..Default::default()
                 },
                 ..Default::default()

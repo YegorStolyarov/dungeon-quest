@@ -214,9 +214,9 @@ fn result_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictiona
             ..Default::default()
         },
         text: Text::with_section(
-            glossary.result_scene_text.result.clone(),
+            glossary.result_scene_text.result,
             TextStyle {
-                font: font.clone(),
+                font: font,
                 font_size: 50.0,
                 color: Color::BLACK,
             },

@@ -1,14 +1,14 @@
 use bevy::prelude::*;
-use bevy::sprite::Anchor;
 use std::time::Duration;
 
 use crate::components::player::PlayerComponent;
 use crate::components::player_list_effects::PlayerListEffectsComponent;
 use crate::components::skill::SkillComponent;
 use crate::components::weapon::WeaponComponent;
+use crate::components::weapon_shoot_attack::WeaponShootAttackComponent;
+use crate::components::weapon_swing_attack::WeaponSwingAttackComponent;
 use crate::config::*;
 use crate::materials::font::FontMaterials;
-use crate::materials::ingame::InGameMaterials;
 use crate::materials::menu_box::MenuBoxMaterials;
 use crate::materials::scenes::ScenesMaterials;
 use crate::resources::dictionary::Dictionary;
@@ -17,8 +17,6 @@ use crate::resources::hero::hero_class::HeroClass;
 use crate::resources::player::player_dungeon_stats::PlayerDungeonStats;
 use crate::resources::upgrade::upgrade_controller::UpgradeController;
 use crate::resources::upgrade::upgrade_type::UpgradeType;
-use crate::resources::weapon::attack_type::AttackType;
-use crate::resources::weapon::weapon_type::WeaponType;
 use crate::scenes::SceneState;
 
 const BOX_TILE_SIZE: f32 = 60.0;
@@ -163,16 +161,16 @@ fn upgrade_information(
 
     let value = match upgrade_type {
         UpgradeType::Skill => {
-            format!("{} {}", upgrade, glossary.ingame_text.skill.clone())
+            format!("{} {}", upgrade, glossary.ingame_text.skill)
         }
         UpgradeType::Stats => {
-            format!("{} {}", upgrade, glossary.ingame_text.stats.clone())
+            format!("{} {}", upgrade, glossary.ingame_text.stats)
         }
         UpgradeType::Weapon => {
-            format!("{} {}", upgrade, glossary.ingame_text.weapon.clone())
+            format!("{} {}", upgrade, glossary.ingame_text.weapon)
         }
         UpgradeType::Effect => {
-            format!("{} {}", upgrade, glossary.ingame_text.effect.clone())
+            format!("{} {}", upgrade, glossary.ingame_text.effect)
         }
     };
 
@@ -246,74 +244,34 @@ fn collect_reward(
         &mut SkillComponent,
         &mut PlayerListEffectsComponent,
     )>,
-    mut weapon_query: Query<(&mut WeaponComponent, &mut Sprite, &mut Handle<Image>)>,
+    mut weapon_query: Query<(
+        &mut WeaponComponent,
+        &mut WeaponSwingAttackComponent,
+        &mut WeaponShootAttackComponent,
+    )>,
     mut reward_query: Query<&mut RewardComponent>,
     upgrade_controller: Res<UpgradeController>,
-    ingame_materials: Res<InGameMaterials>,
     game_data: Res<GameData>,
 ) {
     let mut reward = reward_query.single_mut();
 
-    if reward.is_collected == false {
+    if !reward.is_collected {
         let (mut player, mut player_skill, mut player_list_effects) = player_query.single_mut();
         let skill_type = player_skill.skill.name.clone();
         let hero_class = player.class.clone();
 
         match reward.upgrade_type {
             UpgradeType::Weapon => {
-                let (mut weapon_component, mut weapon_sprite, mut weapon_texture) =
-                    weapon_query.single_mut();
-                if weapon_component.level < 3
-                    || (weapon_component.level < 1 && hero_class == HeroClass::Elf)
-                {
-                    let weapons = game_data.get_weapons(hero_class);
-
-                    let weapon = weapons
+                let (mut weapon, mut swing_attack, mut shoot_attack) = weapon_query.single_mut();
+                if weapon.level < 3 || (weapon.level < 1 && hero_class == HeroClass::Elf) {
+                    let raw_weapons = game_data.get_weapons(hero_class);
+                    let raw_weapon = *raw_weapons
                         .iter()
-                        .find(|weapon| weapon.level == weapon_component.level + 1)
-                        .expect("Can't find weapon")
-                        .clone();
-
-                    weapon_component.upgrade_weapon(weapon);
-
-                    weapon_sprite.custom_size = Some(Vec2::new(
-                        weapon_component.size_width * weapon_component.scale,
-                        weapon_component.size_height * weapon_component.scale,
-                    ));
-
-                    weapon_sprite.anchor = match weapon_component.attack_type {
-                        AttackType::Swing => Anchor::BottomCenter,
-                        AttackType::Throw => Anchor::BottomCenter,
-                        AttackType::Shoot => Anchor::Center,
-                    };
-
-                    *weapon_texture = match weapon_component.name {
-                        WeaponType::ShortSword => {
-                            ingame_materials.weapons_materials.short_sword.clone()
-                        }
-                        WeaponType::Sword => ingame_materials.weapons_materials.sword.clone(),
-                        WeaponType::BigMachete => {
-                            ingame_materials.weapons_materials.machete.clone()
-                        }
-                        WeaponType::SmallWand => {
-                            ingame_materials.weapons_materials.small_wand.clone()
-                        }
-                        WeaponType::MagicWand => {
-                            ingame_materials.weapons_materials.magic_wand.clone()
-                        }
-                        WeaponType::MagicSword => {
-                            ingame_materials.weapons_materials.magic_sword.clone()
-                        }
-                        WeaponType::Mace => ingame_materials.weapons_materials.mace.clone(),
-                        WeaponType::BigHammer => {
-                            ingame_materials.weapons_materials.big_hammer.clone()
-                        }
-                        WeaponType::SmallHammer => {
-                            ingame_materials.weapons_materials.small_hammer.clone()
-                        }
-                        WeaponType::Bow => ingame_materials.weapons_materials.bow.clone(),
-                        WeaponType::Spear => ingame_materials.weapons_materials.spear.clone(),
-                    };
+                        .find(|raw_weapon| raw_weapon.level == weapon.level + 1)
+                        .expect("Can't find weapon");
+                    weapon.upgrade_weapon(&raw_weapon);
+                    swing_attack.upgrade(&raw_weapon);
+                    shoot_attack.upgrade(&raw_weapon);
                 }
             }
             UpgradeType::Stats => {

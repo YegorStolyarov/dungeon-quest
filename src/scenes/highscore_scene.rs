@@ -157,7 +157,7 @@ fn setup(
             file.read_to_string(&mut contents).unwrap();
             serde_json::from_str(&contents).expect("JSON was not well-formatted")
         }
-        Err(err) => panic!("Can't find highscores file: {}", err.to_string()),
+        Err(err) => panic!("Can't find highscores file: {}", err),
     };
 
     // book
@@ -252,7 +252,7 @@ fn buttons(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
                     image: UiImage(handle_image),
                     ..Default::default()
                 })
-                .insert(button.clone());
+                .insert(*button);
             }
             _ => {
                 let size = Size {
@@ -271,7 +271,7 @@ fn buttons(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
                     color: UiColor(Color::NONE),
                     ..Default::default()
                 })
-                .insert(button.clone());
+                .insert(*button);
             }
         };
     }
@@ -306,7 +306,7 @@ fn button_handle_system(
                 if *interaction == Interaction::Clicked {
                     let mut highscore_book = highscore_book_query.get_single_mut().unwrap();
                     let total_pages = highscore_book.total_pages as isize;
-                    if highscore_book.animation_indexes.len() == 0 {
+                    if highscore_book.animation_indexes.is_empty() {
                         highscore_book.is_reverse = false;
                         highscore_book.animation_index = 0;
                         if highscore_book.current_page == -1 {
@@ -322,13 +322,12 @@ fn button_handle_system(
             ButtonComponent::Previous => {
                 if *interaction == Interaction::Clicked {
                     let mut highscore_book = highscore_book_query.get_single_mut().unwrap();
-                    if highscore_book.animation_indexes.len() == 0 {
+                    if highscore_book.animation_indexes.is_empty() {
                         highscore_book.is_reverse = true;
                         highscore_book.animation_index = 0;
-                        if highscore_book.current_page == 0 {
-                            highscore_book.animation_indexes = [3, 2, 1, 0].to_vec();
-                        } else if highscore_book.current_page > 0 {
-                            highscore_book.animation_indexes = [3, 6, 5, 4, 3].to_vec();
+                        highscore_book.animation_indexes = match highscore_book.current_page {
+                            0 => [3, 2, 1, 0].to_vec(),
+                            _ => [3, 6, 5, 4, 3].to_vec(),
                         }
                     }
                 }
@@ -342,7 +341,7 @@ fn book_animation_handle_system(
     time: Res<Time>,
 ) {
     for (mut highscore_book, mut sprite) in query.iter_mut() {
-        if highscore_book.animation_indexes.len() != 0 {
+        if !highscore_book.animation_indexes.is_empty() {
             highscore_book.timer.tick(time.delta());
             if highscore_book.timer.just_finished() {
                 sprite.index = highscore_book.animation_indexes[highscore_book.animation_index];
@@ -396,8 +395,8 @@ fn hero_image_handle_system(
 ) {
     for (_hero_image, mut ui_image, mut visibility) in query.iter_mut() {
         let highscore_book = highscore_book_query.get_single_mut().unwrap();
-        if highscore_book.current_page != -1 && highscore_book.animation_indexes.len() == 0 {
-            let index = highscore_book.current_page.clone() as usize;
+        if highscore_book.current_page != -1 && highscore_book.animation_indexes.is_empty() {
+            let index = highscore_book.current_page as usize;
             ui_image.0 = match highscore_book.profiles[index].hero_class {
                 HeroClass::Elf => match highscore_book.profiles[index].gender {
                     Gender::Male => scenes_materials.heros_materials.male_elf.clone(),
@@ -478,7 +477,7 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: Di
                     ),
                     ..Default::default()
                 })
-                .insert(prevalue.clone());
+                .insert(*prevalue);
         }
     })
     .insert(TextsNodeComponent);
@@ -493,8 +492,8 @@ fn texts_handle_system(
 ) {
     for (_hero_image, mut style, children) in query.iter_mut() {
         let highscore_book = highscore_book_query.get_single_mut().unwrap();
-        if highscore_book.current_page != -1 && highscore_book.animation_indexes.len() == 0 {
-            let profile_index = highscore_book.current_page.clone() as usize;
+        if highscore_book.current_page != -1 && highscore_book.animation_indexes.is_empty() {
+            let profile_index = highscore_book.current_page as usize;
 
             let glossary = dictionary.get_glossary();
 
@@ -516,11 +515,10 @@ fn texts_handle_system(
                     }
                     PrefixWordComponent::GameMode => {
                         let game_mode = highscore_book.profiles[profile_index].game_mode.clone();
-                        let value = match game_mode {
+                        match game_mode {
                             GameMode::ClassicMode => glossary.shared_text.classic_mode.clone(),
                             GameMode::SurvivalMode => glossary.shared_text.survival_mode.clone(),
-                        };
-                        value
+                        }
                     }
                     PrefixWordComponent::TotalKilledMonsters => {
                         let prefix = glossary.highscore_scene_text.total_killed_monsters.clone();

@@ -20,7 +20,7 @@ impl UpgradeController {
                 file.read_to_string(&mut contents).unwrap();
                 serde_json::from_str(&contents).expect("JSON was not well-formatted")
             }
-            Err(err) => panic!("Can't find language file: {}", err.to_string()),
+            Err(err) => panic!("Can't find language file: {}", err),
         };
 
         UpgradeController { upgrades }
@@ -70,15 +70,9 @@ impl UpgradeController {
 
     pub fn get_three_upgrades(&self, hero_class: HeroClass, weapon_level: u8) -> Vec<UpgradeType> {
         let mut three_upgrades: Vec<UpgradeType> = Vec::new();
-        let mut upgrade_types: Vec<UpgradeType> = Vec::new();
+        let mut upgrade_types: Vec<UpgradeType> = vec![UpgradeType::Stats, UpgradeType::Skill, UpgradeType::Effect];
 
-        upgrade_types.push(UpgradeType::Effect);
-        upgrade_types.push(UpgradeType::Stats);
-        upgrade_types.push(UpgradeType::Skill);
-
-        if hero_class == HeroClass::Elf && weapon_level < 2 {
-            upgrade_types.push(UpgradeType::Weapon);
-        } else if weapon_level < 3 {
+        if (hero_class == HeroClass::Elf && weapon_level < 2) || weapon_level < 3  {
             upgrade_types.push(UpgradeType::Weapon);
         }
 

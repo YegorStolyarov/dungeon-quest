@@ -26,7 +26,7 @@ impl GameData {
                 file.read_to_string(&mut contents).unwrap();
                 serde_json::from_str(&contents).expect("JSON was not well-formatted")
             }
-            Err(err) => panic!("Can't find language file: {}", err.to_string()),
+            Err(err) => panic!("Can't find language file: {}", err),
         };
         data
     }
@@ -50,11 +50,10 @@ impl GameData {
 
     pub fn get_weapon(&self, hero_class: HeroClass) -> Weapon {
         let hero = self.get_hero(hero_class);
-        self.weapons
+        *self.weapons
             .iter()
             .find(|weapon| weapon.name == hero.weapon)
             .unwrap()
-            .clone()
     }
 
     pub fn get_weapons(&self, hero_class: HeroClass) -> Vec<Weapon> {
@@ -88,6 +87,6 @@ impl GameData {
     }
 
     pub fn get_player_list_effects_information(&self) -> Vec<Effect> {
-        self.player_list_effects_information.to_vec().clone()
+        self.player_list_effects_information.to_vec()
     }
 }

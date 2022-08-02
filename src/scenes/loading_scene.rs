@@ -199,7 +199,7 @@ fn loading_text(
             },
 
             text: Text::with_section(
-                glossary.loading_scene_text.loading.to_string(),
+                glossary.loading_scene_text.loading,
                 TextStyle {
                     font: asset_server.load(font_str),
                     font_size: LOADING_TEXT_FONT_SIZE,

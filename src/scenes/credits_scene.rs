@@ -192,9 +192,9 @@ fn credits_text(root: &mut ChildBuilder, font_materials: &FontMaterials, diction
             ..Default::default()
         },
         text: Text::with_section(
-            glossary.main_menu_scene_text.credits.clone(),
+            glossary.main_menu_scene_text.credits,
             TextStyle {
-                font: font.clone(),
+                font,
                 font_size: 50.0,
                 color: Color::BLACK,
             },
@@ -211,13 +211,12 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
     let font = font_materials.get_font(dictionary.get_current_language());
     let file = match File::open(CREDITS_FILE) {
         Ok(file) => file,
-        Err(err) => panic!("Can't open credits file: {}", err.to_string()),
+        Err(err) => panic!("Can't open credits file: {}", err),
     };
 
     let lines = io::BufReader::new(file).lines();
-    let mut index = 0;
 
-    for line in lines {
+    for (index, line) in lines.enumerate() {
         let text = line.unwrap();
         root.spawn_bundle(TextBundle {
             style: Style {
@@ -243,6 +242,5 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
             ),
             ..Default::default()
         });
-        index += 1;
     }
 }

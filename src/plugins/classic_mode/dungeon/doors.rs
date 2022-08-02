@@ -224,13 +224,11 @@ pub fn vertical_doors_system(
                 } else {
                     false
                 }
+            } else if current_position.row_index < total_rows - 1 {
+                let below_room_row_index = current_position.row_index + 1;
+                current_floor.map[below_room_row_index][current_position.column_index] != 0.0
             } else {
-                if current_position.row_index < total_rows - 1 {
-                    let below_room_row_index = current_position.row_index + 1;
-                    current_floor.map[below_room_row_index][current_position.column_index] != 0.0
-                } else {
-                    false
-                }
+                false
             };
 
             visibility.is_visible = has_next_room;

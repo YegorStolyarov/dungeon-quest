@@ -72,23 +72,23 @@ pub fn use_mouse(
                 // }
             }
             AttackType::Shoot => {
-                if weapon_component.cooldown.finished() {
-                    if weapon_component.name == WeaponType::Bow {
-                        if player_animation.animation_state == AnimationState::Idle {
-                            weapon_component.spawn_bullet = true;
-                            weapon_component.cooldown = Timer::new(
-                                Duration::from_secs(weapon_component.cooldown_second),
-                                false,
-                            );
-                        }
-                    } else {
-                        weapon_component.spawn_bullet = true;
-                        weapon_component.cooldown = Timer::new(
-                            Duration::from_secs(weapon_component.cooldown_second),
-                            false,
-                        );
-                    }
-                }
+                // if weapon_component.cooldown.finished() {
+                //     if weapon_component.name == WeaponType::Bow {
+                //         if player_animation.animation_state == AnimationState::Idle {
+                //             weapon_component.spawn_bullet = true;
+                //             weapon_component.cooldown = Timer::new(
+                //                 Duration::from_secs(weapon_component.cooldown_second),
+                //                 false,
+                //             );
+                //         }
+                //     } else {
+                //         weapon_component.spawn_bullet = true;
+                //         weapon_component.cooldown = Timer::new(
+                //             Duration::from_secs(weapon_component.cooldown_second),
+                //             false,
+                //         );
+                //     }
+                // }
             }
             AttackType::Throw => {}
         }

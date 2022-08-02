@@ -1,7 +1,7 @@
 use bevy_inspector_egui::Inspectable;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone, Inspectable)]
+#[derive(Serialize, Deserialize, Debug, Clone, Inspectable, Copy)]
 pub struct Bullet {
     pub width: f32,
     pub height: f32,

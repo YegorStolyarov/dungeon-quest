@@ -126,10 +126,10 @@ impl Glossary {
 
                 let mut contents = String::new();
                 file.read_to_string(&mut contents).unwrap();
-                let glossary = serde_json::from_str(&contents).expect(error_message.as_str());
+                let glossary = serde_json::from_str(&contents).unwrap_or_else(|_| { panic!("{}", error_message) });
                 glossary
             }
-            Err(err) => panic!("Can't find language file: {}", err.to_string()),
+            Err(err) => panic!("Can't find language file: {}", err),
         }
     }
 }

@@ -23,7 +23,9 @@ impl Plugin for WeaponPlugin {
 
         app.add_system_set(
             SystemSet::on_update(SceneState::InGameClassicMode)
-                .with_system(feature::attach_to_player),
+                .with_system(feature::attach_to_player)
+                .with_system(feature::aim)
+                .with_system(feature::change_weapon_texture),
         );
 
         app.add_system_set(
@@ -40,8 +42,9 @@ impl Plugin for WeaponPlugin {
             SystemSet::on_update(SceneState::InGameSurvivalMode)
                 .with_system(feature::attach_to_player)
                 .with_system(feature::aim)
-                .with_system(bullet::spawn_bullet)
-                .with_system(bullet::bullet_handle),
+                .with_system(feature::change_weapon_texture),
+            // .with_system(bullet::spawn_bullet)
+            // .with_system(bullet::bullet_handle),
         );
 
         app.add_system_set(
