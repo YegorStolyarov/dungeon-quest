@@ -1,5 +1,17 @@
+pub mod animation_state;
 pub mod dictionary;
+pub mod dungeon;
+pub mod effect;
+pub mod game_data;
+pub mod game_mode;
 pub mod glossary;
+pub mod hero;
 pub mod language;
+pub mod player;
+pub mod profile;
 pub mod setting;
+pub mod skill;
+pub mod stored_profile;
 pub mod tile_size;
+pub mod upgrade;
+pub mod weapon;

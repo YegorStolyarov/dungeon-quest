@@ -2,22 +2,23 @@ use bevy::prelude::*;
 use std::slice::Iter;
 
 use crate::config::*;
-use crate::materials::scenes::MenuBoxMaterials;
+use crate::materials::font::FontMaterials;
+use crate::materials::menu_box::MenuBoxMaterials;
 use crate::materials::scenes::ScenesMaterials;
-use crate::materials::Materials;
 use crate::resources::dictionary::Dictionary;
 use crate::resources::language::Language;
 use crate::resources::setting::Setting;
 use crate::scenes::SceneState;
 
-const RETURN_BUTTON_SIDE: f32 = 50.0;
-const NORMAL_BUTTON_SIDE: f32 = 32.0;
-const OPTIONS_MENU_BOX_TILE_SIZE: f32 = 60.0;
+const RETURN_BUTTON_SIZE: f32 = 50.0;
+const NORMAL_BUTTON_SIZE: f32 = 32.0;
 
-const OPTIONS_MENU_BOX_WIDTH_TILES: f32 = 8.0;
-const OPTIONS_MENU_BOX_HEIGHT_TILES: f32 = 6.0;
+const MENU_BOX_TILE_SIZE: f32 = 60.0;
 
-const OPTIONS_MENU_BOX_ARRAY: [[i8; 8]; 6] = [
+const MENU_BOX_WIDTH_TILES: f32 = 8.0;
+const MENU_BOX_HEIGHT_TILES: f32 = 6.0;
+
+const MENU_BOX_ARRAY: [[i8; 8]; 6] = [
     [0, 1, 1, 1, 1, 1, 1, 2],
     [3, 4, 4, 4, 4, 4, 4, 5],
     [3, 4, 4, 4, 4, 4, 4, 5],
@@ -40,90 +41,57 @@ const NORMAL_FLAG_COLOR: Color = Color::Rgba {
     alpha: 1.0,
 };
 
-const OPTIONS_SCENE_BUTTON_POSITIONS: [Rect<Val>; 5] = [
-    Rect {
-        left: Val::Px(RETURN_BUTTON_SIDE / 2.0),
-        top: Val::Px(RETURN_BUTTON_SIDE / 2.0),
-        right: Val::Auto,
-        bottom: Val::Auto,
-    },
-    Rect {
-        left: Val::Px(610.0),
-        top: Val::Px(230.0),
-        right: Val::Auto,
-        bottom: Val::Auto,
-    },
-    Rect {
-        left: Val::Px(610.0),
-        top: Val::Px(290.0),
-        right: Val::Auto,
-        bottom: Val::Auto,
-    },
-    Rect {
-        left: Val::Px(570.0),
-        top: Val::Px(350.0),
-        right: Val::Auto,
-        bottom: Val::Auto,
-    },
-    Rect {
-        left: Val::Px(620.0),
-        top: Val::Px(350.0),
-        right: Val::Auto,
-        bottom: Val::Auto,
-    },
-];
-
 #[derive(Component, Clone)]
-enum OptionsScenePairButton {
+enum PairButtonComponent {
     Vietnamese,
     English,
 }
 
-impl OptionsScenePairButton {
-    pub fn iterator() -> Iter<'static, OptionsScenePairButton> {
-        static OPTIONS_SCENE_PAIR_BUTTONS: [OptionsScenePairButton; 2] = [
-            OptionsScenePairButton::Vietnamese,
-            OptionsScenePairButton::English,
-        ];
-        OPTIONS_SCENE_PAIR_BUTTONS.iter()
+impl PairButtonComponent {
+    pub fn iterator() -> Iter<'static, PairButtonComponent> {
+        [
+            PairButtonComponent::Vietnamese,
+            PairButtonComponent::English,
+        ]
+        .iter()
     }
 }
 
 #[derive(Component, Copy, Clone)]
-enum OptionsSceneButton {
+enum ButtonComponent {
     Return,
     EnableSound,
     EnableMusic,
 }
 
-impl OptionsSceneButton {
-    pub fn iterator() -> Iter<'static, OptionsSceneButton> {
-        static OPTIONS_SCENE_BUTTONS: [OptionsSceneButton; 3] = [
-            OptionsSceneButton::Return,
-            OptionsSceneButton::EnableSound,
-            OptionsSceneButton::EnableMusic,
-        ];
-        OPTIONS_SCENE_BUTTONS.iter()
+impl ButtonComponent {
+    pub fn iterator() -> Iter<'static, ButtonComponent> {
+        [
+            ButtonComponent::Return,
+            ButtonComponent::EnableSound,
+            ButtonComponent::EnableMusic,
+        ]
+        .iter()
     }
 }
 
 #[derive(Component, Clone)]
-enum OptionsSceneText {
+enum TextComponent {
     Options,
     EnableSound,
     EnableMusic,
     Language,
 }
 
-impl OptionsSceneText {
-    pub fn iterator() -> Iter<'static, OptionsSceneText> {
-        static OPTIONS_SCENE_TEXT: [OptionsSceneText; 4] = [
-            OptionsSceneText::Options,
-            OptionsSceneText::EnableSound,
-            OptionsSceneText::EnableMusic,
-            OptionsSceneText::Language,
-        ];
-        OPTIONS_SCENE_TEXT.iter()
+impl TextComponent {
+    pub fn iterator() -> Iter<'static, TextComponent> {
+        [
+            TextComponent::Options,
+            TextComponent::EnableSound,
+            TextComponent::EnableMusic,
+            TextComponent::Language,
+        ]
+        .iter()
     }
 }
 
@@ -148,17 +116,24 @@ impl Plugin for OptionsScenePlugin {
 
 fn setup(
     mut commands: Commands,
-    materials: Res<Materials>,
+    font_materials: Res<FontMaterials>,
     scenes_materials: Res<ScenesMaterials>,
     setting: Res<Setting>,
     dictionary: Res<Dictionary>,
 ) {
     // user interface root
     let user_interface_root = commands
-        .spawn_bundle(root(&materials))
+        .spawn_bundle(NodeBundle {
+            style: Style {
+                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                ..Default::default()
+            },
+            image: UiImage(scenes_materials.sub_background_image.clone()),
+            ..Default::default()
+        })
         .with_children(|parent| {
-            options_menu_box(parent, &scenes_materials.menu_box_materials);
-            texts(parent, &materials, &dictionary);
+            menu_box(parent, &scenes_materials.menu_box_materials);
+            texts(parent, &font_materials, &dictionary);
             buttons(parent, &setting, &scenes_materials);
             pair_buttons(parent, &setting, &scenes_materials);
         })
@@ -179,69 +154,60 @@ fn cleanup(
         .despawn_recursive();
 }
 
-fn root(materials: &Materials) -> NodeBundle {
-    NodeBundle {
-        style: Style {
-            size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-            ..Default::default()
-        },
-        image: UiImage(materials.sub_menu_background.clone()),
-        ..Default::default()
-    }
-}
-
-fn options_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
+fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     let size: Size<Val> = Size {
-        width: Val::Px(OPTIONS_MENU_BOX_TILE_SIZE),
-        height: Val::Px(OPTIONS_MENU_BOX_TILE_SIZE),
+        width: Val::Px(MENU_BOX_TILE_SIZE),
+        height: Val::Px(MENU_BOX_TILE_SIZE),
     };
 
-    let start_left = (WINDOW_HEIGHT * RESOLUTION
-        - OPTIONS_MENU_BOX_TILE_SIZE * OPTIONS_MENU_BOX_WIDTH_TILES)
-        / 2.0;
+    let start_left = (WINDOW_HEIGHT * RESOLUTION - MENU_BOX_TILE_SIZE * MENU_BOX_WIDTH_TILES) / 2.0;
 
-    let start_top =
-        (WINDOW_HEIGHT - OPTIONS_MENU_BOX_TILE_SIZE * OPTIONS_MENU_BOX_HEIGHT_TILES) / 2.0;
+    let start_top = (WINDOW_HEIGHT - MENU_BOX_TILE_SIZE * MENU_BOX_HEIGHT_TILES) / 2.0;
+    root.spawn_bundle(NodeBundle {
+        ..Default::default()
+    })
+    .with_children(|parent| {
+        for (row_index, row) in MENU_BOX_ARRAY.iter().enumerate() {
+            for (column_index, value) in row.iter().enumerate() {
+                let position: Rect<Val> = Rect {
+                    left: Val::Px(start_left + MENU_BOX_TILE_SIZE * column_index as f32),
+                    top: Val::Px(start_top + MENU_BOX_TILE_SIZE * row_index as f32),
+                    bottom: Val::Auto,
+                    right: Val::Auto,
+                };
 
-    for (row_index, row) in OPTIONS_MENU_BOX_ARRAY.iter().enumerate() {
-        for (column_index, value) in row.iter().enumerate() {
-            let position: Rect<Val> = Rect {
-                left: Val::Px(start_left + OPTIONS_MENU_BOX_TILE_SIZE * column_index as f32),
-                top: Val::Px(start_top + OPTIONS_MENU_BOX_TILE_SIZE * row_index as f32),
-                bottom: Val::Auto,
-                right: Val::Auto,
-            };
+                let image: Handle<Image> = match value {
+                    0 => menu_box_materials.top_right.clone(),
+                    1 => menu_box_materials.top_center.clone(),
+                    2 => menu_box_materials.top_left.clone(),
+                    3 => menu_box_materials.mid_right.clone(),
+                    4 => menu_box_materials.mid_center.clone(),
+                    5 => menu_box_materials.mid_left.clone(),
+                    6 => menu_box_materials.bottom_right.clone(),
+                    7 => menu_box_materials.bottom_center.clone(),
+                    8 => menu_box_materials.bottom_left.clone(),
+                    _ => panic!("Unknown resources"),
+                };
 
-            let image: Handle<Image> = match value {
-                0 => menu_box_materials.top_right.clone(),
-                1 => menu_box_materials.top_center.clone(),
-                2 => menu_box_materials.top_left.clone(),
-                3 => menu_box_materials.mid_right.clone(),
-                4 => menu_box_materials.mid_center.clone(),
-                5 => menu_box_materials.mid_left.clone(),
-                6 => menu_box_materials.bottom_right.clone(),
-                7 => menu_box_materials.bottom_center.clone(),
-                8 => menu_box_materials.bottom_left.clone(),
-                _ => panic!("Unknown resources"),
-            };
+                parent.spawn_bundle(NodeBundle {
+                    image: UiImage(image),
+                    style: Style {
+                        position_type: PositionType::Absolute,
+                        position,
+                        size,
+                        ..Default::default()
+                    },
 
-            root.spawn_bundle(NodeBundle {
-                image: UiImage(image),
-                style: Style {
-                    position_type: PositionType::Absolute,
-                    position,
-                    size,
                     ..Default::default()
-                },
-
-                ..Default::default()
-            });
+                });
+            }
         }
-    }
+    })
+    .insert(Name::new("MenuBox"));
 }
 
-fn texts(root: &mut ChildBuilder, materials: &Materials, dictionary: &Dictionary) {
-    let font = materials.get_font(dictionary.get_current_language());
+fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
+    let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
 
     let position_of_texts: [[f32; 2]; 4] = [
@@ -251,13 +217,21 @@ fn texts(root: &mut ChildBuilder, materials: &Materials, dictionary: &Dictionary
         [320.0, 350.0],
     ];
 
-    for (index, prevalue) in OptionsSceneText::iterator().enumerate() {
+    for (index, prevalue) in TextComponent::iterator().enumerate() {
         let value: String = match index {
             0 => glossary.options_scene_text.options.clone(),
             1 => glossary.options_scene_text.enable_music.clone(),
             2 => glossary.options_scene_text.enable_sound.clone(),
             3 => glossary.options_scene_text.language.clone(),
             _ => panic!("Unknown text"),
+        };
+
+        let component_name = match index {
+            0 => "OptionsText",
+            1 => "EnableMusicText",
+            2 => "EnableSoundText",
+            3 => "LanguageText",
+            _ => "Unknown text",
         };
 
         let font_size: f32 = match index {
@@ -289,22 +263,44 @@ fn texts(root: &mut ChildBuilder, materials: &Materials, dictionary: &Dictionary
             ),
             ..Default::default()
         })
+        .insert(Name::new(component_name))
         .insert(prevalue.clone());
     }
 }
 
 fn buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &ScenesMaterials) {
-    for (index, button) in OptionsSceneButton::iterator().enumerate() {
+    let positions: [Rect<Val>; 3] = [
+        Rect {
+            left: Val::Px(RETURN_BUTTON_SIZE / 2.0),
+            top: Val::Px(RETURN_BUTTON_SIZE / 2.0),
+            right: Val::Auto,
+            bottom: Val::Auto,
+        },
+        Rect {
+            left: Val::Px(610.0),
+            top: Val::Px(230.0),
+            right: Val::Auto,
+            bottom: Val::Auto,
+        },
+        Rect {
+            left: Val::Px(610.0),
+            top: Val::Px(290.0),
+            right: Val::Auto,
+            bottom: Val::Auto,
+        },
+    ];
+
+    for (index, button) in ButtonComponent::iterator().enumerate() {
         let handle_image = match button {
-            OptionsSceneButton::Return => scenes_materials.icon_materials.home_icon_normal.clone(),
-            OptionsSceneButton::EnableSound => {
+            ButtonComponent::Return => scenes_materials.icon_materials.home_icon_normal.clone(),
+            ButtonComponent::EnableSound => {
                 if setting.get_enable_sound() == true {
                     scenes_materials.icon_materials.sound_icon_on.clone()
                 } else {
                     scenes_materials.icon_materials.sound_icon_off.clone()
                 }
             }
-            OptionsSceneButton::EnableMusic => {
+            ButtonComponent::EnableMusic => {
                 if setting.get_enable_music() == true {
                     scenes_materials.icon_materials.music_icon_on.clone()
                 } else {
@@ -313,20 +309,26 @@ fn buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &Scenes
             }
         };
 
+        let component_name = match button {
+            ButtonComponent::Return => "Return",
+            ButtonComponent::EnableSound => "EnableSound",
+            ButtonComponent::EnableMusic => "EnableMusic",
+        };
+
         let size = match button {
-            OptionsSceneButton::Return => Size {
-                width: Val::Px(RETURN_BUTTON_SIDE),
-                height: Val::Px(RETURN_BUTTON_SIDE),
+            ButtonComponent::Return => Size {
+                width: Val::Px(RETURN_BUTTON_SIZE),
+                height: Val::Px(RETURN_BUTTON_SIZE),
             },
             _ => Size {
-                width: Val::Px(NORMAL_BUTTON_SIDE),
-                height: Val::Px(NORMAL_BUTTON_SIDE),
+                width: Val::Px(NORMAL_BUTTON_SIZE),
+                height: Val::Px(NORMAL_BUTTON_SIZE),
             },
         };
 
         root.spawn_bundle(ButtonBundle {
             style: Style {
-                position: OPTIONS_SCENE_BUTTON_POSITIONS[index],
+                position: positions[index],
                 size,
                 justify_content: JustifyContent::Center,
                 position_type: PositionType::Absolute,
@@ -335,25 +337,44 @@ fn buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &Scenes
             image: UiImage(handle_image),
             ..Default::default()
         })
+        .insert(Name::new(component_name))
         .insert(button.clone());
     }
 }
 
 fn pair_buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &ScenesMaterials) {
-    for (index, pair_button) in OptionsScenePairButton::iterator().enumerate() {
+    let positions: [Rect<Val>; 2] = [
+        Rect {
+            left: Val::Px(570.0),
+            top: Val::Px(350.0),
+            right: Val::Auto,
+            bottom: Val::Auto,
+        },
+        Rect {
+            left: Val::Px(620.0),
+            top: Val::Px(350.0),
+            right: Val::Auto,
+            bottom: Val::Auto,
+        },
+    ];
+
+    for (index, pair_button) in PairButtonComponent::iterator().enumerate() {
+        let component_name = match pair_button {
+            PairButtonComponent::Vietnamese => "Vietnamese",
+            PairButtonComponent::English => "English",
+        };
+
         let handle_image = match pair_button {
-            OptionsScenePairButton::Vietnamese => scenes_materials.flag_materials.vietnam.clone(),
-            OptionsScenePairButton::English => {
-                scenes_materials.flag_materials.united_states.clone()
-            }
+            PairButtonComponent::Vietnamese => scenes_materials.flag_materials.vietnam.clone(),
+            PairButtonComponent::English => scenes_materials.flag_materials.united_states.clone(),
         };
 
         let color = match pair_button {
-            OptionsScenePairButton::Vietnamese => match setting.get_language() {
+            PairButtonComponent::Vietnamese => match setting.get_language() {
                 Language::VI => SELECTED_FLAG_COLOR,
                 Language::EN => NORMAL_FLAG_COLOR,
             },
-            OptionsScenePairButton::English => match setting.get_language() {
+            PairButtonComponent::English => match setting.get_language() {
                 Language::VI => NORMAL_FLAG_COLOR,
                 Language::EN => SELECTED_FLAG_COLOR,
             },
@@ -361,10 +382,10 @@ fn pair_buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &S
 
         root.spawn_bundle(ButtonBundle {
             style: Style {
-                position: OPTIONS_SCENE_BUTTON_POSITIONS[index + 3],
+                position: positions[index],
                 size: Size {
-                    width: Val::Px(NORMAL_BUTTON_SIDE),
-                    height: Val::Px(NORMAL_BUTTON_SIDE),
+                    width: Val::Px(NORMAL_BUTTON_SIZE),
+                    height: Val::Px(NORMAL_BUTTON_SIZE),
                 },
                 justify_content: JustifyContent::Center,
                 position_type: PositionType::Absolute,
@@ -374,13 +395,14 @@ fn pair_buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &S
             image: UiImage(handle_image),
             ..Default::default()
         })
+        .insert(Name::new(component_name))
         .insert(pair_button.clone());
     }
 }
 
 fn button_handle_system(
     mut button_query: Query<
-        (&Interaction, &OptionsSceneButton, &mut UiImage),
+        (&Interaction, &ButtonComponent, &mut UiImage),
         (Changed<Interaction>, With<Button>),
     >,
     mut setting: ResMut<Setting>,
@@ -389,7 +411,7 @@ fn button_handle_system(
 ) {
     for (interaction, button, mut ui_image) in button_query.iter_mut() {
         match *button {
-            OptionsSceneButton::Return => match *interaction {
+            ButtonComponent::Return => match *interaction {
                 Interaction::None => {
                     ui_image.0 = scenes_materials.icon_materials.home_icon_normal.clone()
                 }
@@ -403,7 +425,7 @@ fn button_handle_system(
                         .expect("Couldn't switch state to Main Menu Scene");
                 }
             },
-            OptionsSceneButton::EnableSound => match *interaction {
+            ButtonComponent::EnableSound => match *interaction {
                 Interaction::None => {
                     if setting.get_enable_sound() == true {
                         ui_image.0 = scenes_materials.icon_materials.sound_icon_on.clone()
@@ -419,7 +441,7 @@ fn button_handle_system(
                     setting.set_enable_sound(!enable_sound);
                 }
             },
-            OptionsSceneButton::EnableMusic => match *interaction {
+            ButtonComponent::EnableMusic => match *interaction {
                 Interaction::None => {
                     if setting.get_enable_music() == true {
                         ui_image.0 = scenes_materials.icon_materials.music_icon_on.clone()
@@ -440,13 +462,13 @@ fn button_handle_system(
 }
 
 fn pair_button_handle_system(
-    mut button_query: Query<(&Interaction, &OptionsScenePairButton, &mut UiColor)>,
+    mut button_query: Query<(&Interaction, &PairButtonComponent, &mut UiColor)>,
     mut setting: ResMut<Setting>,
     mut dictionary: ResMut<Dictionary>,
 ) {
     for (interaction, button, mut ui_color) in button_query.iter_mut() {
         match *button {
-            OptionsScenePairButton::Vietnamese => match *interaction {
+            PairButtonComponent::Vietnamese => match *interaction {
                 Interaction::None | Interaction::Hovered => match setting.get_language() {
                     Language::VI => ui_color.0 = SELECTED_FLAG_COLOR,
                     Language::EN => ui_color.0 = NORMAL_FLAG_COLOR,
@@ -458,7 +480,7 @@ fn pair_button_handle_system(
                     }
                 }
             },
-            OptionsScenePairButton::English => match *interaction {
+            PairButtonComponent::English => match *interaction {
                 Interaction::None | Interaction::Hovered => match setting.get_language() {
                     Language::VI => ui_color.0 = NORMAL_FLAG_COLOR,
                     Language::EN => ui_color.0 = SELECTED_FLAG_COLOR,
@@ -475,26 +497,26 @@ fn pair_button_handle_system(
 }
 
 fn text_handle_system(
-    mut text_query: Query<(&OptionsSceneText, &mut Text)>,
-    materials: Res<Materials>,
+    mut text_query: Query<(&TextComponent, &mut Text)>,
+    font_materials: Res<FontMaterials>,
     dictionary: Res<Dictionary>,
 ) {
-    let font = materials.get_font(dictionary.get_current_language());
+    let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
     if dictionary.is_changed() {
         for (text_type, mut text) in text_query.iter_mut() {
             text.sections[0].style.font = font.clone();
             match *text_type {
-                OptionsSceneText::Options => {
+                TextComponent::Options => {
                     text.sections[0].value = glossary.options_scene_text.options.clone();
                 }
-                OptionsSceneText::EnableSound => {
+                TextComponent::EnableSound => {
                     text.sections[0].value = glossary.options_scene_text.enable_sound.clone();
                 }
-                OptionsSceneText::EnableMusic => {
+                TextComponent::EnableMusic => {
                     text.sections[0].value = glossary.options_scene_text.enable_music.clone();
                 }
-                OptionsSceneText::Language => {
+                TextComponent::Language => {
                     text.sections[0].value = glossary.options_scene_text.language.clone();
                 }
             }

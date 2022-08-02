@@ -5,16 +5,15 @@ use std::io::prelude::*;
 use std::slice::Iter;
 
 use crate::config::*;
-use crate::ingame::resources::game_mode::GameMode;
-use crate::ingame::resources::stored_profile::StoredProfile;
-use crate::materials::scenes::MenuBoxMaterials;
+use crate::materials::font::FontMaterials;
+use crate::materials::menu_box::MenuBoxMaterials;
 use crate::materials::scenes::ScenesMaterials;
-use crate::materials::Materials;
 use crate::resources::dictionary::Dictionary;
+use crate::resources::game_mode::GameMode;
 use crate::resources::language::Language;
+use crate::resources::profile::Profile;
+use crate::resources::stored_profile::StoredProfile;
 use crate::scenes::SceneState;
-
-use crate::ingame::resources::profile::Profile;
 
 const RETURN_BUTTON_SIDE: f32 = 50.0;
 const BUTTON_SIDE: f32 = 70.0;
@@ -39,14 +38,14 @@ const MENU_BOX_ARRAY: [[i8; 9]; 9] = [
 ];
 
 #[derive(Component, Copy, Clone)]
-enum ResultSceneButton {
+enum ButtonComponent {
     Return,
     PlayAgain,
     SaveProfile,
 }
 
 #[derive(Component, Copy, Clone)]
-enum PrefixWord {
+enum PrefixWordComponent {
     GameMode,
     Date,
     StartTime,
@@ -57,19 +56,19 @@ enum PrefixWord {
     TotalClearedWaves,
 }
 
-impl PrefixWord {
-    pub fn iterator() -> Iter<'static, PrefixWord> {
-        static PREFIX_WORDS: [PrefixWord; 8] = [
-            PrefixWord::GameMode,
-            PrefixWord::Date,
-            PrefixWord::StartTime,
-            PrefixWord::EndTime,
-            PrefixWord::Playtime,
-            PrefixWord::TotalKilledMonsters,
-            PrefixWord::TotalClearedRooms,
-            PrefixWord::TotalClearedWaves,
-        ];
-        PREFIX_WORDS.iter()
+impl PrefixWordComponent {
+    pub fn iterator() -> Iter<'static, PrefixWordComponent> {
+        [
+            PrefixWordComponent::GameMode,
+            PrefixWordComponent::Date,
+            PrefixWordComponent::StartTime,
+            PrefixWordComponent::EndTime,
+            PrefixWordComponent::Playtime,
+            PrefixWordComponent::TotalKilledMonsters,
+            PrefixWordComponent::TotalClearedWaves,
+            PrefixWordComponent::TotalClearedRooms,
+        ]
+        .iter()
     }
 }
 
@@ -102,22 +101,29 @@ impl Plugin for ResultScenePlugin {
 
 fn setup(
     mut commands: Commands,
-    materials: Res<Materials>,
+    font_materials: Res<FontMaterials>,
     scenes_materials: Res<ScenesMaterials>,
     profile: Res<Profile>,
     dictionary: Res<Dictionary>,
 ) {
     // user interface root
     let user_interface_root = commands
-        .spawn_bundle(root(&materials))
+        .spawn_bundle(NodeBundle {
+            style: Style {
+                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                ..Default::default()
+            },
+            image: UiImage(scenes_materials.sub_background_image.clone()),
+            ..Default::default()
+        })
         .with_children(|parent| {
             menu_box(parent, &scenes_materials.menu_box_materials);
-            result_text(parent, &materials, &dictionary);
-            texts(parent, &materials, &dictionary, &profile);
+            result_text(parent, &font_materials, &dictionary);
+            texts(parent, &font_materials, &dictionary, &profile);
             return_button(parent, &scenes_materials);
             save_profile_button(parent, &scenes_materials, profile);
             play_again_button(parent, &scenes_materials);
-            user_input_text(parent, &materials, &dictionary);
+            user_input_text(parent, &font_materials, &dictionary);
         })
         .insert(Name::new("UIRoot"))
         .id();
@@ -133,17 +139,6 @@ fn cleanup(mut commands: Commands, result_scene_data: Res<ResultSceneData>) {
     commands
         .entity(result_scene_data.user_interface_root)
         .despawn_recursive();
-}
-
-fn root(materials: &Materials) -> NodeBundle {
-    NodeBundle {
-        style: Style {
-            size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-            ..Default::default()
-        },
-        image: UiImage(materials.sub_menu_background.clone()),
-        ..Default::default()
-    }
 }
 
 fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
@@ -198,8 +193,8 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     .insert(Name::new("MenuBox"));
 }
 
-fn result_text(root: &mut ChildBuilder, materials: &Materials, dictionary: &Dictionary) {
-    let font = materials.get_font(dictionary.get_current_language());
+fn result_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
+    let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
 
     let left_position = if dictionary.get_current_language() == Language::EN {
@@ -237,30 +232,30 @@ fn result_text(root: &mut ChildBuilder, materials: &Materials, dictionary: &Dict
 
 fn texts(
     root: &mut ChildBuilder,
-    materials: &Materials,
+    font_materials: &FontMaterials,
     dictionary: &Dictionary,
     profile: &Profile,
 ) {
-    let font = materials.get_font(dictionary.get_current_language());
+    let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
 
     root.spawn_bundle(NodeBundle {
         ..Default::default()
     })
     .with_children(|parent| {
-        for (index, prefix) in PrefixWord::iterator().enumerate() {
+        for (index, prefix) in PrefixWordComponent::iterator().enumerate() {
             let top_position = 110.0 + (index as f32) * 40.0;
             let left_position = 300.0;
 
             let value: String = match prefix {
-                PrefixWord::GameMode => {
+                PrefixWordComponent::GameMode => {
                     if profile.game_mode == GameMode::ClassicMode {
                         glossary.shared_text.classic_mode.clone()
                     } else {
                         glossary.shared_text.survival_mode.clone()
                     }
                 }
-                PrefixWord::Date => {
+                PrefixWordComponent::Date => {
                     let prefix = glossary.result_scene_text.date.clone();
                     let start_time = profile.start_time.clone();
 
@@ -287,7 +282,7 @@ fn texts(
                     };
                     prefix + value.as_str()
                 }
-                PrefixWord::StartTime => {
+                PrefixWordComponent::StartTime => {
                     let prefix = glossary.result_scene_text.start_time.clone();
                     let start_time = profile.start_time.clone();
 
@@ -315,7 +310,7 @@ fn texts(
 
                     prefix + format_start_time.as_str()
                 }
-                PrefixWord::EndTime => {
+                PrefixWordComponent::EndTime => {
                     let prefix = glossary.result_scene_text.end_time.clone();
                     let start_time = profile.end_time.clone();
 
@@ -343,26 +338,25 @@ fn texts(
 
                     prefix + format_start_time.as_str()
                 }
-                PrefixWord::TotalKilledMonsters => {
+                PrefixWordComponent::TotalKilledMonsters => {
                     let prefix = glossary.result_scene_text.total_killed_monsters.clone();
                     let total_killed_monsters = profile.total_killed_monsters;
 
                     prefix + total_killed_monsters.to_string().as_str()
                 }
-
-                PrefixWord::TotalClearedRooms => {
+                PrefixWordComponent::TotalClearedRooms => {
                     let prefix = glossary.result_scene_text.total_cleared_rooms.clone();
                     let total_cleared_rooms = profile.total_cleared_rooms;
 
                     prefix + total_cleared_rooms.to_string().as_str()
                 }
-                PrefixWord::TotalClearedWaves => {
+                PrefixWordComponent::TotalClearedWaves => {
                     let prefix = glossary.result_scene_text.total_cleared_waves.clone();
                     let total_cleared_waves = profile.total_cleared_waves;
 
                     prefix + total_cleared_waves.to_string().as_str()
                 }
-                PrefixWord::Playtime => {
+                PrefixWordComponent::Playtime => {
                     let prefix = glossary.result_scene_text.playtime.clone();
 
                     let start_time =
@@ -403,14 +397,14 @@ fn texts(
             };
 
             let component_name = match prefix {
-                PrefixWord::GameMode => "GameMode",
-                PrefixWord::Date => "Date",
-                PrefixWord::StartTime => "StartTime",
-                PrefixWord::EndTime => "EndTime",
-                PrefixWord::TotalKilledMonsters => "TotalKilledMonsters",
-                PrefixWord::TotalClearedRooms => "TotalClearedRooms",
-                PrefixWord::TotalClearedWaves => "TotalClearedWaves",
-                PrefixWord::Playtime => "Playtime",
+                PrefixWordComponent::GameMode => "GameMode",
+                PrefixWordComponent::Date => "Date",
+                PrefixWordComponent::StartTime => "StartTime",
+                PrefixWordComponent::EndTime => "EndTime",
+                PrefixWordComponent::TotalKilledMonsters => "TotalKilledMonsters",
+                PrefixWordComponent::TotalClearedRooms => "TotalClearedRooms",
+                PrefixWordComponent::TotalClearedWaves => "TotalClearedWaves",
+                PrefixWordComponent::Playtime => "Playtime",
             };
 
             parent
@@ -471,7 +465,7 @@ fn return_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
         ..Default::default()
     })
     .insert(Name::new("ReturnButton"))
-    .insert(ResultSceneButton::Return);
+    .insert(ButtonComponent::Return);
 }
 
 fn save_profile_button(
@@ -507,7 +501,7 @@ fn save_profile_button(
         ..Default::default()
     })
     .insert(Name::new("SaveProfileButton"))
-    .insert(ResultSceneButton::SaveProfile);
+    .insert(ButtonComponent::SaveProfile);
 }
 
 fn play_again_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
@@ -535,12 +529,12 @@ fn play_again_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials
         ..Default::default()
     })
     .insert(Name::new("PlayAgainButton"))
-    .insert(ResultSceneButton::PlayAgain);
+    .insert(ButtonComponent::PlayAgain);
 }
 
 fn button_handle_system(
     mut button_query: Query<
-        (&ResultSceneButton, &Interaction, &mut UiImage),
+        (&ButtonComponent, &Interaction, &mut UiImage),
         (Changed<Interaction>, With<Button>),
     >,
     scenes_materials: Res<ScenesMaterials>,
@@ -550,7 +544,7 @@ fn button_handle_system(
 ) {
     for (button, interaction, mut ui_image) in button_query.iter_mut() {
         match *button {
-            ResultSceneButton::Return => match *interaction {
+            ButtonComponent::Return => match *interaction {
                 Interaction::None => {
                     ui_image.0 = scenes_materials.icon_materials.home_icon_normal.clone()
                 }
@@ -564,7 +558,7 @@ fn button_handle_system(
                         .expect("Couldn't switch state to Main Menu Scene");
                 }
             },
-            ResultSceneButton::SaveProfile => match *interaction {
+            ButtonComponent::SaveProfile => match *interaction {
                 Interaction::None => {
                     ui_image.0 = scenes_materials.icon_materials.leaderboard.clone()
                 }
@@ -576,7 +570,7 @@ fn button_handle_system(
                     string.clear();
                 }
             },
-            ResultSceneButton::PlayAgain => match *interaction {
+            ButtonComponent::PlayAgain => match *interaction {
                 Interaction::None => ui_image.0 = scenes_materials.icon_materials.restart.clone(),
                 Interaction::Hovered => {
                     ui_image.0 = scenes_materials.icon_materials.restart_hovered.clone()
@@ -591,8 +585,12 @@ fn button_handle_system(
     }
 }
 
-fn user_input_text(grandparent: &mut ChildBuilder, materials: &Materials, dictionary: &Dictionary) {
-    let font = materials.get_font(dictionary.get_current_language());
+fn user_input_text(
+    grandparent: &mut ChildBuilder,
+    font_materials: &FontMaterials,
+    dictionary: &Dictionary,
+) {
+    let font = font_materials.get_font(dictionary.get_current_language());
 
     grandparent
         .spawn_bundle(NodeBundle {

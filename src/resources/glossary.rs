@@ -1,4 +1,3 @@
-use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::fs::File;
 use std::io::prelude::*;
@@ -6,7 +5,7 @@ use std::io::prelude::*;
 use crate::config::*;
 use crate::resources::language::Language;
 
-#[derive(Component, Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Glossary {
     pub highscore_scene_text: HighscoreSceneText,
     pub main_menu_scene_text: MainMenuSceneText,
@@ -18,7 +17,7 @@ pub struct Glossary {
     pub shared_text: SharedText,
 }
 
-#[derive(Component, Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MainMenuSceneText {
     pub play: String,
     pub highscore: String,
@@ -28,12 +27,12 @@ pub struct MainMenuSceneText {
     pub quit: String,
 }
 
-#[derive(Component, Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct LoadingSceneText {
     pub loading: String,
 }
 
-#[derive(Component, Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct HighscoreSceneText {
     pub name: String,
     pub gender: String,
@@ -45,7 +44,7 @@ pub struct HighscoreSceneText {
     pub playtime: String,
 }
 
-#[derive(Component, Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct OptionsSceneText {
     pub options: String,
     pub enable_music: String,
@@ -53,7 +52,7 @@ pub struct OptionsSceneText {
     pub language: String,
 }
 
-#[derive(Component, Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct HelpSceneText {
     pub help: String,
     pub move_up: String,
@@ -65,7 +64,7 @@ pub struct HelpSceneText {
     pub aim: String,
 }
 
-#[derive(Component, Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct SharedText {
     pub male: String,
     pub female: String,
@@ -77,7 +76,7 @@ pub struct SharedText {
     pub quit: String,
 }
 
-#[derive(Component, Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ResultSceneText {
     pub result: String,
     pub date: String,
@@ -89,7 +88,7 @@ pub struct ResultSceneText {
     pub playtime: String,
 }
 
-#[derive(Component, Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct InGameText {
     pub floor: String,
     pub wave: String,

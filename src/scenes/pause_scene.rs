@@ -2,11 +2,11 @@ use bevy::prelude::*;
 use std::slice::Iter;
 
 use crate::config::*;
-use crate::ingame::resources::profile::Profile;
-use crate::materials::scenes::MenuBoxMaterials;
+use crate::materials::font::FontMaterials;
+use crate::materials::menu_box::MenuBoxMaterials;
 use crate::materials::scenes::ScenesMaterials;
-use crate::materials::Materials;
 use crate::resources::dictionary::Dictionary;
+use crate::resources::profile::Profile;
 use crate::scenes::SceneState;
 
 const BOX_TILE_SIZE: f32 = 60.0;
@@ -20,16 +20,14 @@ const BOX_ARRAY: [[i8; 7]; 3] = [
 ];
 
 #[derive(Component, Copy, Clone, PartialEq, Eq)]
-enum PauseSceneButton {
+enum ButtonComponent {
     Continue,
     Quit,
 }
 
-impl PauseSceneButton {
-    pub fn iterator() -> Iter<'static, PauseSceneButton> {
-        static BUTTONS: [PauseSceneButton; 2] =
-            [PauseSceneButton::Continue, PauseSceneButton::Quit];
-        BUTTONS.iter()
+impl ButtonComponent {
+    pub fn iterator() -> Iter<'static, ButtonComponent> {
+        [ButtonComponent::Continue, ButtonComponent::Quit].iter()
     }
 }
 
@@ -51,7 +49,7 @@ impl Plugin for PauseScenePlugin {
 
 fn setup(
     mut commands: Commands,
-    materials: Res<Materials>,
+    font_materials: Res<FontMaterials>,
     scenes_materials: Res<ScenesMaterials>,
     dictionary: Res<Dictionary>,
 ) {
@@ -67,7 +65,7 @@ fn setup(
         })
         .with_children(|parent| {
             menu_box(parent, &scenes_materials.menu_box_materials);
-            buttons(parent, &materials, &dictionary);
+            buttons(parent, &font_materials, &dictionary);
         })
         .insert(Name::new("PauseUI"))
         .id();
@@ -135,19 +133,19 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     .insert(Name::new("MenuBox"));
 }
 
-fn buttons(root: &mut ChildBuilder, materials: &Materials, dictionary: &Dictionary) {
-    let font = materials.get_font(dictionary.get_current_language());
+fn buttons(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
+    let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
 
-    for button in PauseSceneButton::iterator() {
+    for button in ButtonComponent::iterator() {
         let value = match *button {
-            PauseSceneButton::Continue => glossary.shared_text.continue_.clone(),
-            PauseSceneButton::Quit => glossary.shared_text.quit.clone(),
+            ButtonComponent::Continue => glossary.shared_text.continue_.clone(),
+            ButtonComponent::Quit => glossary.shared_text.quit.clone(),
         };
 
         let top_position = match *button {
-            PauseSceneButton::Continue => 250.0,
-            PauseSceneButton::Quit => 300.0,
+            ButtonComponent::Continue => 250.0,
+            ButtonComponent::Quit => 300.0,
         };
 
         root.spawn_bundle(ButtonBundle {
@@ -193,7 +191,7 @@ fn buttons(root: &mut ChildBuilder, materials: &Materials, dictionary: &Dictiona
 
 fn button_handle_system(
     mut button_query: Query<
-        (&Interaction, &PauseSceneButton, &Children),
+        (&Interaction, &ButtonComponent, &Children),
         (Changed<Interaction>, With<Button>),
     >,
     mut text_query: Query<&mut Text>,
@@ -206,7 +204,7 @@ fn button_handle_system(
             Interaction::None => text.sections[0].style.color = Color::GRAY,
             Interaction::Hovered => text.sections[0].style.color = Color::BLACK.into(),
             Interaction::Clicked => {
-                if *button == PauseSceneButton::Quit {
+                if *button == ButtonComponent::Quit {
                     profile.is_run_finished = true;
                 }
                 state.pop().unwrap();

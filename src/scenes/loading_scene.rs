@@ -3,17 +3,20 @@ use bevy::prelude::*;
 use crate::config::*;
 use crate::scenes::SceneState;
 
-use crate::ingame::materials::{
-    bullets::BulletsMaterials, dungeon::DungeonMaterials, hearts::HeartsMaterials,
-    heros::HerosMaterials, weapons::WeaponsMaterials, InGameMaterials,
-};
-use crate::ingame::resources::data::Data;
-use crate::ingame::resources::dungeon::rooms::Rooms;
-use crate::materials::{
-    scenes::{FlagMaterials, IconMaterials, MenuBoxMaterials, ScenesMaterials},
-    Materials,
-};
+use crate::materials::bullets::BulletsMaterials;
+use crate::materials::dungeon::DungeonMaterials;
+use crate::materials::flag::FlagMaterials;
+use crate::materials::font::FontMaterials;
+use crate::materials::hearts::HeartsMaterials;
+use crate::materials::heros::HerosMaterials;
+use crate::materials::icon::IconMaterials;
+use crate::materials::ingame::InGameMaterials;
+use crate::materials::menu_box::MenuBoxMaterials;
+use crate::materials::scenes::ScenesMaterials;
+use crate::materials::weapons::WeaponsMaterials;
 use crate::resources::dictionary::Dictionary;
+use crate::resources::dungeon::rooms::Rooms;
+use crate::resources::game_data::GameData;
 use crate::resources::language::Language;
 
 const LOADING_TEXT_FONT_SIZE: f32 = 30.0;
@@ -23,7 +26,7 @@ const LOADING_BORDER_WIDTH: f32 = 600.0;
 const LOADING_BORDER_HEIGHT: f32 = 60.0;
 
 #[derive(Component)]
-struct Loader {
+struct LoaderComponent {
     max_width: f32,
     current_width: f32,
 }
@@ -51,7 +54,14 @@ impl Plugin for LoadingScenePlugin {
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>, dictionary: Res<Dictionary>) {
     let user_interface_root = commands
-        .spawn_bundle(root())
+        .spawn_bundle(NodeBundle {
+            style: Style {
+                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                ..Default::default()
+            },
+            color: UiColor(Color::BLACK),
+            ..Default::default()
+        })
         .with_children(|parent| {
             loading_text(parent, &asset_server, &dictionary);
             loader_bundle(parent, &asset_server, &dictionary);
@@ -67,17 +77,6 @@ fn cleanup(mut commands: Commands, loading_scene_data: Res<LoadingSceneData>) {
     commands
         .entity(loading_scene_data.user_interface_root)
         .despawn_recursive();
-}
-
-fn root() -> NodeBundle {
-    NodeBundle {
-        style: Style {
-            size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-            ..Default::default()
-        },
-        color: UiColor(Color::BLACK),
-        ..Default::default()
-    }
 }
 
 fn loader_bundle(
@@ -110,7 +109,6 @@ fn loader_bundle(
         },
     )
     .with_children(|parent| {
-        // Loader
         parent
             .spawn_bundle(NodeBundle {
                 style: Style {
@@ -155,7 +153,7 @@ fn loader_bundle(
                     ..Default::default()
                 });
             })
-            .insert(Loader {
+            .insert(LoaderComponent {
                 max_width: LOADING_BORDER_WIDTH - 10.0,
                 current_width: 0.0,
             });
@@ -218,9 +216,9 @@ fn loading_text(
 }
 
 fn update_loader(
-    mut query: Query<(&mut Loader, &mut Style, &Children)>,
-    mut text_query: Query<&mut Text>,
+    mut query: Query<(&mut LoaderComponent, &mut Style, &Children)>,
     mut state: ResMut<State<SceneState>>,
+    mut text_query: Query<&mut Text>,
 ) {
     for (mut loader, mut style, children) in query.iter_mut() {
         if loader.current_width < loader.max_width {
@@ -241,14 +239,14 @@ fn update_loader(
 }
 
 fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let materials: Materials = Materials {
+    let font_materials: FontMaterials = FontMaterials {
         roboto_font: asset_server.load(ROBOTO_FONT),
         fibberish_font: asset_server.load(FIBBERISH_FONT),
-        main_menu_background: asset_server.load(MAIN_MENU_BACKGROUND_IMAGE),
-        sub_menu_background: asset_server.load(SUB_MENU_BACKGROUND_IMAGE),
     };
 
     let scenes_materials: ScenesMaterials = ScenesMaterials {
+        main_background_image: asset_server.load(MAIN_MENU_BACKGROUND_IMAGE),
+        sub_background_image: asset_server.load(SUB_MENU_BACKGROUND_IMAGE),
         menu_box_materials: MenuBoxMaterials {
             top_right: asset_server.load("scenes/gui/menu_box/top_right.png"),
             top_center: asset_server.load("scenes/gui/menu_box/top_center.png"),
@@ -355,12 +353,12 @@ fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
         },
     };
 
-    commands.insert_resource(materials);
+    commands.insert_resource(font_materials);
     commands.insert_resource(scenes_materials);
     commands.insert_resource(ingame_materials);
 }
 
 fn load_data(mut commands: Commands) {
-    commands.insert_resource(Data::new());
+    commands.insert_resource(GameData::new());
     commands.insert_resource(Rooms::new());
 }

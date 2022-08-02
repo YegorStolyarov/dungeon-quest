@@ -3,8 +3,8 @@ use bevy_kira_audio::AudioPlugin;
 
 use config::*;
 
+mod components;
 mod config;
-mod ingame;
 mod materials;
 mod plugins;
 mod resources;
@@ -47,13 +47,13 @@ fn main() {
         .add_plugin(scenes::pause_scene::PauseScenePlugin)
         .add_plugin(scenes::rewards_scene::RewardsScenePlugin)
         .add_plugin(scenes::reward_scene::RewardScenePlugin)
-        .add_plugin(ingame::input::InputHandlePlugin)
-        .add_plugin(ingame::player::PlayerPlugin)
-        .add_plugin(ingame::weapon::WeaponPlugin)
-        .add_plugin(ingame::classic_mode::ClassicModePlugin)
-        .add_plugin(ingame::classic_mode::ui::ClassicModeUIPlugin)
-        .add_plugin(ingame::survival_mode::SurvivalModePlugin)
-        .add_plugin(ingame::survival_mode::ui::SurvivalModeUIPlugin)
+        .add_plugin(plugins::input::InputHandlePlugin)
+        .add_plugin(plugins::player::PlayerPlugin)
+        .add_plugin(plugins::weapon::WeaponPlugin)
+        .add_plugin(plugins::classic_mode::ClassicModePlugin)
+        .add_plugin(plugins::classic_mode::ui::ClassicModeUIPlugin)
+        .add_plugin(plugins::survival_mode::SurvivalModePlugin)
+        .add_plugin(plugins::survival_mode::ui::SurvivalModeUIPlugin)
         .add_plugin(plugins::debug::DebugPlugin)
         .run();
 }

@@ -2,12 +2,12 @@ use bevy::prelude::*;
 use std::slice::Iter;
 
 use crate::config::*;
-use crate::ingame::resources::{game_mode::GameMode, profile::Profile};
-use crate::materials::scenes::MenuBoxMaterials;
+use crate::materials::font::FontMaterials;
+use crate::materials::menu_box::MenuBoxMaterials;
 use crate::materials::scenes::ScenesMaterials;
-use crate::materials::Materials;
 use crate::resources::dictionary::Dictionary;
 use crate::resources::language::Language;
+use crate::resources::{game_mode::GameMode, profile::Profile};
 use crate::scenes::SceneState;
 
 const RETURN_BUTTON_SIDE: f32 = 50.0;
@@ -26,20 +26,20 @@ const BOX_ARRAY: [[i8; 10]; 5] = [
 ];
 
 #[derive(PartialEq, Component, Clone)]
-enum GameModeSelectSceneButton {
+enum ButtonComponent {
     Return,
     ClassicMode,
     SurvivalMode,
 }
 
-impl GameModeSelectSceneButton {
-    pub fn iterator() -> Iter<'static, GameModeSelectSceneButton> {
-        static BUTTONS: [GameModeSelectSceneButton; 3] = [
-            GameModeSelectSceneButton::Return,
-            GameModeSelectSceneButton::ClassicMode,
-            GameModeSelectSceneButton::SurvivalMode,
-        ];
-        BUTTONS.iter()
+impl ButtonComponent {
+    pub fn iterator() -> Iter<'static, ButtonComponent> {
+        [
+            ButtonComponent::Return,
+            ButtonComponent::ClassicMode,
+            ButtonComponent::SurvivalMode,
+        ]
+        .iter()
     }
 }
 
@@ -64,26 +64,33 @@ impl Plugin for GameModeSelectScenePlugin {
 }
 
 fn setup(
-    mut commands: Commands,
-    materials: Res<Materials>,
     scenes_materials: Res<ScenesMaterials>,
+    font_materials: Res<FontMaterials>,
     dictionary: Res<Dictionary>,
+    mut commands: Commands,
 ) {
     // user interface root
     let user_interface_root = commands
-        .spawn_bundle(root(&materials))
+        .spawn_bundle(NodeBundle {
+            style: Style {
+                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                ..Default::default()
+            },
+            image: UiImage(scenes_materials.sub_background_image.clone()),
+            ..Default::default()
+        })
         .with_children(|parent| {
             menu_box(parent, &scenes_materials.menu_box_materials);
-            select_game_mode_text(parent, &materials, &dictionary);
-            buttons(parent, &scenes_materials, &materials, &dictionary);
+            select_game_mode_text(parent, &font_materials, &dictionary);
+            buttons(parent, &scenes_materials, &font_materials, &dictionary);
         })
+        .insert(Name::new("UIRoot"))
         .id();
 
     commands.insert_resource(GameModeSelectSceneData {
         user_interface_root,
     });
 
-    // Insert new Profile
     commands.insert_resource(Profile::new());
 }
 
@@ -91,17 +98,6 @@ fn cleanup(mut commands: Commands, game_mode_select_scene_data: Res<GameModeSele
     commands
         .entity(game_mode_select_scene_data.user_interface_root)
         .despawn_recursive();
-}
-
-fn root(materials: &Materials) -> NodeBundle {
-    NodeBundle {
-        style: Style {
-            size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-            ..Default::default()
-        },
-        image: UiImage(materials.sub_menu_background.clone()),
-        ..Default::default()
-    }
 }
 
 fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
@@ -149,8 +145,12 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     }
 }
 
-fn select_game_mode_text(root: &mut ChildBuilder, materials: &Materials, dictionary: &Dictionary) {
-    let font = materials.get_font(dictionary.get_current_language());
+fn select_game_mode_text(
+    root: &mut ChildBuilder,
+    font_materials: &FontMaterials,
+    dictionary: &Dictionary,
+) {
+    let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
 
     let left_position = if dictionary.get_current_language() == Language::VI {
@@ -188,15 +188,15 @@ fn select_game_mode_text(root: &mut ChildBuilder, materials: &Materials, diction
 fn buttons(
     root: &mut ChildBuilder,
     scenes_materials: &ScenesMaterials,
-    materials: &Materials,
+    font_materials: &FontMaterials,
     dictionary: &Dictionary,
 ) {
-    let font = materials.get_font(dictionary.get_current_language());
+    let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
 
-    for (index, button) in GameModeSelectSceneButton::iterator().enumerate() {
+    for (index, button) in ButtonComponent::iterator().enumerate() {
         match button {
-            GameModeSelectSceneButton::Return => {
+            ButtonComponent::Return => {
                 let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
                 root.spawn_bundle(ButtonBundle {
                     style: Style {
@@ -268,7 +268,7 @@ fn buttons(
 
 fn button_handle_system(
     mut button_query: Query<
-        (&Interaction, &GameModeSelectSceneButton, &Children),
+        (&Interaction, &ButtonComponent, &Children),
         (Changed<Interaction>, With<Button>),
     >,
     mut text_query: Query<&mut Text>,
@@ -281,12 +281,12 @@ fn button_handle_system(
             Interaction::None => text.sections[0].style.color = Color::GRAY,
             Interaction::Hovered => text.sections[0].style.color = Color::BLACK.into(),
             Interaction::Clicked => {
-                if *button == GameModeSelectSceneButton::ClassicMode {
+                if *button == ButtonComponent::ClassicMode {
                     profile.set_game_mode(GameMode::ClassicMode);
                     state
                         .set(SceneState::HeroSelectScene)
                         .expect("Couldn't switch state to Hero Select Scene");
-                } else if *button == GameModeSelectSceneButton::SurvivalMode {
+                } else if *button == ButtonComponent::SurvivalMode {
                     profile.set_game_mode(GameMode::SurvivalMode);
                     state
                         .set(SceneState::HeroSelectScene)
@@ -299,14 +299,14 @@ fn button_handle_system(
 
 fn return_button_handle(
     mut button_query: Query<
-        (&Interaction, &GameModeSelectSceneButton, &mut UiImage),
+        (&Interaction, &ButtonComponent, &mut UiImage),
         (Changed<Interaction>, With<Button>),
     >,
     scenes_materials: Res<ScenesMaterials>,
     mut state: ResMut<State<SceneState>>,
 ) {
     for (interaction, button, mut ui_image) in button_query.iter_mut() {
-        if *button == GameModeSelectSceneButton::Return {
+        if *button == ButtonComponent::Return {
             match *interaction {
                 Interaction::None => {
                     ui_image.0 = scenes_materials.icon_materials.home_icon_normal.clone()

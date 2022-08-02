@@ -1,9 +1,9 @@
 use bevy::prelude::*;
 
 use crate::config::*;
-use crate::materials::scenes::MenuBoxMaterials;
+use crate::materials::font::FontMaterials;
+use crate::materials::menu_box::MenuBoxMaterials;
 use crate::materials::scenes::ScenesMaterials;
-use crate::materials::Materials;
 use crate::resources::dictionary::Dictionary;
 use crate::resources::language::Language;
 use crate::scenes::SceneState;
@@ -26,9 +26,7 @@ const HELP_BOX_ARRAY: [[i8; 9]; 8] = [
 ];
 
 #[derive(Component, PartialEq)]
-enum HelpSceneButton {
-    Return,
-}
+struct ReturnButtonComponent;
 
 pub struct HelpScenePlugin;
 
@@ -48,18 +46,25 @@ impl Plugin for HelpScenePlugin {
 
 fn setup(
     mut commands: Commands,
-    materials: Res<Materials>,
+    font_materials: Res<FontMaterials>,
     scenes_materials: Res<ScenesMaterials>,
     dictionary: Res<Dictionary>,
 ) {
     // user interface root
     let user_interface_root = commands
-        .spawn_bundle(root(&materials))
+        .spawn_bundle(NodeBundle {
+            style: Style {
+                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                ..Default::default()
+            },
+            image: UiImage(scenes_materials.sub_background_image.clone()),
+            ..Default::default()
+        })
         .with_children(|parent| {
             help_menu_box(parent, &scenes_materials.menu_box_materials);
-            texts(parent, &materials, &dictionary);
-            control_texts(parent, &materials, &dictionary);
-            return_button(parent, &scenes_materials)
+            texts(parent, &font_materials, &dictionary);
+            control_texts(parent, &font_materials, &dictionary);
+            return_button_component(parent, &scenes_materials)
         })
         .id();
 
@@ -72,17 +77,6 @@ fn cleanup(mut commands: Commands, help_scene_data: Res<HelpSceneData>) {
     commands
         .entity(help_scene_data.user_interface_root)
         .despawn_recursive();
-}
-
-fn root(materials: &Materials) -> NodeBundle {
-    NodeBundle {
-        style: Style {
-            size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-            ..Default::default()
-        },
-        image: UiImage(materials.sub_menu_background.clone()),
-        ..Default::default()
-    }
 }
 
 fn help_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
@@ -132,8 +126,8 @@ fn help_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials)
     }
 }
 
-fn texts(root: &mut ChildBuilder, materials: &Materials, dictionary: &Dictionary) {
-    let font = materials.get_font(dictionary.get_current_language());
+fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
+    let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
 
     let position_of_texts: [[f32; 2]; 8] = [
@@ -199,8 +193,8 @@ fn texts(root: &mut ChildBuilder, materials: &Materials, dictionary: &Dictionary
     }
 }
 
-fn control_texts(root: &mut ChildBuilder, materials: &Materials, dictionary: &Dictionary) {
-    let font = materials.get_font(dictionary.get_current_language());
+fn control_texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
+    let font = font_materials.get_font(dictionary.get_current_language());
 
     let position_of_texts: [[f32; 2]; 7] = [
         [645.0, 160.0],
@@ -251,7 +245,7 @@ fn control_texts(root: &mut ChildBuilder, materials: &Materials, dictionary: &Di
     }
 }
 
-fn return_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
+fn return_button_component(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
     let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
 
     let size = Size {
@@ -275,33 +269,31 @@ fn return_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
         image: UiImage(handle_image),
         ..Default::default()
     })
-    .insert(HelpSceneButton::Return);
+    .insert(ReturnButtonComponent);
 }
 
 fn button_handle_system(
     mut button_query: Query<
-        (&Interaction, &HelpSceneButton, &mut UiImage),
-        (Changed<Interaction>, With<Button>),
+        (&Interaction, &mut UiImage),
+        (Changed<Interaction>, With<ReturnButtonComponent>),
     >,
     scenes_materials: Res<ScenesMaterials>,
     mut state: ResMut<State<SceneState>>,
 ) {
-    for (interaction, button, mut ui_image) in button_query.iter_mut() {
-        match *button {
-            HelpSceneButton::Return => match *interaction {
-                Interaction::None => {
-                    ui_image.0 = scenes_materials.icon_materials.home_icon_normal.clone()
-                }
-                Interaction::Hovered => {
-                    ui_image.0 = scenes_materials.icon_materials.home_icon_hovered.clone()
-                }
-                Interaction::Clicked => {
-                    ui_image.0 = scenes_materials.icon_materials.home_icon_clicked.clone();
-                    state
-                        .set(SceneState::MainMenuScene)
-                        .expect("Couldn't switch state to Main Menu Scene");
-                }
-            },
+    for (interaction, mut ui_image) in button_query.iter_mut() {
+        match *interaction {
+            Interaction::None => {
+                ui_image.0 = scenes_materials.icon_materials.home_icon_normal.clone()
+            }
+            Interaction::Hovered => {
+                ui_image.0 = scenes_materials.icon_materials.home_icon_hovered.clone()
+            }
+            Interaction::Clicked => {
+                ui_image.0 = scenes_materials.icon_materials.home_icon_clicked.clone();
+                state
+                    .set(SceneState::MainMenuScene)
+                    .expect("Couldn't switch state to Main Menu Scene");
+            }
         }
     }
 }

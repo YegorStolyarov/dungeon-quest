@@ -2,8 +2,9 @@ use bevy::app::AppExit;
 use bevy::prelude::*;
 use std::slice::Iter;
 
-use crate::materials::scenes::{MenuBoxMaterials, ScenesMaterials};
-use crate::materials::Materials;
+use crate::materials::font::FontMaterials;
+use crate::materials::menu_box::MenuBoxMaterials;
+use crate::materials::scenes::ScenesMaterials;
 use crate::resources::dictionary::Dictionary;
 use crate::scenes::SceneState;
 
@@ -21,7 +22,7 @@ const FONT_SIZE: f32 = 36.0;
 const MAIN_MENU_BOX_TILE_SIZE: f32 = 50.0;
 
 #[derive(Component, Copy, Clone)]
-enum MainMenuSceneButton {
+enum ButtonComponent {
     Play,
     Highscore,
     Options,
@@ -30,17 +31,17 @@ enum MainMenuSceneButton {
     Quit,
 }
 
-impl MainMenuSceneButton {
-    pub fn iterator() -> Iter<'static, MainMenuSceneButton> {
-        static MAIN_MENU_SCENE_BUTTONS: [MainMenuSceneButton; 6] = [
-            MainMenuSceneButton::Play,
-            MainMenuSceneButton::Highscore,
-            MainMenuSceneButton::Options,
-            MainMenuSceneButton::Help,
-            MainMenuSceneButton::Credits,
-            MainMenuSceneButton::Quit,
-        ];
-        MAIN_MENU_SCENE_BUTTONS.iter()
+impl ButtonComponent {
+    pub fn iterator() -> Iter<'static, ButtonComponent> {
+        [
+            ButtonComponent::Play,
+            ButtonComponent::Highscore,
+            ButtonComponent::Options,
+            ButtonComponent::Help,
+            ButtonComponent::Credits,
+            ButtonComponent::Quit,
+        ]
+        .iter()
     }
 }
 
@@ -61,16 +62,24 @@ impl Plugin for MainMenuScenePlugin {
 }
 
 fn setup(
-    mut commands: Commands,
-    materials: Res<Materials>,
     scenes_materials: Res<ScenesMaterials>,
     dictionary: Res<Dictionary>,
+    mut commands: Commands,
+    font_materials: Res<FontMaterials>,
 ) {
     let user_interface_root = commands
-        .spawn_bundle(root(&materials))
+        .spawn_bundle(NodeBundle {
+            style: Style {
+                position_type: PositionType::Absolute,
+                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                ..Default::default()
+            },
+            image: UiImage(scenes_materials.main_background_image.clone()),
+            ..Default::default()
+        })
         .with_children(|parent| {
             main_menu_box(parent, &scenes_materials.menu_box_materials);
-            buttons(parent, &materials, dictionary);
+            buttons(parent, &font_materials, dictionary);
         })
         .id();
 
@@ -83,18 +92,6 @@ fn cleanup(mut commands: Commands, main_menu_scene_data: Res<MainMenuSceneData>)
     commands
         .entity(main_menu_scene_data.user_interface_root)
         .despawn_recursive();
-}
-
-fn root(materials: &Res<Materials>) -> NodeBundle {
-    NodeBundle {
-        style: Style {
-            position_type: PositionType::Absolute,
-            size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-            ..Default::default()
-        },
-        image: UiImage(materials.main_menu_background.clone()),
-        ..Default::default()
-    }
 }
 
 fn main_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
@@ -140,10 +137,10 @@ fn main_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials)
     }
 }
 
-fn buttons(root: &mut ChildBuilder, materials: &Res<Materials>, dictionary: Res<Dictionary>) {
+fn buttons(root: &mut ChildBuilder, materials: &Res<FontMaterials>, dictionary: Res<Dictionary>) {
     let glossary = dictionary.get_glossary();
 
-    for (index, button) in MainMenuSceneButton::iterator().enumerate() {
+    for (index, button) in ButtonComponent::iterator().enumerate() {
         let position: Rect<Val> = Rect {
             left: Val::Px(10.0 + MAIN_MENU_BOX_TILE_SIZE * (3.0 - 1.0) / 2.0),
             right: Val::Auto,
@@ -171,12 +168,12 @@ fn buttons(root: &mut ChildBuilder, materials: &Res<Materials>, dictionary: Res<
         })
         .with_children(|parent| {
             let text: &str = match button {
-                MainMenuSceneButton::Play => glossary.main_menu_scene_text.play.as_str(),
-                MainMenuSceneButton::Highscore => glossary.main_menu_scene_text.highscore.as_str(),
-                MainMenuSceneButton::Options => glossary.main_menu_scene_text.options.as_str(),
-                MainMenuSceneButton::Help => glossary.main_menu_scene_text.help.as_str(),
-                MainMenuSceneButton::Credits => glossary.main_menu_scene_text.credits.as_str(),
-                MainMenuSceneButton::Quit => glossary.main_menu_scene_text.quit.as_str(),
+                ButtonComponent::Play => glossary.main_menu_scene_text.play.as_str(),
+                ButtonComponent::Highscore => glossary.main_menu_scene_text.highscore.as_str(),
+                ButtonComponent::Options => glossary.main_menu_scene_text.options.as_str(),
+                ButtonComponent::Help => glossary.main_menu_scene_text.help.as_str(),
+                ButtonComponent::Credits => glossary.main_menu_scene_text.credits.as_str(),
+                ButtonComponent::Quit => glossary.main_menu_scene_text.quit.as_str(),
             };
 
             parent.spawn_bundle(TextBundle {
@@ -201,7 +198,7 @@ fn buttons(root: &mut ChildBuilder, materials: &Res<Materials>, dictionary: Res<
 
 fn button_handle_system(
     mut button_query: Query<
-        (&Interaction, &MainMenuSceneButton, &Children),
+        (&Interaction, &ButtonComponent, &Children),
         (Changed<Interaction>, With<Button>),
     >,
     mut text_query: Query<&mut Text>,
@@ -216,22 +213,22 @@ fn button_handle_system(
             Interaction::Clicked => {
                 text.sections[0].style.color = Color::RED.into();
                 match button {
-                    MainMenuSceneButton::Play => state
+                    ButtonComponent::Play => state
                         .set(SceneState::GameModeSelectScene)
                         .expect("Couldn't switch state to Loading Scene"),
-                    MainMenuSceneButton::Highscore => state
+                    ButtonComponent::Highscore => state
                         .set(SceneState::HighscoreScene)
                         .expect("Couldn't switch state to Highscore Scene"),
-                    MainMenuSceneButton::Options => state
+                    ButtonComponent::Options => state
                         .set(SceneState::OptionsScene)
                         .expect("Couldn't switch state to Options Scene"),
-                    MainMenuSceneButton::Help => state
+                    ButtonComponent::Help => state
                         .set(SceneState::HelpScene)
                         .expect("Couldn't switch state to Help Scene"),
-                    MainMenuSceneButton::Credits => state
+                    ButtonComponent::Credits => state
                         .set(SceneState::CreditsScene)
                         .expect("Couldn't switch state to Credits Scene"),
-                    MainMenuSceneButton::Quit => exit.send(AppExit),
+                    ButtonComponent::Quit => exit.send(AppExit),
                 }
             }
         }

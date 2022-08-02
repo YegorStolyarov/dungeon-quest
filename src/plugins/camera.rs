@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
+use crate::components::player::PlayerComponent;
 use crate::config::*;
-use crate::ingame::resources::player::Player;
 use crate::scenes::SceneState;
 
 #[derive(Component)]
@@ -30,6 +30,7 @@ impl Plugin for CameraPlugin {
 fn spawn_user_interface_camera(mut commands: Commands) {
     commands
         .spawn_bundle(UiCameraBundle::default())
+        .insert(Name::new("UserInterfaceCamera"))
         .insert(UserInterfaceCamera);
 }
 
@@ -41,12 +42,15 @@ fn spawn_2d_camera(mut commands: Commands) {
     camera.orthographic_projection.right = 1.0 * RESOLUTION;
     camera.orthographic_projection.left = -1.0 * RESOLUTION;
 
-    commands.spawn_bundle(camera).insert(Orthographic2DCamera);
+    commands
+        .spawn_bundle(camera)
+        .insert(Orthographic2DCamera)
+        .insert(Name::new("Orthographic2DCamera"));
 }
 
 fn camera_follow(
-    player_query: Query<&Transform, With<Player>>,
-    mut camera_query: Query<&mut Transform, (Without<Player>, With<Orthographic2DCamera>)>,
+    player_query: Query<&Transform, With<PlayerComponent>>,
+    mut camera_query: Query<&mut Transform, (Without<PlayerComponent>, With<Orthographic2DCamera>)>,
 ) {
     let player_transform = player_query.single();
     let mut camera_transform = camera_query.single_mut();

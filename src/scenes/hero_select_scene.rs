@@ -1,18 +1,18 @@
 use bevy::prelude::*;
 use std::slice::Iter;
 
-use crate::ingame::materials::InGameMaterials;
-use crate::ingame::resources::game_mode::GameMode;
-use crate::ingame::resources::hero::gender::Gender;
-use crate::ingame::resources::hero::hero_class::HeroClass;
-use crate::ingame::resources::profile::Profile;
-use crate::materials::scenes::MenuBoxMaterials;
+use crate::materials::font::FontMaterials;
+use crate::materials::ingame::InGameMaterials;
+use crate::materials::menu_box::MenuBoxMaterials;
 use crate::materials::scenes::ScenesMaterials;
-use crate::materials::Materials;
 use crate::resources::dictionary::Dictionary;
+use crate::resources::game_mode::GameMode;
+use crate::resources::hero::gender::Gender;
+use crate::resources::hero::hero_class::HeroClass;
+use crate::resources::profile::Profile;
 use crate::scenes::SceneState;
 
-const RETURN_BUTTON_SIDE: f32 = 50.0;
+const RETURN_BUTTON_SIZE: f32 = 50.0;
 const BOX_TILE_SIZE: f32 = 60.0;
 
 const BOX_ARRAY: [[i8; 13]; 9] = [
@@ -28,10 +28,10 @@ const BOX_ARRAY: [[i8; 13]; 9] = [
 ];
 
 #[derive(Component)]
-struct ReturnButton;
+struct ReturnButtonComponent;
 
 #[derive(Component, PartialEq, Clone)]
-pub enum HeroSelectSceneButton {
+pub enum ButtonComponent {
     MaleElf,
     FemaleElf,
     MaleKnight,
@@ -42,33 +42,32 @@ pub enum HeroSelectSceneButton {
     FemaleLizard,
 }
 
-impl HeroSelectSceneButton {
-    pub fn iterator() -> Iter<'static, HeroSelectSceneButton> {
-        static HERO_SELECT_SCENE_BUTTON: [HeroSelectSceneButton; 8] = [
-            HeroSelectSceneButton::MaleElf,
-            HeroSelectSceneButton::MaleKnight,
-            HeroSelectSceneButton::MaleWizard,
-            HeroSelectSceneButton::MaleLizard,
-            HeroSelectSceneButton::FemaleElf,
-            HeroSelectSceneButton::FemaleKnight,
-            HeroSelectSceneButton::FemaleWizard,
-            HeroSelectSceneButton::FemaleLizard,
-        ];
-        HERO_SELECT_SCENE_BUTTON.iter()
+impl ButtonComponent {
+    pub fn iterator() -> Iter<'static, ButtonComponent> {
+        [
+            ButtonComponent::MaleElf,
+            ButtonComponent::MaleKnight,
+            ButtonComponent::MaleWizard,
+            ButtonComponent::MaleLizard,
+            ButtonComponent::FemaleElf,
+            ButtonComponent::FemaleKnight,
+            ButtonComponent::FemaleWizard,
+            ButtonComponent::FemaleLizard,
+        ]
+        .iter()
     }
 }
 
-#[derive(Component)]
 struct AnimationController {
     run_animation: bool,
-    hero_image: HeroImage,
+    hero_image: HeroImageComponent,
     timer: Timer,
 }
 
 pub struct HeroSelectScenePlugin;
 
 #[derive(Component, Clone, PartialEq, Eq)]
-enum HeroImage {
+enum HeroImageComponent {
     MaleElf,
     FemaleElf,
     MaleKnight,
@@ -98,26 +97,25 @@ impl Plugin for HeroSelectScenePlugin {
 }
 
 fn setup(
-    mut commands: Commands,
-    materials: Res<Materials>,
+    texture_atlases: ResMut<Assets<TextureAtlas>>,
     ingame_materials: Res<InGameMaterials>,
     scenes_materials: Res<ScenesMaterials>,
-    texture_atlases: ResMut<Assets<TextureAtlas>>,
+    font_materials: Res<FontMaterials>,
     dictionary: Res<Dictionary>,
+    mut commands: Commands,
 ) {
-    // sprite bundle
     let sprite_bundle = commands
         .spawn_bundle(SpriteBundle {
-            texture: materials.sub_menu_background.clone(),
+            texture: scenes_materials.sub_background_image.clone(),
             ..Default::default()
         })
         .with_children(|parent| {
             menu_box(parent, &scenes_materials.menu_box_materials);
             heros_images(parent, &ingame_materials, texture_atlases)
         })
+        .insert(Name::new("SpriteBundle"))
         .id();
 
-    // user interface root
     let user_interface_root = commands
         .spawn_bundle(NodeBundle {
             style: Style {
@@ -128,10 +126,11 @@ fn setup(
             ..Default::default()
         })
         .with_children(|parent| {
-            select_hero_text(parent, &materials, &dictionary);
+            select_hero_text(parent, &font_materials, &dictionary);
             return_button(parent, &scenes_materials);
             heros_buttons(parent);
         })
+        .insert(Name::new("UIRoot"))
         .id();
 
     commands.insert_resource(HeroSelectSceneData {
@@ -141,7 +140,7 @@ fn setup(
 
     commands.insert_resource(AnimationController {
         run_animation: false,
-        hero_image: HeroImage::MaleElf,
+        hero_image: HeroImageComponent::MaleElf,
         timer: Timer::from_seconds(0.1, true),
     });
 }
@@ -203,14 +202,14 @@ fn return_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
     root.spawn_bundle(ButtonBundle {
         style: Style {
             position: Rect {
-                left: Val::Px(RETURN_BUTTON_SIDE / 2.0),
-                top: Val::Px(RETURN_BUTTON_SIDE / 2.0),
+                left: Val::Px(RETURN_BUTTON_SIZE / 2.0),
+                top: Val::Px(RETURN_BUTTON_SIZE / 2.0),
                 right: Val::Auto,
                 bottom: Val::Auto,
             },
             size: Size {
-                width: Val::Px(RETURN_BUTTON_SIDE),
-                height: Val::Px(RETURN_BUTTON_SIDE),
+                width: Val::Px(RETURN_BUTTON_SIZE),
+                height: Val::Px(RETURN_BUTTON_SIZE),
             },
             justify_content: JustifyContent::Center,
             position_type: PositionType::Absolute,
@@ -219,18 +218,19 @@ fn return_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
         image: UiImage(handle_image),
         ..Default::default()
     })
-    .insert(ReturnButton);
+    .insert(Name::new("ReturnButton"))
+    .insert(ReturnButtonComponent);
 }
 
 fn return_button_handle(
     mut button_query: Query<
-        (&Interaction, &ReturnButton, &mut UiImage),
-        (Changed<Interaction>, With<Button>),
+        (&Interaction, &mut UiImage),
+        (Changed<Interaction>, With<ReturnButtonComponent>),
     >,
     scenes_materials: Res<ScenesMaterials>,
     mut state: ResMut<State<SceneState>>,
 ) {
-    for (interaction, _button, mut ui_image) in button_query.iter_mut() {
+    for (interaction, mut ui_image) in button_query.iter_mut() {
         match *interaction {
             Interaction::None => {
                 ui_image.0 = scenes_materials.icon_materials.home_icon_normal.clone()
@@ -269,46 +269,55 @@ fn heros_images(
         for gender in Gender::iterator() {
             let hero_tileset;
             let hero_image;
+            let component_name;
 
             match hero_class {
                 HeroClass::Elf => match gender {
                     Gender::Male => {
                         hero_tileset = ingame_materials.heros_materials.male_elf.clone();
-                        hero_image = HeroImage::MaleElf;
+                        hero_image = HeroImageComponent::MaleElf;
+                        component_name = format!("{}_{}", "Elf", "Male");
                     }
                     Gender::Female => {
                         hero_tileset = ingame_materials.heros_materials.female_elf.clone();
-                        hero_image = HeroImage::FemaleElf;
+                        hero_image = HeroImageComponent::FemaleElf;
+                        component_name = format!("{}_{}", "Elf", "Female");
                     }
                 },
                 HeroClass::Knight => match gender {
                     Gender::Male => {
                         hero_tileset = ingame_materials.heros_materials.male_knight.clone();
-                        hero_image = HeroImage::MaleKnight;
+                        hero_image = HeroImageComponent::MaleKnight;
+                        component_name = format!("{}_{}", "Knight", "Male");
                     }
                     Gender::Female => {
                         hero_tileset = ingame_materials.heros_materials.female_knight.clone();
-                        hero_image = HeroImage::FemaleKnight;
+                        hero_image = HeroImageComponent::FemaleKnight;
+                        component_name = format!("{}_{}", "Knight", "Female");
                     }
                 },
                 HeroClass::Lizard => match gender {
                     Gender::Male => {
                         hero_tileset = ingame_materials.heros_materials.male_lizard.clone();
-                        hero_image = HeroImage::MaleLizard;
+                        hero_image = HeroImageComponent::MaleLizard;
+                        component_name = format!("{}_{}", "Lizard", "Male");
                     }
                     Gender::Female => {
                         hero_tileset = ingame_materials.heros_materials.female_lizard.clone();
-                        hero_image = HeroImage::FemaleLizard;
+                        hero_image = HeroImageComponent::FemaleLizard;
+                        component_name = format!("{}_{}", "Lizard", "Female");
                     }
                 },
                 HeroClass::Wizard => match gender {
                     Gender::Male => {
                         hero_tileset = ingame_materials.heros_materials.male_wizard.clone();
-                        hero_image = HeroImage::MaleWizard;
+                        hero_image = HeroImageComponent::MaleWizard;
+                        component_name = format!("{}_{}", "Wizard", "Male");
                     }
                     Gender::Female => {
                         hero_tileset = ingame_materials.heros_materials.female_wizard.clone();
-                        hero_image = HeroImage::FemaleWizard;
+                        hero_image = HeroImageComponent::FemaleWizard;
+                        component_name = format!("{}_{}", "Wizard", "Female");
                     }
                 },
             };
@@ -328,14 +337,19 @@ fn heros_images(
                 },
                 ..Default::default()
             })
+            .insert(Name::new(component_name))
             .insert(hero_image);
             index += 1;
         }
     }
 }
 
-fn select_hero_text(root: &mut ChildBuilder, materials: &Materials, dictionary: &Dictionary) {
-    let font = materials.get_font(dictionary.get_current_language());
+fn select_hero_text(
+    root: &mut ChildBuilder,
+    font_materials: &FontMaterials,
+    dictionary: &Dictionary,
+) {
+    let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
     root.spawn_bundle(TextBundle {
         style: Style {
@@ -360,7 +374,8 @@ fn select_hero_text(root: &mut ChildBuilder, materials: &Materials, dictionary: 
             },
         ),
         ..Default::default()
-    });
+    })
+    .insert(Name::new("SelectHeroText"));
 }
 
 fn heros_buttons(root: &mut ChildBuilder) {
@@ -375,12 +390,23 @@ fn heros_buttons(root: &mut ChildBuilder) {
         [740.0, 350.0],
     ];
 
-    for (index, value) in HeroSelectSceneButton::iterator().enumerate() {
+    for (index, value) in ButtonComponent::iterator().enumerate() {
         let position = Rect {
             left: Val::Px(button_positions[index][0]),
             top: Val::Px(button_positions[index][1]),
             right: Val::Auto,
             bottom: Val::Auto,
+        };
+
+        let component_name = match index {
+            1 => "MaleElf",
+            2 => "MaleKnight",
+            3 => "MaleLizard",
+            4 => "MaleWizard",
+            5 => "FemaleElf",
+            6 => "FemaleKnight",
+            7 => "FemaleLizard",
+            _ => "FemaleWizard",
         };
 
         root.spawn_bundle(ButtonBundle {
@@ -396,15 +422,13 @@ fn heros_buttons(root: &mut ChildBuilder) {
             color: UiColor(Color::NONE),
             ..Default::default()
         })
+        .insert(Name::new(component_name))
         .insert(value.clone());
     }
 }
 
 fn hero_select_handle(
-    mut button_query: Query<
-        (&Interaction, &HeroSelectSceneButton),
-        (Changed<Interaction>, With<Button>),
-    >,
+    mut button_query: Query<(&Interaction, &ButtonComponent), (Changed<Interaction>, With<Button>)>,
     mut profile: ResMut<Profile>,
     mut animation_controller: ResMut<AnimationController>,
     mut state: ResMut<State<SceneState>>,
@@ -415,29 +439,29 @@ fn hero_select_handle(
             Interaction::Hovered => {
                 animation_controller.run_animation = true;
                 match button {
-                    HeroSelectSceneButton::MaleElf => {
-                        animation_controller.hero_image = HeroImage::MaleElf
+                    ButtonComponent::MaleElf => {
+                        animation_controller.hero_image = HeroImageComponent::MaleElf
                     }
-                    HeroSelectSceneButton::FemaleElf => {
-                        animation_controller.hero_image = HeroImage::FemaleElf
+                    ButtonComponent::FemaleElf => {
+                        animation_controller.hero_image = HeroImageComponent::FemaleElf
                     }
-                    HeroSelectSceneButton::MaleKnight => {
-                        animation_controller.hero_image = HeroImage::MaleKnight
+                    ButtonComponent::MaleKnight => {
+                        animation_controller.hero_image = HeroImageComponent::MaleKnight
                     }
-                    HeroSelectSceneButton::FemaleKnight => {
-                        animation_controller.hero_image = HeroImage::FemaleKnight
+                    ButtonComponent::FemaleKnight => {
+                        animation_controller.hero_image = HeroImageComponent::FemaleKnight
                     }
-                    HeroSelectSceneButton::MaleLizard => {
-                        animation_controller.hero_image = HeroImage::MaleLizard
+                    ButtonComponent::MaleLizard => {
+                        animation_controller.hero_image = HeroImageComponent::MaleLizard
                     }
-                    HeroSelectSceneButton::FemaleLizard => {
-                        animation_controller.hero_image = HeroImage::FemaleLizard
+                    ButtonComponent::FemaleLizard => {
+                        animation_controller.hero_image = HeroImageComponent::FemaleLizard
                     }
-                    HeroSelectSceneButton::MaleWizard => {
-                        animation_controller.hero_image = HeroImage::MaleWizard
+                    ButtonComponent::MaleWizard => {
+                        animation_controller.hero_image = HeroImageComponent::MaleWizard
                     }
-                    HeroSelectSceneButton::FemaleWizard => {
-                        animation_controller.hero_image = HeroImage::FemaleWizard
+                    ButtonComponent::FemaleWizard => {
+                        animation_controller.hero_image = HeroImageComponent::FemaleWizard
                     }
                 };
             }
@@ -459,7 +483,7 @@ fn hero_select_handle(
 
 fn hero_image_animation_handle(
     time: Res<Time>,
-    mut query: Query<(&HeroImage, &mut TextureAtlasSprite)>,
+    mut query: Query<(&HeroImageComponent, &mut TextureAtlasSprite)>,
     mut animation_controller: ResMut<AnimationController>,
 ) {
     for (hero_image, mut sprite) in query.iter_mut() {

@@ -6,14 +6,14 @@ use std::io::prelude::*;
 use std::slice::Iter;
 
 use crate::config::HIGHSCORE_FILE;
-use crate::ingame::resources::hero::gender::Gender;
-use crate::ingame::resources::hero::hero_class::HeroClass;
-use crate::ingame::resources::{game_mode::GameMode, stored_profile::StoredProfile};
+use crate::materials::font::FontMaterials;
 use crate::materials::scenes::ScenesMaterials;
-use crate::materials::Materials;
 use crate::resources::dictionary::Dictionary;
+use crate::resources::hero::gender::Gender;
+use crate::resources::hero::hero_class::HeroClass;
 use crate::resources::language::Language;
 use crate::resources::tile_size::TileSize;
+use crate::resources::{game_mode::GameMode, stored_profile::StoredProfile};
 use crate::scenes::SceneState;
 
 const BOOK_TILE_SIZE: TileSize = TileSize {
@@ -26,49 +26,26 @@ const HERO_IMAGE_SIZE: TileSize = TileSize {
     height: 28.0 * 6.0,
 };
 
-const HIGHSCORE_SCENE_BUTTON_SIDE: f32 = 50.0;
-
-const HIGHSCORE_SCENE_BUTTON_POSITIONS: [Rect<Val>; 3] = [
-    Rect {
-        left: Val::Px(HIGHSCORE_SCENE_BUTTON_SIDE / 2.0),
-        top: Val::Px(HIGHSCORE_SCENE_BUTTON_SIDE / 2.0),
-        right: Val::Auto,
-        bottom: Val::Auto,
-    },
-    Rect {
-        left: Val::Auto,
-        top: Val::Px(100.0),
-        right: Val::Px(285.0),
-        bottom: Val::Auto,
-    },
-    Rect {
-        left: Val::Px(200.0),
-        top: Val::Px(100.0),
-        bottom: Val::Auto,
-        right: Val::Auto,
-    },
-];
-
 #[derive(Component, Copy, Clone)]
-enum HighscoreSceneButton {
+enum ButtonComponent {
     Return,
     Next,
     Previous,
 }
 
-impl HighscoreSceneButton {
-    pub fn iterator() -> Iter<'static, HighscoreSceneButton> {
-        static HIGHSCORE_SCENE_BUTTONS: [HighscoreSceneButton; 3] = [
-            HighscoreSceneButton::Return,
-            HighscoreSceneButton::Next,
-            HighscoreSceneButton::Previous,
-        ];
-        HIGHSCORE_SCENE_BUTTONS.iter()
+impl ButtonComponent {
+    pub fn iterator() -> Iter<'static, ButtonComponent> {
+        [
+            ButtonComponent::Return,
+            ButtonComponent::Next,
+            ButtonComponent::Previous,
+        ]
+        .iter()
     }
 }
 
 #[derive(Component, Copy, Clone)]
-enum PrefixWord {
+enum PrefixWordComponent {
     Name,
     Gender,
     GameMode,
@@ -79,41 +56,38 @@ enum PrefixWord {
     Playtime,
 }
 
-impl PrefixWord {
-    pub fn iterator() -> Iter<'static, PrefixWord> {
-        static PREFIX_WORDS: [PrefixWord; 8] = [
-            PrefixWord::Name,
-            PrefixWord::Gender,
-            PrefixWord::GameMode,
-            PrefixWord::TotalKilledMonsters,
-            PrefixWord::TotalClearedRooms,
-            PrefixWord::TotalClearedWaves,
-            PrefixWord::Date,
-            PrefixWord::Playtime,
-        ];
-        PREFIX_WORDS.iter()
+impl PrefixWordComponent {
+    pub fn iterator() -> Iter<'static, PrefixWordComponent> {
+        [
+            PrefixWordComponent::Name,
+            PrefixWordComponent::Gender,
+            PrefixWordComponent::GameMode,
+            PrefixWordComponent::TotalKilledMonsters,
+            PrefixWordComponent::TotalClearedRooms,
+            PrefixWordComponent::TotalClearedWaves,
+            PrefixWordComponent::Date,
+            PrefixWordComponent::Playtime,
+        ]
+        .iter()
     }
 }
 
 #[derive(Component)]
-pub struct HighscoreBook {
+pub struct HighscoreBookComponent {
     current_page: isize,
     total_pages: usize,
     is_reverse: bool,
-    timer: AnimationTimer,
+    timer: Timer,
     animation_indexes: Vec<usize>,
     animation_index: usize,
     profiles: Vec<StoredProfile>,
 }
 
 #[derive(Component)]
-struct HeroImage;
+struct HeroImageComponent;
 
 #[derive(Component)]
-struct TextsNode;
-
-#[derive(Component)]
-struct AnimationTimer(Timer);
+struct TextsNodeComponent;
 
 struct HighscoreSceneData {
     user_interface_root: Entity,
@@ -153,7 +127,7 @@ fn cleanup(mut commands: Commands, highscore_scene_data: Res<HighscoreSceneData>
 
 fn setup(
     mut commands: Commands,
-    materials: Res<Materials>,
+    font_materials: Res<FontMaterials>,
     scenes_materials: Res<ScenesMaterials>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
     dictionary: Res<Dictionary>,
@@ -161,7 +135,7 @@ fn setup(
     // background
     let background = commands
         .spawn_bundle(SpriteBundle {
-            texture: materials.sub_menu_background.clone(),
+            texture: scenes_materials.sub_background_image.clone(),
             ..Default::default()
         })
         .id();
@@ -201,10 +175,10 @@ fn setup(
             },
             ..Default::default()
         })
-        .insert(HighscoreBook {
+        .insert(HighscoreBookComponent {
             current_page: -1,
             total_pages: profiles.len(),
-            timer: AnimationTimer(Timer::from_seconds(0.1, true)),
+            timer: Timer::from_seconds(0.1, true),
             animation_indexes: Vec::new(),
             animation_index: 0,
             is_reverse: false,
@@ -225,7 +199,7 @@ fn setup(
         .with_children(|parent| {
             buttons(parent, &scenes_materials);
             hero_image(parent);
-            texts(parent, &materials, dictionary.clone())
+            texts(parent, &font_materials, dictionary.clone())
         })
         .id();
 
@@ -237,30 +211,39 @@ fn setup(
 }
 
 fn buttons(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
-    for (index, button) in HighscoreSceneButton::iterator().enumerate() {
-        let handle_image = match button {
-            HighscoreSceneButton::Return => {
-                scenes_materials.icon_materials.home_icon_normal.clone()
-            }
-            _ => scenes_materials.icon_materials.home_icon_normal.clone(),
-        };
+    let positions: [Rect<Val>; 3] = [
+        Rect {
+            left: Val::Px(50.0 / 2.0),
+            top: Val::Px(50.0 / 2.0),
+            right: Val::Auto,
+            bottom: Val::Auto,
+        },
+        Rect {
+            left: Val::Auto,
+            top: Val::Px(100.0),
+            right: Val::Px(285.0),
+            bottom: Val::Auto,
+        },
+        Rect {
+            left: Val::Px(200.0),
+            top: Val::Px(100.0),
+            bottom: Val::Auto,
+            right: Val::Auto,
+        },
+    ];
 
-        let size = match button {
-            HighscoreSceneButton::Return => Size {
-                width: Val::Px(HIGHSCORE_SCENE_BUTTON_SIDE),
-                height: Val::Px(HIGHSCORE_SCENE_BUTTON_SIDE),
-            },
-            _ => Size {
-                width: Val::Px(250.0),
-                height: Val::Px(320.0),
-            },
-        };
-
+    for (index, button) in ButtonComponent::iterator().enumerate() {
         match button {
-            HighscoreSceneButton::Return => {
+            ButtonComponent::Return => {
+                let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
+
+                let size = Size {
+                    width: Val::Px(50.0),
+                    height: Val::Px(50.0),
+                };
                 root.spawn_bundle(ButtonBundle {
                     style: Style {
-                        position: HIGHSCORE_SCENE_BUTTON_POSITIONS[index],
+                        position: positions[index],
                         size,
                         justify_content: JustifyContent::Center,
                         position_type: PositionType::Absolute,
@@ -272,9 +255,14 @@ fn buttons(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
                 .insert(button.clone());
             }
             _ => {
+                let size = Size {
+                    width: Val::Px(250.0),
+                    height: Val::Px(320.0),
+                };
+
                 root.spawn_bundle(ButtonBundle {
                     style: Style {
-                        position: HIGHSCORE_SCENE_BUTTON_POSITIONS[index],
+                        position: positions[index],
                         size,
                         justify_content: JustifyContent::Center,
                         position_type: PositionType::Absolute,
@@ -291,16 +279,16 @@ fn buttons(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
 
 fn button_handle_system(
     mut button_query: Query<
-        (&Interaction, &HighscoreSceneButton, &mut UiImage),
+        (&Interaction, &ButtonComponent, &mut UiImage),
         (Changed<Interaction>, With<Button>),
     >,
-    mut highscore_book_query: Query<&mut HighscoreBook>,
+    mut highscore_book_query: Query<&mut HighscoreBookComponent>,
     scenes_materials: Res<ScenesMaterials>,
     mut state: ResMut<State<SceneState>>,
 ) {
     for (interaction, button, mut ui_image) in button_query.iter_mut() {
         match *button {
-            HighscoreSceneButton::Return => match *interaction {
+            ButtonComponent::Return => match *interaction {
                 Interaction::None => {
                     ui_image.0 = scenes_materials.icon_materials.home_icon_normal.clone()
                 }
@@ -314,7 +302,7 @@ fn button_handle_system(
                         .expect("Couldn't switch state to Main Menu Scene");
                 }
             },
-            HighscoreSceneButton::Next => {
+            ButtonComponent::Next => {
                 if *interaction == Interaction::Clicked {
                     let mut highscore_book = highscore_book_query.get_single_mut().unwrap();
                     let total_pages = highscore_book.total_pages as isize;
@@ -331,7 +319,7 @@ fn button_handle_system(
                     }
                 }
             }
-            HighscoreSceneButton::Previous => {
+            ButtonComponent::Previous => {
                 if *interaction == Interaction::Clicked {
                     let mut highscore_book = highscore_book_query.get_single_mut().unwrap();
                     if highscore_book.animation_indexes.len() == 0 {
@@ -350,13 +338,13 @@ fn button_handle_system(
 }
 
 fn book_animation_handle_system(
+    mut query: Query<(&mut HighscoreBookComponent, &mut TextureAtlasSprite)>,
     time: Res<Time>,
-    mut query: Query<(&mut HighscoreBook, &mut TextureAtlasSprite)>,
 ) {
     for (mut highscore_book, mut sprite) in query.iter_mut() {
         if highscore_book.animation_indexes.len() != 0 {
-            highscore_book.timer.0.tick(time.delta());
-            if highscore_book.timer.0.just_finished() {
+            highscore_book.timer.tick(time.delta());
+            if highscore_book.timer.just_finished() {
                 sprite.index = highscore_book.animation_indexes[highscore_book.animation_index];
                 highscore_book.animation_index += 1;
                 if highscore_book.animation_index == highscore_book.animation_indexes.len() {
@@ -398,12 +386,12 @@ fn hero_image(root: &mut ChildBuilder) {
         visibility: Visibility { is_visible: false },
         ..Default::default()
     })
-    .insert(HeroImage);
+    .insert(HeroImageComponent);
 }
 
 fn hero_image_handle_system(
-    mut query: Query<(&HeroImage, &mut UiImage, &mut Visibility)>,
-    mut highscore_book_query: Query<&mut HighscoreBook>,
+    mut query: Query<(&HeroImageComponent, &mut UiImage, &mut Visibility)>,
+    mut highscore_book_query: Query<&mut HighscoreBookComponent>,
     scenes_materials: Res<ScenesMaterials>,
 ) {
     for (_hero_image, mut ui_image, mut visibility) in query.iter_mut() {
@@ -435,8 +423,8 @@ fn hero_image_handle_system(
     }
 }
 
-fn texts(root: &mut ChildBuilder, materials: &Materials, dictionary: Dictionary) {
-    let font = materials.get_font(dictionary.get_current_language());
+fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: Dictionary) {
+    let font = font_materials.get_font(dictionary.get_current_language());
     let position_of_texts: [[f32; 2]; 8] = [
         [210.0, 300.0],
         [210.0, 340.0],
@@ -463,7 +451,7 @@ fn texts(root: &mut ChildBuilder, materials: &Materials, dictionary: Dictionary)
         ..Default::default()
     })
     .with_children(|parent| {
-        for (index, prevalue) in PrefixWord::iterator().enumerate() {
+        for (index, prevalue) in PrefixWordComponent::iterator().enumerate() {
             parent
                 .spawn_bundle(TextBundle {
                     style: Style {
@@ -493,14 +481,14 @@ fn texts(root: &mut ChildBuilder, materials: &Materials, dictionary: Dictionary)
                 .insert(prevalue.clone());
         }
     })
-    .insert(TextsNode);
+    .insert(TextsNodeComponent);
 }
 
 fn texts_handle_system(
-    mut query: Query<(&TextsNode, &mut Style, &mut Children)>,
-    mut text_type_query: Query<&PrefixWord>,
+    mut query: Query<(&TextsNodeComponent, &mut Style, &mut Children)>,
+    mut highscore_book_query: Query<&mut HighscoreBookComponent>,
+    mut text_type_query: Query<&PrefixWordComponent>,
     mut text_query: Query<&mut Text>,
-    mut highscore_book_query: Query<&mut HighscoreBook>,
     dictionary: Res<Dictionary>,
 ) {
     for (_hero_image, mut style, children) in query.iter_mut() {
@@ -512,12 +500,12 @@ fn texts_handle_system(
 
             for text_index in 0..children.len() {
                 let text_value = match text_type_query.get_mut(children[text_index]).unwrap() {
-                    PrefixWord::Name => {
+                    PrefixWordComponent::Name => {
                         let prefix = glossary.highscore_scene_text.name.clone();
                         let value = highscore_book.profiles[profile_index].name.clone();
                         prefix + value.as_str()
                     }
-                    PrefixWord::Gender => {
+                    PrefixWordComponent::Gender => {
                         let prefix = glossary.highscore_scene_text.gender.clone();
                         let gender = highscore_book.profiles[profile_index].gender.clone();
                         let value = match gender {
@@ -526,7 +514,7 @@ fn texts_handle_system(
                         };
                         prefix + value.as_str()
                     }
-                    PrefixWord::GameMode => {
+                    PrefixWordComponent::GameMode => {
                         let game_mode = highscore_book.profiles[profile_index].game_mode.clone();
                         let value = match game_mode {
                             GameMode::ClassicMode => glossary.shared_text.classic_mode.clone(),
@@ -534,22 +522,22 @@ fn texts_handle_system(
                         };
                         value
                     }
-                    PrefixWord::TotalKilledMonsters => {
+                    PrefixWordComponent::TotalKilledMonsters => {
                         let prefix = glossary.highscore_scene_text.total_killed_monsters.clone();
                         let value = highscore_book.profiles[profile_index].total_killed_monsters;
                         prefix + value.to_string().as_str()
                     }
-                    PrefixWord::TotalClearedRooms => {
+                    PrefixWordComponent::TotalClearedRooms => {
                         let prefix = glossary.highscore_scene_text.total_cleared_rooms.clone();
                         let value = highscore_book.profiles[profile_index].total_cleared_rooms;
                         prefix + value.to_string().as_str()
                     }
-                    PrefixWord::TotalClearedWaves => {
+                    PrefixWordComponent::TotalClearedWaves => {
                         let prefix = glossary.highscore_scene_text.total_cleared_waves.clone();
                         let value = highscore_book.profiles[profile_index].total_cleared_waves;
                         prefix + value.to_string().as_str()
                     }
-                    PrefixWord::Date => {
+                    PrefixWordComponent::Date => {
                         let prefix = glossary.highscore_scene_text.date.clone();
                         let date_str = highscore_book.profiles[profile_index].date.clone();
                         let date = DateTime::parse_from_rfc3339(date_str.as_str())
@@ -575,7 +563,7 @@ fn texts_handle_system(
                         };
                         prefix + value.as_str()
                     }
-                    PrefixWord::Playtime => {
+                    PrefixWordComponent::Playtime => {
                         let prefix = glossary.highscore_scene_text.playtime.clone();
                         let playtime = highscore_book.profiles[profile_index].playtime;
 
