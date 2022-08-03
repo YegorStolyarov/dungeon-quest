@@ -1,0 +1,17 @@
+small_zombie 368 16 16 16 8
+goblin 368 32 16 16 8
+imp 368 48 16 16 8
+skelet 368 80 16 16 8
+muddy 368 112 16 16 4
+swampy 432 112 16 16 4
+zombie 368 144 16 16 4
+ice_zombie 432 144 16 16 4
+masked_orc 368 172 16 20 8
+orc_warrior 368 204 16 20 8
+orc_shaman 368 236 16 20 8
+necromancer 368 268 16 20 8
+wogol 368 300 16 20 8
+chort 368 328 16 24 8
+big_zombie 16 270 32 34 8
+ogre 16 320 32 32 8
+big_demon  16 364 32 36 8
