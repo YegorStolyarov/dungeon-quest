@@ -1,13 +1,16 @@
+use std::time::Duration;
+
 use bevy::prelude::*;
 
+use crate::components::invinsible_cooldown::InvisibleCooldownComponent;
 use crate::components::player::PlayerComponent;
+use crate::components::player_animation::PlayerAnimation;
 use crate::components::player_list_effects::PlayerListEffectsComponent;
 use crate::components::skill::SkillComponent;
 use crate::materials::ingame::InGameMaterials;
 use crate::plugins::player::PlayerEntity;
 use crate::plugins::player::{PLAYER_SIZE_HEIGHT, PLAYER_SIZE_WIDTH};
 use crate::resources::game_data::GameData;
-use crate::resources::player::player_animation::PlayerAnimation;
 use crate::resources::profile::Profile;
 use crate::resources::upgrade::upgrade_controller::UpgradeController;
 
@@ -60,6 +63,10 @@ pub fn initiate_player(
             game_data.get_player_list_effects_information(),
         ))
         .insert(SkillComponent::new(skill))
+        .insert(InvisibleCooldownComponent {
+            hurt_duration: Timer::new(Duration::from_secs(0), false),
+            duration: Timer::new(Duration::from_secs_f32(0.5), false),
+        })
         .insert(Name::new("Player"))
         .id();
 

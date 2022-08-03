@@ -92,4 +92,8 @@ impl GameData {
     pub fn get_player_list_effects_information(&self) -> Vec<Effect> {
         self.player_list_effects_information.to_vec()
     }
+
+    pub fn get_monsters(&self) -> Vec<Monster> {
+        self.monsters.to_vec()
+    }
 }

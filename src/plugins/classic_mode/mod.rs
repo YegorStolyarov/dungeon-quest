@@ -38,7 +38,8 @@ impl Plugin for ClassicModePlugin {
                 .with_system(dungeon::end_point::end_point_handle_system)
                 .with_system(interactions::door::horizontal_door_interaction_handle)
                 .with_system(interactions::door::vertical_door_interaction_handle)
-                .with_system(interactions::end_point::end_point_interaction_handle_system),
+                .with_system(interactions::end_point::end_point_interaction_handle_system)
+                .with_system(interactions::unlock_room::cleared_room_check),
         );
 
         app.add_system_set(

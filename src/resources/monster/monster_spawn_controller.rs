@@ -1,8 +1,13 @@
 use crate::resources::game_mode::GameMode;
 
 pub struct MonsterSpawnController {
-    game_mode: GameMode,
-    alive_monsters: u8,
-    max_avalible_monsters: u8,
-    require_monster: u8,
+    pub game_mode: GameMode,
+    pub alive_monsters: i8,
+    pub max_avalible_monsters: i8,
+    pub require_monster: i8,
+    pub killed_monsters: i8,
+    pub spawn_area_start_x: f32,
+    pub spawn_area_start_y: f32,
+    pub spawn_area_end_x: f32,
+    pub spawn_area_end_y: f32,
 }

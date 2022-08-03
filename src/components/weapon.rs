@@ -16,12 +16,12 @@ pub struct WeaponComponent {
     pub strength: f32,
     pub intelligence: f32,
     pub buff_effect: Option<EffectType>,
+    pub debuff_effect: Option<EffectType>,
     pub trigger_chance: f32,
 }
 
 impl WeaponComponent {
     pub fn upgrade_weapon(&mut self, weapon: &Weapon) {
-        dbg!(weapon);
         self.strength = weapon.strength;
         self.intelligence = weapon.intelligence;
         self.attack_type = weapon.attack_type.clone();
@@ -30,11 +30,20 @@ impl WeaponComponent {
         self.size_width = weapon.width;
         self.size_height = weapon.height;
         self.scale = weapon.scale;
-        self.trigger_chance = weapon.trigger_chance.unwrap_or(0.0);
         self.buff_effect = if weapon.name == WeaponType::Spear {
             Some(EffectType::SpeedUp)
         } else {
             None
         };
+        self.debuff_effect = if weapon.name == WeaponType::BigHammer {
+            Some(EffectType::Stun)
+        } else if weapon.name == WeaponType::BigMachete {
+            Some(EffectType::ReduceDamage)
+        } else if weapon.name == WeaponType::MagicWand {
+            Some(EffectType::Slow)
+        } else {
+            None
+        };
+        self.trigger_chance = weapon.trigger_chance.unwrap_or(0.0);
     }
 }

@@ -12,6 +12,7 @@ use crate::materials::heros::HerosMaterials;
 use crate::materials::icon::IconMaterials;
 use crate::materials::ingame::InGameMaterials;
 use crate::materials::menu_box::MenuBoxMaterials;
+use crate::materials::monsters::MonstersMaterials;
 use crate::materials::scenes::ScenesMaterials;
 use crate::materials::weapons::WeaponsMaterials;
 use crate::resources::dictionary::Dictionary;
@@ -350,6 +351,18 @@ fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
             full_heart: asset_server.load("ingame/hearts/full_heart.png"),
             half_heart: asset_server.load("ingame/hearts/half_heart.png"),
             empty_heart: asset_server.load("ingame/hearts/empty_heart.png"),
+        },
+        monsters_materials: MonstersMaterials {
+            small_zombie: asset_server.load("ingame/monsters/small_zombie.png"),
+            zombie: asset_server.load("ingame/monsters/zombie.png"),
+            big_zombie: asset_server.load("ingame/monsters/big_zombie.png"),
+            goblin: asset_server.load("ingame/monsters/goblin.png"),
+            orc: asset_server.load("ingame/monsters/orc.png"),
+            ogre: asset_server.load("ingame/monsters/ogre.png"),
+            imp: asset_server.load("ingame/monsters/imp.png"),
+            chort: asset_server.load("ingame/monsters/chort.png"),
+            big_demon: asset_server.load("ingame/monsters/big_demon.png"),
+            swampy: asset_server.load("ingame/monsters/swampy.png"),
         },
     };
 

@@ -60,7 +60,7 @@ pub fn initiate_weapon(
                 ..Default::default()
             },
             transform: Transform {
-                translation: Vec3::new(0.0, 0.0, 0.2),
+                translation: Vec3::new(0.0, 0.0, 0.17),
                 ..Default::default()
             },
             ..Default::default()
@@ -77,6 +77,7 @@ pub fn initiate_weapon(
             size_height: weapon_height,
             trigger_chance: weapon.trigger_chance.unwrap_or(0.0),
             buff_effect: None,
+            debuff_effect: None,
         })
         .insert(WeaponSwingAttackComponent {
             attack_duration,

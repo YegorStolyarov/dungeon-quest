@@ -1,5 +1,6 @@
 use bevy::{prelude::*, window::WindowMode};
 use bevy_kira_audio::AudioPlugin;
+use std::env;
 
 use config::*;
 
@@ -11,6 +12,8 @@ mod resources;
 mod scenes;
 
 fn main() {
+    env::set_var("RUST_BACKTRACE", "1");
+
     App::new()
         .insert_resource(WindowDescriptor {
             width: WINDOW_HEIGHT * RESOLUTION,
@@ -54,6 +57,7 @@ fn main() {
         .add_plugin(plugins::classic_mode::ui::ClassicModeUIPlugin)
         .add_plugin(plugins::survival_mode::SurvivalModePlugin)
         .add_plugin(plugins::survival_mode::ui::SurvivalModeUIPlugin)
+        .add_plugin(plugins::monster::MonsterPlugin)
         .add_plugin(plugins::debug::DebugPlugin)
         .run();
 }

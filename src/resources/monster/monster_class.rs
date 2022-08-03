@@ -8,7 +8,7 @@ pub enum MonsterClass {
     BigZombie,
     Goblin,
     Orc,
-    Orge,
+    Ogre,
     Imp,
     Chort,
     BigDemon,

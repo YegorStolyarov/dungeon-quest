@@ -18,4 +18,6 @@ pub struct Monster {
     pub trigger_effect: Option<EffectType>,
     pub trigger_chance: Option<f32>,
     pub skill: Option<MonsterSkill>,
+    pub origin_width: f32,
+    pub origin_height: f32,
 }

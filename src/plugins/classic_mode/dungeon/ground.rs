@@ -12,7 +12,7 @@ pub fn ground(
     ingame_materials: Res<InGameMaterials>,
     mut data: ResMut<ClassicModeData>,
 ) {
-    let stary_y: f32 = 0.0 + WINDOW_HEIGHT / 2.0 - TILE_SIZE / 2.0;
+    let start_y: f32 = 0.0 + WINDOW_HEIGHT / 2.0 - TILE_SIZE / 2.0;
     let start_x: f32 = 0.0 - WINDOW_HEIGHT * RESOLUTION / 2.0 + TILE_SIZE / 2.0;
 
     let ground = commands
@@ -29,7 +29,7 @@ pub fn ground(
                 for column_index in 0..TOTAL_TILE_WIDTH {
                     if row_index >= 1 && column_index > 0 && column_index < 15 {
                         let x = start_x + column_index as f32 * TILE_SIZE;
-                        let y = stary_y - row_index as f32 * TILE_SIZE;
+                        let y = start_y - row_index as f32 * TILE_SIZE;
 
                         parent
                             .spawn_bundle(SpriteBundle {

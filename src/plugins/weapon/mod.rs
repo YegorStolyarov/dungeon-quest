@@ -4,6 +4,7 @@ use crate::scenes::SceneState;
 
 mod bullet;
 mod cleanup;
+mod collisions;
 mod feature;
 mod initiate;
 
@@ -25,7 +26,11 @@ impl Plugin for WeaponPlugin {
             SystemSet::on_update(SceneState::InGameClassicMode)
                 .with_system(feature::attach_to_player)
                 .with_system(feature::aim)
-                .with_system(feature::change_weapon_texture),
+                .with_system(feature::change_weapon_texture)
+                .with_system(bullet::spawn_bullet)
+                .with_system(bullet::bullet_handle)
+                .with_system(collisions::bullet_collision)
+                .with_system(collisions::swing_weapon_collision),
         );
 
         app.add_system_set(
@@ -46,7 +51,9 @@ impl Plugin for WeaponPlugin {
                 .with_system(feature::aim)
                 .with_system(feature::change_weapon_texture)
                 .with_system(bullet::spawn_bullet)
-                .with_system(bullet::bullet_handle),
+                .with_system(bullet::bullet_handle)
+                .with_system(collisions::bullet_collision)
+                .with_system(collisions::swing_weapon_collision),
         );
 
         app.add_system_set(

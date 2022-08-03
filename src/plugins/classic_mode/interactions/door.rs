@@ -5,7 +5,9 @@ use crate::components::player::PlayerComponent;
 use crate::resources::dungeon::door::{Door, HorizontalDoor, VerticaltDoor};
 use crate::resources::dungeon::position::Position;
 use crate::resources::dungeon::Dungeon;
+use crate::resources::monster::monster_spawn_controller::MonsterSpawnController;
 use crate::resources::player::player_dungeon_stats::PlayerDungeonStats;
+use crate::resources::profile::Profile;
 
 pub fn horizontal_door_interaction_handle(
     mut player_query: Query<(&mut Transform, &TextureAtlasSprite), With<PlayerComponent>>,
@@ -13,8 +15,10 @@ pub fn horizontal_door_interaction_handle(
         (&Door, &Transform, &Sprite, &Visibility),
         (With<HorizontalDoor>, Without<PlayerComponent>),
     >,
+    mut monster_spawn_controller: ResMut<MonsterSpawnController>,
     mut player_dungeon_stats: ResMut<PlayerDungeonStats>,
     mut dungeon: ResMut<Dungeon>,
+    mut profile: ResMut<Profile>,
 ) {
     let (mut player_transform, player_sprite) = player_query.single_mut();
     let player_translation = player_transform.translation;
@@ -55,6 +59,15 @@ pub fn horizontal_door_interaction_handle(
                         .insert(new_position, total_entered_time + 1);
                 } else {
                     player_dungeon_stats.is_room_cleared = false;
+                    monster_spawn_controller.require_monster =
+                        4 + player_dungeon_stats.current_floor_index as i8;
+                    monster_spawn_controller.killed_monsters = 0;
+                    monster_spawn_controller.alive_monsters = 0;
+                    dungeon
+                        .current_floor
+                        .cleared_positions
+                        .insert(new_position, 1);
+                    profile.total_cleared_rooms += 1;
                 }
 
                 if *door == Door::Left {
@@ -71,8 +84,10 @@ pub fn vertical_door_interaction_handle(
     mut player_query: Query<(&mut Transform, &TextureAtlasSprite), With<PlayerComponent>>,
     mut vertical_door_query: Query<(&Visibility, &Children), With<VerticaltDoor>>,
     mut door_query: Query<(&Door, &Transform), Without<PlayerComponent>>,
+    mut monster_spawn_controller: ResMut<MonsterSpawnController>,
     mut player_dungeon_stats: ResMut<PlayerDungeonStats>,
     mut dungeon: ResMut<Dungeon>,
+    mut profile: ResMut<Profile>,
 ) {
     let (mut player_transform, player_spirte) = player_query.single_mut();
     let player_translation = player_transform.translation;
@@ -121,6 +136,15 @@ pub fn vertical_door_interaction_handle(
                                 .insert(new_position, total_entered_time + 1);
                         } else {
                             player_dungeon_stats.is_room_cleared = false;
+                            monster_spawn_controller.require_monster =
+                                6 + player_dungeon_stats.current_floor_index as i8;
+                            monster_spawn_controller.killed_monsters = 0;
+                            monster_spawn_controller.alive_monsters = 0;
+                            dungeon
+                                .current_floor
+                                .cleared_positions
+                                .insert(new_position, 1);
+                            profile.total_cleared_rooms += 1;
                         }
 
                         if *door == Door::Top {

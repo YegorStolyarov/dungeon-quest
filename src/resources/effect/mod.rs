@@ -4,7 +4,7 @@ pub mod effect_type;
 
 use effect_type::EffectType;
 
-#[derive(Serialize, Deserialize, Debug, Clone, Hash, Eq, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Effect {
     pub name: EffectType,
     pub duration: i64,

@@ -7,5 +7,6 @@ pub mod heros;
 pub mod icon;
 pub mod ingame;
 pub mod menu_box;
+pub mod monsters;
 pub mod scenes;
 pub mod weapons;

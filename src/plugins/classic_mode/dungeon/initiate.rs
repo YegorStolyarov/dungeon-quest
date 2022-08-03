@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+use crate::config::*;
 use crate::plugins::classic_mode::ClassicModeData;
 use crate::resources::dungeon::Dungeon;
 use crate::resources::game_mode::GameMode;
@@ -23,11 +24,24 @@ pub fn initiate_classic_mode(mut commands: Commands, mut state: ResMut<State<Sce
         end_point: None,
     };
 
+    let start_x: f32 = 0.0 - WINDOW_HEIGHT * RESOLUTION / 2.0 + TILE_SIZE / 2.0;
+    let start_y: f32 = 0.0 + WINDOW_HEIGHT / 2.0 - TILE_SIZE / 2.0;
+
+    let spawn_area_start_x = start_x + TILE_SIZE * 2.0;
+    let spawn_area_start_y = start_y - TILE_SIZE * 2.5;
+    let spawn_area_end_x = start_x + 13.0 * TILE_SIZE;
+    let spawn_area_end_y = start_y - 6.0 * TILE_SIZE;
+
     let monster_spawn_controller = MonsterSpawnController {
         game_mode: GameMode::ClassicMode,
-        max_avalible_monsters: 6,
-        require_monster: 0,
+        max_avalible_monsters: 4,
+        require_monster: 5,
         alive_monsters: 0,
+        killed_monsters: 0,
+        spawn_area_start_x,
+        spawn_area_start_y,
+        spawn_area_end_x,
+        spawn_area_end_y,
     };
 
     commands.insert_resource(dungeon);

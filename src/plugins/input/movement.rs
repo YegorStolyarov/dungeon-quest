@@ -5,7 +5,7 @@ use crate::config::*;
 use crate::plugins::player::collisions::wall_collision_check;
 use crate::resources::animation_state::AnimationState;
 use crate::resources::dungeon::block_type::BlockType;
-use crate::resources::player::player_animation::PlayerAnimation;
+use crate::components::player_animation::PlayerAnimation;
 
 pub fn player_movement_handle_system(
     mut player_query: Query<(&PlayerComponent, &mut PlayerAnimation, &mut Transform)>,

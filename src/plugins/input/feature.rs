@@ -3,13 +3,13 @@ use rand::Rng;
 use std::time::Duration;
 
 use crate::components::player::PlayerComponent;
+use crate::components::player_animation::PlayerAnimation;
 use crate::components::player_list_effects::PlayerListEffectsComponent;
 use crate::components::skill::SkillComponent;
 use crate::components::weapon::WeaponComponent;
 use crate::components::weapon_shoot_attack::WeaponShootAttackComponent;
 use crate::components::weapon_swing_attack::WeaponSwingAttackComponent;
 use crate::resources::animation_state::AnimationState;
-use crate::resources::player::player_animation::PlayerAnimation;
 use crate::resources::skill::skill_type::SkillType;
 use crate::resources::weapon::attack_type::AttackType;
 use crate::resources::weapon::weapon_type::WeaponType;
