@@ -2,10 +2,11 @@ use bevy::prelude::*;
 use bevy::render::camera::RenderTarget;
 use bevy::sprite::Anchor;
 use std::f32::consts::PI;
-use std::time::Duration;
 
 use crate::components::player::PlayerComponent;
 use crate::components::weapon::WeaponComponent;
+use crate::components::weapon_shoot_attack::WeaponShootAttackComponent;
+use crate::components::weapon_swing_attack::WeaponSwingAttackComponent;
 use crate::materials::ingame::InGameMaterials;
 use crate::plugins::camera::Orthographic2DCamera;
 use crate::resources::weapon::attack_type::AttackType;
@@ -30,7 +31,12 @@ pub fn attach_to_player(
 
 pub fn aim(
     q_camera: Query<(&Camera, &GlobalTransform), With<Orthographic2DCamera>>,
-    mut weapon_query: Query<(&mut WeaponComponent, &mut Transform)>,
+    mut weapon_query: Query<(
+        &WeaponComponent,
+        &mut WeaponShootAttackComponent,
+        &mut WeaponSwingAttackComponent,
+        &mut Transform,
+    )>,
     wnds: Res<Windows>,
     time: Res<Time>,
 ) {
@@ -48,7 +54,12 @@ pub fn aim(
         let world_pos = ndc_to_world.project_point3(ndc.extend(-1.0));
         let mouse_pos: Vec2 = world_pos.truncate();
 
-        let (mut weapon_component, mut weapon_transform) = weapon_query.single_mut();
+        let (
+            weapon_component,
+            mut weapon_shoot_attack,
+            mut weapon_swing_attack,
+            mut weapon_transform,
+        ) = weapon_query.single_mut();
 
         let weapon_position_x = weapon_transform.translation.x;
         let weapon_position_y = weapon_transform.translation.y;
@@ -58,35 +69,44 @@ pub fn aim(
 
         let angle = delta_y.atan2(delta_x);
 
-        // if !weapon_component.cooldown.finished() {
-        //     weapon_component.cooldown.tick(time.delta());
-        // }
+        let rotate_z = if angle >= 0.0 && angle <= PI / 2.0 {
+            -(3.0 * PI / 2.0 - angle)
+        } else if angle > PI / 2.0 && angle <= PI {
+            -(3.0 * PI / 2.0 - angle)
+        } else if angle >= -PI / 2.0 && angle < 0.0 {
+            PI / 2.0 - angle.abs()
+        } else {
+            PI / 2.0 + angle
+        };
 
         match weapon_component.attack_type {
             AttackType::Swing => {
-                // let swing_speed = weapon_component.swing_speed;
-
-                // if weapon_component.attack_duration.finished() {
-                //     weapon_transform.rotation = Quat::from_rotation_z(angle + PI * 3.0 / 4.0);
-                // } else {
-                //     weapon_component.attack_duration.tick(time.delta());
-                //     weapon_transform.rotation = Quat::from_rotation_z(
-                //         angle + PI * 3.0 / 4.0
-                //             - weapon_component.attack_duration.elapsed_secs() * swing_speed,
-                //     );
-                // }
+                if weapon_swing_attack.attack_duration.finished() {
+                    weapon_transform.rotation = Quat::from_rotation_z(rotate_z);
+                } else {
+                    weapon_swing_attack.attack_duration.tick(time.delta());
+                    let swing_speed = weapon_swing_attack.swing_speed;
+                    let swing_time = weapon_swing_attack.attack_duration.elapsed_secs();
+                    weapon_transform.rotation =
+                        Quat::from_rotation_z(rotate_z - swing_time * swing_speed);
+                }
             }
             AttackType::Shoot => {
-                // if weapon_component.name == WeaponType::Bow {
-                //     weapon_component.bullet_target_x = mouse_pos.x * -1.0;
-                //     weapon_component.bullet_target_y = mouse_pos.y * -1.0;
-                //     weapon_transform.rotation = Quat::from_rotation_z(angle);
-                // } else {
-                //     weapon_component.bullet_target_x = mouse_pos.x;
-                //     weapon_component.bullet_target_y = mouse_pos.y;
-                // }
+                if !weapon_shoot_attack.cooldown.finished() {
+                    weapon_shoot_attack.cooldown.tick(time.delta());
+                }
+
+                if weapon_component.name == WeaponType::Bow {
+                    weapon_transform.rotation = Quat::from_rotation_z(rotate_z + PI / 2.0);
+                }
+
+                if weapon_component.name == WeaponType::Spear {
+                    weapon_transform.rotation = Quat::from_rotation_z(rotate_z);
+                }
+
+                weapon_shoot_attack.bullet_target_x = mouse_pos.x;
+                weapon_shoot_attack.bullet_target_y = mouse_pos.y;
             }
-            AttackType::Throw => {}
         }
     }
 }
@@ -109,7 +129,6 @@ pub fn change_weapon_texture(
 
         sprite.anchor = match weapon.attack_type {
             AttackType::Swing => Anchor::BottomCenter,
-            AttackType::Throw => Anchor::BottomCenter,
             AttackType::Shoot => Anchor::Center,
         };
 

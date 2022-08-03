@@ -1,9 +1,13 @@
 use bevy::prelude::*;
+use rand::Rng;
 use std::time::Duration;
 
 use crate::components::player::PlayerComponent;
+use crate::components::player_list_effects::PlayerListEffectsComponent;
 use crate::components::skill::SkillComponent;
 use crate::components::weapon::WeaponComponent;
+use crate::components::weapon_shoot_attack::WeaponShootAttackComponent;
+use crate::components::weapon_swing_attack::WeaponSwingAttackComponent;
 use crate::resources::animation_state::AnimationState;
 use crate::resources::player::player_animation::PlayerAnimation;
 use crate::resources::skill::skill_type::SkillType;
@@ -57,41 +61,50 @@ pub fn use_skill(
 }
 
 pub fn use_mouse(
-    mut weapon_query: Query<&mut WeaponComponent>,
+    mut weapon_query: Query<(
+        &WeaponComponent,
+        &mut WeaponSwingAttackComponent,
+        &mut WeaponShootAttackComponent,
+    )>,
+    mut player_list_effects_query: Query<&mut PlayerListEffectsComponent>,
     mut buttons: ResMut<Input<MouseButton>>,
     player_animation_query: Query<&PlayerAnimation>,
 ) {
     if buttons.just_pressed(MouseButton::Left) {
-        let mut weapon_component = weapon_query.single_mut();
+        let (weapon_component, mut weapon_swing_attack, mut weapon_shoot_attack) =
+            weapon_query.single_mut();
         let player_animation = player_animation_query.single();
 
         match weapon_component.attack_type {
             AttackType::Swing => {
-                // if weapon_component.attack_duration.finished() {
-                // weapon_component.attack_duration = Timer::new(Duration::from_secs(1), false);
-                // }
+                if weapon_swing_attack.attack_duration.finished() {
+                    weapon_swing_attack.attack_duration =
+                        Timer::new(Duration::from_secs_f32(0.5), false);
+                }
             }
             AttackType::Shoot => {
-                // if weapon_component.cooldown.finished() {
-                //     if weapon_component.name == WeaponType::Bow {
-                //         if player_animation.animation_state == AnimationState::Idle {
-                //             weapon_component.spawn_bullet = true;
-                //             weapon_component.cooldown = Timer::new(
-                //                 Duration::from_secs(weapon_component.cooldown_second),
-                //                 false,
-                //             );
-                //         }
-                //     } else {
-                //         weapon_component.spawn_bullet = true;
-                //         weapon_component.cooldown = Timer::new(
-                //             Duration::from_secs(weapon_component.cooldown_second),
-                //             false,
-                //         );
-                //     }
-                // }
+                if weapon_shoot_attack.cooldown.finished() {
+                    if weapon_component.name == WeaponType::Spear
+                        || player_animation.animation_state == AnimationState::Idle
+                    {
+                        weapon_shoot_attack.spawn_bullet = true;
+                        weapon_shoot_attack.cooldown = Timer::new(
+                            Duration::from_secs(weapon_shoot_attack.cooldown_second),
+                            false,
+                        );
+                    }
+
+                    if weapon_component.name == WeaponType::Spear {
+                        let mut player_list_effects = player_list_effects_query.single_mut();
+                        let buff_effect = weapon_component.buff_effect.unwrap();
+                        let mut rng = rand::thread_rng();
+                        if rng.gen_range(0.0..1.0) < weapon_component.trigger_chance {
+                            player_list_effects.activate(buff_effect);
+                        }
+                    }
+                }
             }
-            AttackType::Throw => {}
-        }
+        };
         buttons.clear_just_pressed(MouseButton::Left);
     }
 }

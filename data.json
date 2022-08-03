@@ -97,7 +97,7 @@
       "level": 1,
       "width": 7.0,
       "height": 25.0,
-      "scale": 2.1,
+      "scale": 1.9,
       "attack_type": "Shoot",
       "bullet": {
         "width": 7.0,
@@ -112,11 +112,19 @@
       "strength": 3.0,
       "intelligence": 0.0,
       "effect": "SpeedUp",
-      "attack_type": "Throw",
+      "attack_type": "Shoot",
+      "trigger_chance": 0.3,
+      "bullet": {
+        "width": 6.0,
+        "height": 30.0,
+        "scale": 1.8,
+        "speed": 6.0
+      },
       "level": 2,
       "width": 6.0,
       "height": 30.0,
-      "scale": 3.0
+      "scale": 1.8,
+      "cooldown": 2
     },
     {
       "name": "ShortSword",
@@ -127,7 +135,7 @@
       "level": 1,
       "width": 10.0,
       "height": 21.0,
-      "scale": 2.1
+      "scale": 2.2
     },
     {
       "name": "Sword",
@@ -138,7 +146,7 @@
       "level": 2,
       "width": 10.0,
       "height": 25.0,
-      "scale": 2.4
+      "scale": 2.5
     },
     {
       "name": "BigMachete",
@@ -152,7 +160,7 @@
       "level": 3,
       "width": 12.0,
       "height": 30.0,
-      "scale": 2.5
+      "scale": 3.0
     },
     {
       "name": "SmallWand",
@@ -168,7 +176,7 @@
         "scale": 2.0,
         "speed": 4.0
       },
-      "scale": 1.8,
+      "scale": 1.5,
       "cooldown": 2
     },
     {
@@ -182,7 +190,7 @@
       "level": 2,
       "width": 8.0,
       "height": 30.0,
-      "scale": 2.1,
+      "scale": 2.0,
       "bullet": {
         "width": 16.0,
         "height": 16.0,
@@ -199,7 +207,7 @@
       "level": 3,
       "width": 10.0,
       "height": 30.0,
-      "scale": 2.1,
+      "scale": 2.5,
       "bullet": {
         "width": 16.0,
         "height": 16.0,
@@ -216,7 +224,7 @@
       "attack_type": "Swing",
       "level": 1,
       "width": 10.0,
-      "scale": 1.7,
+      "scale": 1.5,
       "height": 24.0
     },
     {
@@ -240,7 +248,7 @@
       "attack_type": "Swing",
       "level": 3,
       "width": 10.0,
-      "scale": 2.4,
+      "scale": 3.0,
       "height": 37.0
     }
   ],

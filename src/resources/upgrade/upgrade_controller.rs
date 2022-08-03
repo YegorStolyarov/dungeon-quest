@@ -70,9 +70,12 @@ impl UpgradeController {
 
     pub fn get_three_upgrades(&self, hero_class: HeroClass, weapon_level: u8) -> Vec<UpgradeType> {
         let mut three_upgrades: Vec<UpgradeType> = Vec::new();
-        let mut upgrade_types: Vec<UpgradeType> = vec![UpgradeType::Stats, UpgradeType::Skill, UpgradeType::Effect];
+        let mut upgrade_types: Vec<UpgradeType> =
+            vec![UpgradeType::Stats, UpgradeType::Skill, UpgradeType::Effect];
 
-        if (hero_class == HeroClass::Elf && weapon_level < 2) || weapon_level < 3  {
+        if (hero_class == HeroClass::Elf && weapon_level < 2)
+            || (hero_class != HeroClass::Elf && weapon_level < 3)
+        {
             upgrade_types.push(UpgradeType::Weapon);
         }
 

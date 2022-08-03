@@ -20,7 +20,7 @@ impl SkillComponent {
         duration.tick(Duration::from_secs(0));
 
         SkillComponent {
-            cooldown: Timer::new(Duration::from_secs(3), false),
+            cooldown: Timer::new(Duration::from_secs(2), false),
             duration,
             require_monsters: skill.require_monsters.unwrap_or(0),
             monster_counter: 0,

@@ -9,7 +9,7 @@ pub struct Wave {
 
 impl Wave {
     pub fn new() -> Self {
-        let wave_duration: i64 = 30;
+        let wave_duration: i64 = 5;
         let timer = Timer::new(Duration::from_secs(wave_duration as u64), false);
 
         Wave {
@@ -21,7 +21,7 @@ impl Wave {
 
     pub fn next_wave(&mut self) {
         self.wave_number += 1;
-        self.wave_duration += 30;
+        self.wave_duration += 5;
         self.timer = Timer::new(Duration::from_secs(self.wave_duration as u64), false);
     }
 }

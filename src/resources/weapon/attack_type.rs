@@ -5,5 +5,4 @@ use serde::{Deserialize, Serialize};
 pub enum AttackType {
     Swing,
     Shoot,
-    Throw,
 }

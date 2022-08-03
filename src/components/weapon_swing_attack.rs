@@ -1,10 +1,11 @@
-use crate::resources::weapon::Weapon;
 use bevy::prelude::*;
+
+use crate::resources::weapon::Weapon;
 
 #[derive(Component)]
 pub struct WeaponSwingAttackComponent {
+    pub attack_duration: Timer,
     pub swing_speed: f32,
-    pub stop_angle: f32,
     pub is_swinging: bool,
 }
 

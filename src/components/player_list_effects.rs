@@ -1,11 +1,12 @@
 use bevy::prelude::*;
 use std::collections::HashMap;
+use std::time::Duration;
 
 use crate::resources::effect::effect_type::EffectType;
 use crate::resources::effect::Effect;
 use crate::resources::upgrade::Upgrade;
 
-#[derive(Component)]
+#[derive(Component, Debug)]
 pub struct PlayerListEffectsComponent {
     pub information: Vec<Effect>,
     pub activated_effects: HashMap<EffectType, Timer>,
@@ -47,5 +48,19 @@ impl PlayerListEffectsComponent {
         };
 
         information.bonus = information.bonus + bonus;
+    }
+
+    pub fn activate(&mut self, effect_type: EffectType) {
+        dbg!("IN");
+        let information = self
+            .information
+            .iter_mut()
+            .find(|effect_information| effect_information.name == effect_type)
+            .unwrap();
+
+        self.activated_effects.insert(
+            effect_type,
+            Timer::new(Duration::from_secs(information.duration as u64), false),
+        );
     }
 }

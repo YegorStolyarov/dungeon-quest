@@ -55,7 +55,6 @@ pub fn initiate_weapon(
                 custom_size: Some(Vec2::new(weapon_width * scale, weapon_height * scale)),
                 anchor: match weapon.attack_type {
                     AttackType::Swing => Anchor::BottomCenter,
-                    AttackType::Throw => Anchor::BottomCenter,
                     AttackType::Shoot => Anchor::Center,
                 },
                 ..Default::default()
@@ -76,11 +75,13 @@ pub fn initiate_weapon(
             scale,
             size_width: weapon_width,
             size_height: weapon_height,
+            trigger_chance: weapon.trigger_chance.unwrap_or(0.0),
+            buff_effect: None,
         })
         .insert(WeaponSwingAttackComponent {
+            attack_duration,
             swing_speed: weapon.swing_speed.unwrap_or(0.0),
             is_swinging: false,
-            stop_angle: 0.0,
         })
         .insert(WeaponShootAttackComponent {
             bullet_information: bullet,
