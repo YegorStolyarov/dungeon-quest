@@ -51,7 +51,6 @@ impl PlayerListEffectsComponent {
     }
 
     pub fn activate(&mut self, effect_type: EffectType) {
-        dbg!("IN");
         let information = self
             .information
             .iter_mut()

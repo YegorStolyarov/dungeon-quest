@@ -6,6 +6,7 @@ use crate::config::DATA_FILE;
 use crate::resources::effect::Effect;
 use crate::resources::hero::hero_class::HeroClass;
 use crate::resources::hero::Hero;
+use crate::resources::monster::Monster;
 use crate::resources::skill::Skill;
 use crate::resources::weapon::weapon_type::WeaponType;
 use crate::resources::weapon::Weapon;
@@ -16,6 +17,7 @@ pub struct GameData {
     weapons: [Weapon; 11],
     skills: [Skill; 4],
     player_list_effects_information: [Effect; 8],
+    monsters: [Monster; 10],
 }
 
 impl GameData {
@@ -50,7 +52,8 @@ impl GameData {
 
     pub fn get_weapon(&self, hero_class: HeroClass) -> Weapon {
         let hero = self.get_hero(hero_class);
-        *self.weapons
+        *self
+            .weapons
             .iter()
             .find(|weapon| weapon.name == hero.weapon)
             .unwrap()

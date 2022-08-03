@@ -22,3 +22,6 @@ resources/results/GUIs/*
 
 resources/results/walls/*
 !resources/results/walls/note.txt
+
+resources/results/monsters/*
+!resources/results/monsters/note.txt

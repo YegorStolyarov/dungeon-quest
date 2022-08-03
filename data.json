@@ -293,5 +293,89 @@
       "duration": 3,
       "bonus": 0.0
     }
+  ],
+  "monsters": [
+    {
+      "class": "SmallZombie",
+      "damage": 0.5,
+      "level": 1,
+      "speed": 6.0,
+      "health_points": 5.0
+    },
+    {
+      "class": "Zombie",
+      "damage": 1.0,
+      "level": 2,
+      "speed": 5.0,
+      "health_points": 7.0
+    },
+    {
+      "class": "BigZombie",
+      "damage": 1.5,
+      "level": 3,
+      "speed": 4.0,
+      "health_points": 11.0,
+      "skill": "Split"
+    },
+    {
+      "class": "Goblin",
+      "damage": 0.5,
+      "level": 1,
+      "speed": 6.0,
+      "health_points": 6.0
+    },
+    {
+      "class": "Orc",
+      "damage": 1.0,
+      "level": 2,
+      "speed": 5.0,
+      "health_points": 8.0,
+      "trigger_effect": "Stun",
+      "trigger_chance": 0.3
+    },
+    {
+      "class": "Orge",
+      "damage": 1.5,
+      "level": 3,
+      "speed": 3.0,
+      "health_points": 13.0,
+      "skill": "Split"
+    },
+    {
+      "class": "Imp",
+      "damage": 0.5,
+      "level": 1,
+      "speed": 6.0,
+      "health_points": 6.0,
+      "trigger_effect": "Disarm",
+      "trigger_chance": 0.3
+    },
+    {
+      "class": "Chort",
+      "damage": 1.0,
+      "level": 1,
+      "speed": 5.0,
+      "health_points": 8.0,
+      "trigger_effect": "Confuse",
+      "trigger_chance": 0.3
+    },
+    {
+      "class": "BigDemon",
+      "damage": 1.5,
+      "level": 2,
+      "speed": 4.0,
+      "health_points": 13.0,
+      "trigger_effect": "ReduceDamage",
+      "trigger_chance": 0.3
+    },
+    {
+      "class": "Swampy",
+      "damage": 1.0,
+      "level": 3,
+      "speed": 3.0,
+      "health_points": 10.0,
+      "trigger_effect": "Slow",
+      "trigger_chance": 0.3
+    }
   ]
 }

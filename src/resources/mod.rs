@@ -7,6 +7,7 @@ pub mod game_mode;
 pub mod glossary;
 pub mod hero;
 pub mod language;
+pub mod monster;
 pub mod player;
 pub mod profile;
 pub mod setting;
