@@ -2,6 +2,8 @@ use bevy::prelude::*;
 use rand::Rng;
 use std::time::Duration;
 
+use crate::components::monster::MonsterComponent;
+use crate::components::monster_list_effects::MonsterListEffectsComponent;
 use crate::components::player::PlayerComponent;
 use crate::components::player_animation::PlayerAnimation;
 use crate::components::player_list_effects::PlayerListEffectsComponent;
@@ -10,6 +12,7 @@ use crate::components::weapon::WeaponComponent;
 use crate::components::weapon_shoot_attack::WeaponShootAttackComponent;
 use crate::components::weapon_swing_attack::WeaponSwingAttackComponent;
 use crate::resources::animation_state::AnimationState;
+use crate::resources::effect::effect_type::EffectType;
 use crate::resources::skill::skill_type::SkillType;
 use crate::resources::weapon::attack_type::AttackType;
 use crate::resources::weapon::weapon_type::WeaponType;
@@ -24,6 +27,7 @@ pub fn pause(mut keyboard_input: ResMut<Input<KeyCode>>, mut state: ResMut<State
 
 pub fn use_skill(
     mut player_query: Query<(&mut PlayerComponent, &mut SkillComponent)>,
+    mut monsters_query: Query<(&mut MonsterComponent, &mut MonsterListEffectsComponent)>,
     mut keyboard_input: ResMut<Input<KeyCode>>,
 ) {
     let (mut player, mut player_skill) = player_query.single_mut();
@@ -34,7 +38,16 @@ pub fn use_skill(
                 SkillType::Thunderstorm => {
                     let cooldown = player_skill.skill.cooldown.unwrap() as u64;
                     player_skill.cooldown = Timer::new(Duration::from_secs(cooldown), false);
-                    todo!("With Monster");
+
+                    for (mut monster, mut monster_list_effects) in monsters_query.iter_mut() {
+                        let damage = player.intelligence;
+                        monster.current_health_points = if monster.current_health_points < damage {
+                            0.0
+                        } else {
+                            monster.current_health_points - damage
+                        };
+                        monster_list_effects.activate(EffectType::Stun);
+                    }
                 }
                 SkillType::TimeToHunt => {
                     let skill = player_skill.skill.clone();

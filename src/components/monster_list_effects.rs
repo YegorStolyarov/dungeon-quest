@@ -10,6 +10,27 @@ pub struct MonsterListEffectsComponent {
 }
 
 impl MonsterListEffectsComponent {
+    pub fn new() -> MonsterListEffectsComponent {
+        let mut monster_list_effects = MonsterListEffectsComponent {
+            activated_effects: HashMap::new(),
+        };
+
+        monster_list_effects
+            .activated_effects
+            .insert(EffectType::Stun, Timer::new(Duration::from_secs(0), false));
+
+        monster_list_effects
+            .activated_effects
+            .insert(EffectType::Slow, Timer::new(Duration::from_secs(0), false));
+
+        monster_list_effects.activated_effects.insert(
+            EffectType::ReduceDamage,
+            Timer::new(Duration::from_secs(0), false),
+        );
+
+        monster_list_effects
+    }
+
     pub fn activate(&mut self, effect_type: EffectType) {
         match effect_type {
             EffectType::Stun => {

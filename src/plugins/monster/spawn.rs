@@ -106,9 +106,7 @@ pub fn spawn_monsters_classic_mode(
                         width: raw_monster.origin_width * 3.5,
                         height: raw_monster.origin_height * 3.5,
                     })
-                    .insert(MonsterListEffectsComponent {
-                        activated_effects: HashMap::new(),
-                    })
+                    .insert(MonsterListEffectsComponent::new())
                     .insert(MonsterAnimationComponent {
                         total_tiles: match raw_monster.class {
                             MonsterClass::Zombie | MonsterClass::Swampy => 4,

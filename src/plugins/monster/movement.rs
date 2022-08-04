@@ -3,9 +3,13 @@ use bevy::prelude::*;
 use crate::{
     components::{
         monster::MonsterComponent, monster_animation::MonsterAnimationComponent,
-        player::PlayerComponent, skill::SkillComponent,
+        monster_list_effects::MonsterListEffectsComponent, player::PlayerComponent,
+        skill::SkillComponent,
     },
-    resources::{animation_state::AnimationState, skill::skill_type::SkillType},
+    resources::{
+        animation_state::AnimationState, effect::effect_type::EffectType,
+        skill::skill_type::SkillType,
+    },
 };
 
 pub fn move_to_player(
@@ -13,6 +17,7 @@ pub fn move_to_player(
         Query<(&Transform, &SkillComponent), With<PlayerComponent>>,
         Query<(
             &MonsterComponent,
+            &mut MonsterListEffectsComponent,
             &mut MonsterAnimationComponent,
             &mut Transform,
         )>,
@@ -31,8 +36,14 @@ pub fn move_to_player(
         target.y = transform.translation.y;
     }
 
-    for (monster_component, mut monster_animation_component, mut transform) in set.p1().iter_mut() {
-        if !should_move {
+    for (monster_component, monster_list_effects, mut monster_animation_component, mut transform) in
+        set.p1().iter_mut()
+    {
+        let stun_effect = monster_list_effects
+            .activated_effects
+            .get(&EffectType::Stun);
+
+        if !stun_effect.unwrap().finished() || !should_move {
             monster_animation_component.animation_state = AnimationState::Idle;
         } else {
             monster_animation_component.animation_state = AnimationState::Moving;

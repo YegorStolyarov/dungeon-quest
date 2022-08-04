@@ -4,6 +4,7 @@ use crate::scenes::SceneState;
 
 mod animation;
 mod cleanup;
+mod effect;
 mod invinsible;
 mod movement;
 mod spawn;
@@ -19,6 +20,7 @@ impl Plugin for MonsterPlugin {
                 .with_system(movement::move_to_player)
                 .with_system(movement::change_direction)
                 .with_system(invinsible::hurt_duration_color)
+                .with_system(effect::update_effects)
                 .with_system(cleanup::cleanup_killed_monsters)
                 .with_system(cleanup::cleanup_monster_after_cleared_room),
         );
@@ -35,6 +37,7 @@ impl Plugin for MonsterPlugin {
                 .with_system(movement::move_to_player)
                 .with_system(movement::change_direction)
                 .with_system(invinsible::hurt_duration_color)
+                .with_system(effect::update_effects)
                 .with_system(cleanup::cleanup_killed_monsters),
         );
 
