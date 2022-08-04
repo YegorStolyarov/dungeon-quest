@@ -19,8 +19,9 @@ impl Plugin for MonsterPlugin {
                 .with_system(animation::animation_handle)
                 .with_system(movement::move_to_player)
                 .with_system(movement::change_direction)
-                .with_system(invinsible::hurt_duration_color)
+                .with_system(invinsible::hurt_duration_color.after("Color"))
                 .with_system(effect::update_effects)
+                .with_system(effect::update_color_of_effects.label("Color"))
                 .with_system(cleanup::cleanup_killed_monsters)
                 .with_system(cleanup::cleanup_monster_after_cleared_room),
         );
@@ -36,8 +37,10 @@ impl Plugin for MonsterPlugin {
                 .with_system(animation::animation_handle)
                 .with_system(movement::move_to_player)
                 .with_system(movement::change_direction)
-                .with_system(invinsible::hurt_duration_color)
+                .with_system(invinsible::hurt_duration_color.after("Color"))
                 .with_system(effect::update_effects)
+                .with_system(effect::update_color_of_effects.label("Color"))
+                .with_system(effect::update_color_of_effects)
                 .with_system(cleanup::cleanup_killed_monsters),
         );
 

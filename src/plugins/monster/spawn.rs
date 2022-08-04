@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 use rand::Rng;
-use std::collections::HashMap;
 use std::time::Duration;
 
 use crate::{
@@ -220,9 +219,7 @@ pub fn spawn_monsters_survival_mode(
                         animation_state: AnimationState::Idle,
                         animation_timer: Timer::from_seconds(0.1, true),
                     })
-                    .insert(MonsterListEffectsComponent {
-                        activated_effects: HashMap::new(),
-                    })
+                    .insert(MonsterListEffectsComponent::new())
                     .insert(InvisibleCooldownComponent {
                         hurt_duration: Timer::new(Duration::from_secs(0), false),
                         duration: Timer::new(Duration::from_secs(0), false),

@@ -16,7 +16,7 @@ pub fn animation_handle(
                 AnimationState::Idle => {
                     let min_index = 0;
                     let max_index = 3;
-                    if sprite.index > max_index || sprite.index < min_index {
+                    if sprite.index >= max_index || sprite.index < min_index {
                         sprite.index = min_index;
                     } else {
                         sprite.index += 1;
@@ -34,7 +34,7 @@ pub fn animation_handle(
                     } else {
                         let min_index = 0;
                         let max_index = 3;
-                        if sprite.index > max_index || sprite.index < min_index {
+                        if sprite.index >= max_index || sprite.index < min_index {
                             sprite.index = min_index;
                         } else {
                             sprite.index += 1;
