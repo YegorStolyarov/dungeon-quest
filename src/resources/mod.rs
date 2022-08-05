@@ -9,6 +9,7 @@ pub mod hero;
 pub mod language;
 pub mod monster;
 pub mod player;
+pub mod potion;
 pub mod profile;
 pub mod setting;
 pub mod skill;

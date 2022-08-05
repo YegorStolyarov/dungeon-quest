@@ -8,5 +8,6 @@ pub mod icon;
 pub mod ingame;
 pub mod menu_box;
 pub mod monsters;
+pub mod potions;
 pub mod scenes;
 pub mod weapons;

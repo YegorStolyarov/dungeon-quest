@@ -3,6 +3,7 @@ use crate::materials::dungeon::DungeonMaterials;
 use crate::materials::hearts::HeartsMaterials;
 use crate::materials::heros::HerosMaterials;
 use crate::materials::monsters::MonstersMaterials;
+use crate::materials::potions::PotionsMaterials;
 use crate::materials::weapons::WeaponsMaterials;
 
 pub struct InGameMaterials {
@@ -12,4 +13,5 @@ pub struct InGameMaterials {
     pub hearts_materials: HeartsMaterials,
     pub bullet_materials: BulletsMaterials,
     pub monsters_materials: MonstersMaterials,
+    pub potions_materials: PotionsMaterials,
 }

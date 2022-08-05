@@ -13,6 +13,7 @@ use crate::materials::icon::IconMaterials;
 use crate::materials::ingame::InGameMaterials;
 use crate::materials::menu_box::MenuBoxMaterials;
 use crate::materials::monsters::MonstersMaterials;
+use crate::materials::potions::PotionsMaterials;
 use crate::materials::scenes::ScenesMaterials;
 use crate::materials::weapons::WeaponsMaterials;
 use crate::resources::dictionary::Dictionary;
@@ -363,6 +364,12 @@ fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
             chort: asset_server.load("ingame/monsters/chort.png"),
             big_demon: asset_server.load("ingame/monsters/big_demon.png"),
             swampy: asset_server.load("ingame/monsters/swampy.png"),
+        },
+        potions_materials: PotionsMaterials {
+            heal: asset_server.load("ingame/potions/heal.png"),
+            focus: asset_server.load("ingame/potions/focus.png"),
+            speed_up: asset_server.load("ingame/potions/speed_up.png"),
+            evasion_up: asset_server.load("ingame/potions/evasion_up.png"),
         },
     };
 

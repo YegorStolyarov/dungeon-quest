@@ -8,11 +8,14 @@ use crate::components::monster::MonsterComponent;
 use crate::components::player::PlayerComponent;
 use crate::components::player_animation::PlayerAnimation;
 use crate::components::player_list_effects::PlayerListEffectsComponent;
+use crate::components::potion::PotionComponent;
 use crate::config::*;
 use crate::plugins::player::{PLAYER_SIZE_HEIGHT, PLAYER_SIZE_WIDTH};
 use crate::resources::animation_state::AnimationState;
 use crate::resources::dungeon::block_type::BlockType;
+use crate::resources::effect::effect_type::EffectType;
 use crate::resources::player::player_available_movement::PlayerAvailableMovement;
+use crate::resources::potion::potion_type::PotionType;
 
 pub fn wall_collision_check(
     player_position: Vec3,
@@ -108,6 +111,51 @@ pub fn monsters_collision_check(
             invinsible_cooldown.hurt_duration = Timer::new(Duration::from_secs_f32(0.3), false);
             player_animation.animation_state = AnimationState::Hit;
             break;
+        }
+    }
+}
+
+pub fn potions_collision(
+    mut commands: Commands,
+    mut player_query: Query<
+        (
+            &mut PlayerComponent,
+            &mut PlayerListEffectsComponent,
+            &Transform,
+        ),
+        (With<PlayerComponent>, Without<PotionComponent>),
+    >,
+    potions_query: Query<
+        (Entity, &PotionComponent, &Transform),
+        (With<PotionComponent>, Without<PlayerComponent>),
+    >,
+) {
+    let (mut player, mut player_list_effects, player_transform) = player_query.single_mut();
+    let player_size = Vec2::new(PLAYER_SIZE_WIDTH, PLAYER_SIZE_HEIGHT);
+    let player_position = player_transform.translation;
+
+    for (potion_entity, potion, potion_transform) in potions_query.iter() {
+        let potion_size = Vec2::new(potion.width, potion.height);
+        let potion_position = potion_transform.translation;
+
+        if collide(player_position, player_size, potion_position, potion_size).is_some() {
+            match potion.potion_type {
+                PotionType::Heal => {
+                    player.current_health_points =
+                        if player.current_health_points >= player.max_health_points - 1.0 {
+                            player.max_health_points
+                        } else if player.current_health_points < player.max_health_points {
+                            player.current_health_points + 1.0
+                        } else {
+                            player.current_health_points
+                        }
+                }
+                PotionType::SpeedUp => player_list_effects.activate(EffectType::SpeedUp),
+                PotionType::EvasionUp => player_list_effects.activate(EffectType::EvasionUp),
+                PotionType::Focus => player_list_effects.activate(EffectType::Focus),
+            }
+
+            commands.entity(potion_entity).despawn_recursive();
         }
     }
 }

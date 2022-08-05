@@ -6,6 +6,7 @@ pub mod monster_list_effects;
 pub mod player;
 pub mod player_animation;
 pub mod player_list_effects;
+pub mod potion;
 pub mod skill;
 pub mod weapon;
 pub mod weapon_shoot_attack;

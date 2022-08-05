@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy::sprite::collide_aabb::collide;
 
 use crate::components::player::PlayerComponent;
+use crate::components::potion::PotionComponent;
 use crate::resources::dungeon::door::{Door, HorizontalDoor, VerticaltDoor};
 use crate::resources::dungeon::position::Position;
 use crate::resources::dungeon::Dungeon;
@@ -17,8 +18,10 @@ pub fn horizontal_door_interaction_handle(
     >,
     mut monster_spawn_controller: ResMut<MonsterSpawnController>,
     mut player_dungeon_stats: ResMut<PlayerDungeonStats>,
+    potion_query: Query<Entity, With<PotionComponent>>,
     mut dungeon: ResMut<Dungeon>,
     mut profile: ResMut<Profile>,
+    mut commands: Commands,
 ) {
     let (mut player_transform, player_sprite) = player_query.single_mut();
     let player_translation = player_transform.translation;
@@ -75,6 +78,10 @@ pub fn horizontal_door_interaction_handle(
                 } else if *door == Door::Right {
                     player_transform.translation.x = (player_transform.translation.x * -1.0) + 15.0;
                 }
+
+                for potion_entity in potion_query.iter() {
+                    commands.entity(potion_entity).despawn_recursive();
+                }
             }
         }
     }
@@ -86,8 +93,10 @@ pub fn vertical_door_interaction_handle(
     mut door_query: Query<(&Door, &Transform), Without<PlayerComponent>>,
     mut monster_spawn_controller: ResMut<MonsterSpawnController>,
     mut player_dungeon_stats: ResMut<PlayerDungeonStats>,
+    potion_query: Query<Entity, With<PotionComponent>>,
     mut dungeon: ResMut<Dungeon>,
     mut profile: ResMut<Profile>,
+    mut commands: Commands,
 ) {
     let (mut player_transform, player_spirte) = player_query.single_mut();
     let player_translation = player_transform.translation;
@@ -151,6 +160,10 @@ pub fn vertical_door_interaction_handle(
                             player_transform.translation.y = -130.0;
                         } else {
                             player_transform.translation.y = 130.0;
+                        }
+
+                        for potion_entity in potion_query.iter() {
+                            commands.entity(potion_entity).despawn_recursive();
                         }
                     }
                 }
