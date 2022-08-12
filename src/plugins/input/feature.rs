@@ -28,55 +28,47 @@ pub fn pause(mut keyboard_input: ResMut<Input<KeyCode>>, mut state: ResMut<State
 
 pub fn use_skill(
     mut player_query: Query<(&mut PlayerComponent, &mut SkillComponent)>,
-    mut monsters_query: Query<(
-        &mut MonsterComponent,
-        &mut InvisibleCooldownComponent,
-        &mut MonsterListEffectsComponent,
-    )>,
+    mut monsters_query: Query<(&mut MonsterComponent, &mut InvisibleCooldownComponent, &mut MonsterListEffectsComponent)>,
     mut keyboard_input: ResMut<Input<KeyCode>>,
 ) {
-    let (mut player, mut player_skill) = player_query.single_mut();
     if keyboard_input.pressed(KeyCode::Space) {
-        if player_skill.cooldown.finished() {
-            match player_skill.skill.name {
-                SkillType::Armor => {}
-                SkillType::Thunderstorm => {
-                    let cooldown = player_skill.skill.cooldown.unwrap() as u64;
-                    player_skill.cooldown = Timer::new(Duration::from_secs(cooldown), false);
+        let (mut player, mut player_skill) = player_query.single_mut();
 
-                    for (mut monster, mut invinsible_cooldown, mut monster_list_effects) in
-                        monsters_query.iter_mut()
+        if player_skill.cooldown.finished() {
+            let skill = player_skill.skill.clone();
+
+            match player_skill.skill.name {
+                SkillType::Thunderstorm => {
+                    for (mut monster, mut invinsible_cooldown, mut monster_list_effects) in monsters_query.iter_mut()
                     {
                         let damage = player.intelligence;
-                        monster.current_health_points = if monster.current_health_points < damage {
-                            0.0
-                        } else {
-                            monster.current_health_points - damage
-                        };
-                        invinsible_cooldown.hurt_duration =
-                            Timer::new(Duration::from_secs_f32(0.2), false);
+                        monster.current_health_points = if monster.current_health_points < damage { 0.0 } 
+                        else { monster.current_health_points - damage };
+
+                        invinsible_cooldown.hurt_duration = Timer::new(Duration::from_secs_f32(0.2), false);
                         monster_list_effects.activate(EffectType::Stun);
                     }
                 }
                 SkillType::TimeToHunt => {
-                    let skill = player_skill.skill.clone();
                     let duration = skill.duration.unwrap() as u64;
                     player_skill.duration = Timer::new(Duration::from_secs(duration), false);
-                    let cooldown = skill.cooldown.unwrap() as u64;
-                    player_skill.cooldown = Timer::new(Duration::from_secs(cooldown), false);
+
+                  
                 }
                 SkillType::AnimalInstinct => {
-                    let skill = player_skill.skill.clone();
                     let require_health = skill.require_health_points.unwrap();
                     if player.current_health_points > require_health {
                         player.current_health_points -= require_health;
+
                         let duration = skill.duration.unwrap() as u64;
                         player_skill.duration = Timer::new(Duration::from_secs(duration), false);
-                        let cooldown = skill.cooldown.unwrap() as u64;
-                        player_skill.cooldown = Timer::new(Duration::from_secs(cooldown), false);
                     }
                 }
+                _ => {}
             }
+
+            let cooldown = skill.cooldown.unwrap() as u64;
+            player_skill.cooldown = Timer::new(Duration::from_secs(cooldown), false);
         }
         keyboard_input.reset(KeyCode::Space);
     }

@@ -80,7 +80,7 @@ impl Setting {
 impl FromWorld for Setting {
     fn from_world(_world: &mut World) -> Self {
         let mut setting: Setting = Setting::new(false, false);
-        setting.load_setting();
+        // setting.load_setting();
         setting
     }
 }

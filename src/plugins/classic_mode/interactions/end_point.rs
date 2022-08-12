@@ -3,6 +3,7 @@ use bevy::sprite::collide_aabb::collide;
 use std::time::Duration;
 
 use crate::components::player::PlayerComponent;
+use crate::components::potion::PotionComponent;
 use crate::plugins::classic_mode::ui::CenterTextComponent;
 use crate::resources::dungeon::end_point::EndPoint;
 use crate::resources::dungeon::Dungeon;
@@ -18,9 +19,11 @@ pub fn end_point_interaction_handle_system(
     >,
     mut player_dungeon_stats: ResMut<PlayerDungeonStats>,
     mut ui_center_text_query: Query<&mut CenterTextComponent>,
+    potion_query: Query<Entity, With<PotionComponent>>,
     mut state: ResMut<State<SceneState>>,
     mut dungeon: ResMut<Dungeon>,
     mut profile: ResMut<Profile>,
+    mut commands: Commands,
 ) {
     let current_position = dungeon.current_floor.current_position;
     let end_room_position = dungeon.current_floor.end_room_position;
@@ -50,9 +53,12 @@ pub fn end_point_interaction_handle_system(
 
                         ui_center_text_query.single_mut().timer =
                             Timer::new(Duration::from_secs(1), false);
-
                         state.push(SceneState::RewardScene).unwrap();
                     }
+                }
+
+                for potion_entity in potion_query.iter() {
+                    commands.entity(potion_entity).despawn_recursive();
                 }
             }
         }

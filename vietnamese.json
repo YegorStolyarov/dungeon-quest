@@ -7,9 +7,7 @@
     "credits": "Credits",
     "quit": "Thoát"
   },
-  "loading_scene_text": {
-    "loading": "Đang tải tài nguyên, vui lòng đợi."
-  },
+  "loading_scene_text": { "loading": "Đang tải tài nguyên, vui lòng đợi." },
   "highscore_scene_text": {
     "name": "Tên: ",
     "gender": "Giới tính: ",

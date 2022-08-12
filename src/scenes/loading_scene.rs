@@ -224,7 +224,7 @@ fn update_loader(
 ) {
     for (mut loader, mut style, children) in query.iter_mut() {
         if loader.current_width < loader.max_width {
-            loader.current_width += 100.0;
+            loader.current_width += 2.5;
             style.size.width = Val::Px(loader.current_width);
 
             let value = (loader.current_width / loader.max_width * 100.0) as usize;

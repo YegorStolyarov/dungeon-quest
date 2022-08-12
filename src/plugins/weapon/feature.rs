@@ -103,7 +103,7 @@ pub fn aim(
                 if weapon_component.name == WeaponType::Spear {
                     weapon_transform.rotation = Quat::from_rotation_z(rotate_z);
                 }
-                
+
                 if weapon_component.name == WeaponType::MagicSword {
                     weapon_transform.rotation = Quat::from_rotation_z(rotate_z);
                 }
