@@ -102,7 +102,7 @@ fn main_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials)
 
     for (row_index, row) in MAIN_MENU_BOX_ARRAY.iter().enumerate() {
         for (column_index, value) in row.iter().enumerate() {
-            let position: Rect<Val> = Rect {
+            let position: UiRect<Val> = UiRect {
                 left: Val::Px(10.0 + MAIN_MENU_BOX_TILE_SIZE * column_index as f32),
                 top: Val::Px(150.0 + MAIN_MENU_BOX_TILE_SIZE * row_index as f32),
                 bottom: Val::Auto,
@@ -141,7 +141,7 @@ fn buttons(root: &mut ChildBuilder, materials: &Res<FontMaterials>, dictionary: 
     let glossary = dictionary.get_glossary();
 
     for (index, button) in ButtonComponent::iterator().enumerate() {
-        let position: Rect<Val> = Rect {
+        let position: UiRect<Val> = UiRect {
             left: Val::Px(10.0 + MAIN_MENU_BOX_TILE_SIZE * (3.0 - 1.0) / 2.0),
             right: Val::Auto,
             top: Val::Px(150.0 + MAIN_MENU_BOX_TILE_SIZE * (index as f32 + 1.0)),
@@ -177,17 +177,18 @@ fn buttons(root: &mut ChildBuilder, materials: &Res<FontMaterials>, dictionary: 
             };
 
             parent.spawn_bundle(TextBundle {
-                text: Text::with_section(
+                text: Text::from_section(
                     text,
                     TextStyle {
                         font: materials.get_font(dictionary.get_current_language()),
                         font_size: FONT_SIZE,
                         color: Color::GRAY,
-                    },
+                    }
+                ).with_alignment(
                     TextAlignment {
                         vertical: VerticalAlign::Center,
                         horizontal: HorizontalAlign::Center,
-                    },
+                    }
                 ),
                 ..Default::default()
             });

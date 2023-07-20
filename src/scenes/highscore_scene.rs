@@ -211,20 +211,20 @@ fn setup(
 }
 
 fn buttons(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
-    let positions: [Rect<Val>; 3] = [
-        Rect {
+    let positions: [UiRect<Val>; 3] = [
+        UiRect {
             left: Val::Px(50.0 / 2.0),
             top: Val::Px(50.0 / 2.0),
             right: Val::Auto,
             bottom: Val::Auto,
         },
-        Rect {
+        UiRect {
             left: Val::Auto,
             top: Val::Px(100.0),
             right: Val::Px(285.0),
             bottom: Val::Auto,
         },
-        Rect {
+        UiRect {
             left: Val::Px(200.0),
             top: Val::Px(100.0),
             bottom: Val::Auto,
@@ -369,7 +369,7 @@ fn book_animation_handle_system(
 fn hero_image(root: &mut ChildBuilder) {
     root.spawn_bundle(ImageBundle {
         style: Style {
-            position: Rect {
+            position: UiRect {
                 right: Val::Auto,
                 bottom: Val::Auto,
                 left: Val::Px(280.0),
@@ -455,7 +455,7 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: Di
                 .spawn_bundle(TextBundle {
                     style: Style {
                         position_type: PositionType::Absolute,
-                        position: Rect {
+                        position: UiRect {
                             left: Val::Px(position_of_texts[index][0]),
                             top: Val::Px(position_of_texts[index][1]),
                             ..Default::default()
@@ -463,17 +463,18 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: Di
                         ..Default::default()
                     },
                     visibility: Visibility { is_visible: true },
-                    text: Text::with_section(
+                    text: Text::from_section(
                         "",
                         TextStyle {
                             font: font.clone(),
                             font_size: 25.0,
                             color: Color::BLACK,
-                        },
+                        }
+                    ).with_alignment(
                         TextAlignment {
                             vertical: VerticalAlign::Center,
                             horizontal: HorizontalAlign::Center,
-                        },
+                        }
                     ),
                     ..Default::default()
                 })

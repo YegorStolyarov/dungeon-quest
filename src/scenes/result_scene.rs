@@ -156,7 +156,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     .with_children(|parent| {
         for (row_index, row) in MENU_BOX_ARRAY.iter().enumerate() {
             for (column_index, value) in row.iter().enumerate() {
-                let position: Rect<Val> = Rect {
+                let position: UiRect<Val> = UiRect {
                     left: Val::Px(start_left + MENU_BOX_TILE_SIZE * column_index as f32),
                     top: Val::Px(start_top + MENU_BOX_TILE_SIZE * row_index as f32),
                     bottom: Val::Auto,
@@ -206,24 +206,25 @@ fn result_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictiona
     root.spawn_bundle(TextBundle {
         style: Style {
             position_type: PositionType::Absolute,
-            position: Rect {
+            position: UiRect {
                 left: Val::Px(left_position),
                 top: Val::Px(60.0),
                 ..Default::default()
             },
             ..Default::default()
         },
-        text: Text::with_section(
+        text: Text::from_section(
             glossary.result_scene_text.result,
             TextStyle {
                 font: font,
                 font_size: 50.0,
                 color: Color::BLACK,
-            },
+            }
+        ).with_alignment(
             TextAlignment {
                 vertical: VerticalAlign::Center,
                 horizontal: HorizontalAlign::Center,
-            },
+            }
         ),
         ..Default::default()
     })
@@ -411,7 +412,7 @@ fn texts(
                 .spawn_bundle(TextBundle {
                     style: Style {
                         position_type: PositionType::Absolute,
-                        position: Rect {
+                        position: UiRect {
                             left: Val::Px(left_position),
                             top: Val::Px(top_position),
                             ..Default::default()
@@ -419,17 +420,18 @@ fn texts(
                         ..Default::default()
                     },
                     visibility: Visibility { is_visible: true },
-                    text: Text::with_section(
+                    text: Text::from_section(
                         value,
                         TextStyle {
                             font: font.clone(),
                             font_size: 35.0,
                             color: Color::BLACK,
-                        },
+                        }
+                    ).with_alignment(
                         TextAlignment {
                             vertical: VerticalAlign::Center,
                             horizontal: HorizontalAlign::Center,
-                        },
+                        }
                     ),
                     ..Default::default()
                 })
@@ -450,7 +452,7 @@ fn return_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
 
     root.spawn_bundle(ButtonBundle {
         style: Style {
-            position: Rect {
+            position: UiRect {
                 left: Val::Px(RETURN_BUTTON_SIDE / 2.0),
                 top: Val::Px(RETURN_BUTTON_SIDE / 2.0),
                 right: Val::Auto,
@@ -486,7 +488,7 @@ fn save_profile_button(
 
     root.spawn_bundle(ButtonBundle {
         style: Style {
-            position: Rect {
+            position: UiRect {
                 left: Val::Px(550.0),
                 top: Val::Px(440.0),
                 right: Val::Auto,
@@ -514,7 +516,7 @@ fn play_again_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials
 
     root.spawn_bundle(ButtonBundle {
         style: Style {
-            position: Rect {
+            position: UiRect {
                 left: Val::Px(400.0),
                 top: Val::Px(440.0),
                 right: Val::Auto,
@@ -602,7 +604,7 @@ fn user_input_text(
                     Val::Px(USER_INPUT_NAME_BORDER_WIDTH),
                     Val::Px(USER_INPUT_NAME_BORDER_HEIGHT),
                 ),
-                position: Rect {
+                position: UiRect {
                     top: Val::Px((WINDOW_HEIGHT / 2.0) - (USER_INPUT_NAME_BORDER_HEIGHT / 2.0)),
                     left: Val::Px(
                         (WINDOW_HEIGHT * RESOLUTION) / 2.0 - (USER_INPUT_NAME_BORDER_WIDTH / 2.0),
@@ -623,17 +625,18 @@ fn user_input_text(
                         position_type: PositionType::Relative,
                         ..Default::default()
                     },
-                    text: Text::with_section(
+                    text: Text::from_section(
                         "",
                         TextStyle {
                             font: font.clone(),
                             font_size: 40.0,
                             color: Color::WHITE,
-                        },
+                        }
+                    ).with_alignment(
                         TextAlignment {
                             vertical: VerticalAlign::Center,
                             horizontal: HorizontalAlign::Center,
-                        },
+                        }
                     ),
                     visibility: Visibility { is_visible: false },
                     ..Default::default()

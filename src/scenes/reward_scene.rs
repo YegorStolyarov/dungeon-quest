@@ -111,7 +111,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     .with_children(|parent| {
         for (row_index, row) in BOX_ARRAY.iter().enumerate() {
             for (column_index, value) in row.iter().enumerate() {
-                let position: Rect<Val> = Rect {
+                let position: UiRect<Val> = UiRect {
                     left: Val::Px(start_left + BOX_TILE_SIZE * column_index as f32),
                     top: Val::Px(start_top + BOX_TILE_SIZE * row_index as f32),
                     bottom: Val::Auto,
@@ -179,7 +179,7 @@ fn upgrade_information(
 
     root.spawn_bundle(NodeBundle {
         style: Style {
-            position: Rect {
+            position: UiRect {
                 left: Val::Px(WINDOW_HEIGHT * RESOLUTION / 2.0 - width / 2.0),
                 top: Val::Px(WINDOW_HEIGHT / 2.0 - height / 2.0),
                 right: Val::Auto,
@@ -200,17 +200,18 @@ fn upgrade_information(
     })
     .with_children(|parent| {
         parent.spawn_bundle(TextBundle {
-            text: Text::with_section(
+            text: Text::from_section(
                 value,
                 TextStyle {
                     font: font.clone(),
                     font_size: 35.0,
                     color: Color::DARK_GRAY,
-                },
+                }
+            ).with_alignment(
                 TextAlignment {
                     vertical: VerticalAlign::Center,
                     horizontal: HorizontalAlign::Center,
-                },
+                }
             ),
             ..Default::default()
         });

@@ -77,17 +77,19 @@ fn center_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictiona
             position_type: PositionType::Absolute,
             ..Default::default()
         },
-        text: Text::with_section(
+        text: Text::from_section(
             value,
             TextStyle {
                 font: font.clone(),
                 font_size: 50.0,
                 color: Color::WHITE,
-            },
+            }
+
+        ).with_alignment(
             TextAlignment {
                 vertical: VerticalAlign::Center,
                 horizontal: HorizontalAlign::Center,
-            },
+            }
         ),
         ..Default::default()
     })
@@ -128,24 +130,25 @@ fn floor_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionar
     root.spawn_bundle(TextBundle {
         style: Style {
             position_type: PositionType::Absolute,
-            position: Rect {
+            position: UiRect {
                 top: Val::Px(0.0),
                 right: Val::Px(10.0),
                 ..Default::default()
             },
             ..Default::default()
         },
-        text: Text::with_section(
+        text: Text::from_section(
             "1",
             TextStyle {
                 font: font.clone(),
                 font_size: 35.0,
                 color: Color::WHITE,
-            },
+            }
+        ).with_alignment(
             TextAlignment {
                 vertical: VerticalAlign::Center,
                 horizontal: HorizontalAlign::Center,
-            },
+            }
         ),
         ..Default::default()
     })

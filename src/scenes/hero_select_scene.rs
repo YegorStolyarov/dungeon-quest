@@ -201,7 +201,7 @@ fn return_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
     let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
     root.spawn_bundle(ButtonBundle {
         style: Style {
-            position: Rect {
+            position: UiRect {
                 left: Val::Px(RETURN_BUTTON_SIZE / 2.0),
                 top: Val::Px(RETURN_BUTTON_SIZE / 2.0),
                 right: Val::Auto,
@@ -354,24 +354,25 @@ fn select_hero_text(
     root.spawn_bundle(TextBundle {
         style: Style {
             position_type: PositionType::Absolute,
-            position: Rect {
+            position: UiRect {
                 left: Val::Px(390.0),
                 top: Val::Px(95.0),
                 ..Default::default()
             },
             ..Default::default()
         },
-        text: Text::with_section(
+        text: Text::from_section(
             glossary.shared_text.select_hero,
             TextStyle {
                 font: font,
                 font_size: 50.0,
                 color: Color::BLACK,
-            },
+            }
+        ).with_alignment(
             TextAlignment {
                 vertical: VerticalAlign::Center,
                 horizontal: HorizontalAlign::Center,
-            },
+            }
         ),
         ..Default::default()
     })
@@ -391,7 +392,7 @@ fn heros_buttons(root: &mut ChildBuilder) {
     ];
 
     for (index, value) in ButtonComponent::iterator().enumerate() {
-        let position = Rect {
+        let position = UiRect {
             left: Val::Px(button_positions[index][0]),
             top: Val::Px(button_positions[index][1]),
             right: Val::Auto,

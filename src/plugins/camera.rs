@@ -29,18 +29,18 @@ impl Plugin for CameraPlugin {
 
 fn spawn_user_interface_camera(mut commands: Commands) {
     commands
-        .spawn_bundle(UiCameraBundle::default())
+        .spawn_bundle(Camera2dBundle::default())
         .insert(Name::new("UserInterfaceCamera"))
         .insert(UserInterfaceCamera);
 }
 
 fn spawn_2d_camera(mut commands: Commands) {
-    let mut camera = OrthographicCameraBundle::new_2d();
+    let mut camera = Camera2dBundle::default();
 
-    camera.orthographic_projection.top = 1.0;
-    camera.orthographic_projection.bottom = -1.0;
-    camera.orthographic_projection.right = 1.0 * RESOLUTION;
-    camera.orthographic_projection.left = -1.0 * RESOLUTION;
+    camera.projection.top = 1.0;
+    camera.projection.bottom = -1.0;
+    camera.projection.right = 1.0 * RESOLUTION;
+    camera.projection.left = -1.0 * RESOLUTION;
 
     commands
         .spawn_bundle(camera)

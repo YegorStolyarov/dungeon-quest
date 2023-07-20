@@ -91,7 +91,7 @@ fn help_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials)
 
     for (row_index, row) in HELP_BOX_ARRAY.iter().enumerate() {
         for (column_index, value) in row.iter().enumerate() {
-            let position: Rect<Val> = Rect {
+            let position: UiRect<Val> = UiRect {
                 left: Val::Px(start_left + MENU_BOX_TILE_SIZE * column_index as f32),
                 top: Val::Px(start_top + MENU_BOX_TILE_SIZE * row_index as f32),
                 bottom: Val::Auto,
@@ -169,24 +169,25 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
         root.spawn_bundle(TextBundle {
             style: Style {
                 position_type: PositionType::Absolute,
-                position: Rect {
+                position: UiRect {
                     left: Val::Px(position_left),
                     top: Val::Px(position_top),
                     ..Default::default()
                 },
                 ..Default::default()
             },
-            text: Text::with_section(
+            text: Text::from_section(
                 value,
                 TextStyle {
                     font: font.clone(),
                     font_size,
                     color: Color::BLACK,
-                },
+                }
+            ).with_alignment(
                 TextAlignment {
                     vertical: VerticalAlign::Center,
                     horizontal: HorizontalAlign::Center,
-                },
+                }
             ),
             ..Default::default()
         });
@@ -221,24 +222,25 @@ fn control_texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictio
         root.spawn_bundle(TextBundle {
             style: Style {
                 position_type: PositionType::Absolute,
-                position: Rect {
+                position: UiRect {
                     left: Val::Px(position[0]),
                     top: Val::Px(position[1]),
                     ..Default::default()
                 },
                 ..Default::default()
             },
-            text: Text::with_section(
+            text: Text::from_section(
                 value,
                 TextStyle {
                     font: font.clone(),
                     font_size: 30.0,
                     color: Color::BLACK,
-                },
+                }
+            ).with_alignment(
                 TextAlignment {
                     vertical: VerticalAlign::Center,
                     horizontal: HorizontalAlign::Center,
-                },
+                }
             ),
             ..Default::default()
         });
@@ -255,7 +257,7 @@ fn return_button_component(root: &mut ChildBuilder, scenes_materials: &ScenesMat
 
     root.spawn_bundle(ButtonBundle {
         style: Style {
-            position: Rect {
+            position: UiRect {
                 left: Val::Px(RETURN_BUTTON_SIDE / 2.0),
                 top: Val::Px(RETURN_BUTTON_SIDE / 2.0),
                 right: Val::Auto,

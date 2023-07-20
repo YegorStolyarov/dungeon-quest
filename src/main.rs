@@ -16,7 +16,7 @@ fn main() {
             width: WINDOW_HEIGHT * RESOLUTION,
             height: WINDOW_HEIGHT,
             title: TITLE.to_string(),
-            position: Some(Vec2::new(MONITOR_WIDTH / 4.0, MONITOR_HEIGHT / 4.0)),
+            position: WindowPosition::At(Vec2::new(MONITOR_WIDTH / 4.0, MONITOR_HEIGHT / 4.0)),
             resizable: false,
             resize_constraints: bevy::window::WindowResizeConstraints {
                 min_width: WINDOW_HEIGHT * RESOLUTION,
@@ -30,8 +30,8 @@ fn main() {
         .init_resource::<resources::setting::Setting>()
         .init_resource::<resources::dictionary::Dictionary>()
         .add_state(scenes::SceneState::LoadingScene)
-        .add_startup_system(plugins::music::background_audio_channel_setup)
-        .add_system(plugins::music::play_background_music)
+        // .add_startup_system(plugins::music::background_audio_channel_setup)
+        // .add_system(plugins::music::play_background_music)
         .add_plugins(DefaultPlugins)
         .add_plugin(AudioPlugin)
         .add_plugin(plugins::camera::CameraPlugin)

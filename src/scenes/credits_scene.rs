@@ -91,7 +91,7 @@ fn credits_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMateria
 
     for (row_index, row) in BOX_ARRAY.iter().enumerate() {
         for (column_index, value) in row.iter().enumerate() {
-            let position: Rect<Val> = Rect {
+            let position: UiRect<Val> = UiRect {
                 left: Val::Px(start_left + BOX_TILE_SIZE * column_index as f32),
                 top: Val::Px(start_top + BOX_TILE_SIZE * row_index as f32),
                 bottom: Val::Auto,
@@ -135,7 +135,7 @@ fn return_button_component(root: &mut ChildBuilder, scenes_materials: &ScenesMat
 
     root.spawn_bundle(ButtonBundle {
         style: Style {
-            position: Rect {
+            position: UiRect {
                 left: Val::Px(RETURN_BUTTON_SIDE / 2.0),
                 top: Val::Px(RETURN_BUTTON_SIDE / 2.0),
                 right: Val::Auto,
@@ -184,24 +184,25 @@ fn credits_text(root: &mut ChildBuilder, font_materials: &FontMaterials, diction
     root.spawn_bundle(TextBundle {
         style: Style {
             position_type: PositionType::Absolute,
-            position: Rect {
+            position: UiRect {
                 left: Val::Px(445.0),
                 top: Val::Px(65.0),
                 ..Default::default()
             },
             ..Default::default()
         },
-        text: Text::with_section(
+        text: Text::from_section(
             glossary.main_menu_scene_text.credits,
             TextStyle {
                 font,
                 font_size: 50.0,
                 color: Color::BLACK,
-            },
+            }
+        ).with_alignment(
             TextAlignment {
                 vertical: VerticalAlign::Center,
                 horizontal: HorizontalAlign::Center,
-            },
+            }
         ),
         ..Default::default()
     });
@@ -221,24 +222,25 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
         root.spawn_bundle(TextBundle {
             style: Style {
                 position_type: PositionType::Absolute,
-                position: Rect {
+                position: UiRect {
                     left: Val::Px(260.0),
                     top: Val::Px(110.0 + (index as f32) * 24.0),
                     ..Default::default()
                 },
                 ..Default::default()
             },
-            text: Text::with_section(
+            text: Text::from_section(
                 text,
                 TextStyle {
                     font: font.clone(),
                     font_size: 25.0,
                     color: Color::BLACK,
-                },
+                }
+            ).with_alignment(
                 TextAlignment {
                     vertical: VerticalAlign::Center,
                     horizontal: HorizontalAlign::Center,
-                },
+                }
             ),
             ..Default::default()
         });

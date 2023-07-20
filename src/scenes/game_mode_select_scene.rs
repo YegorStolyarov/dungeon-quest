@@ -111,7 +111,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
 
     for (row_index, row) in BOX_ARRAY.iter().enumerate() {
         for (column_index, value) in row.iter().enumerate() {
-            let position: Rect<Val> = Rect {
+            let position: UiRect<Val> = UiRect {
                 left: Val::Px(start_left + BOX_TILE_SIZE * column_index as f32),
                 top: Val::Px(start_top + BOX_TILE_SIZE * row_index as f32),
                 bottom: Val::Auto,
@@ -162,24 +162,25 @@ fn select_game_mode_text(
     root.spawn_bundle(TextBundle {
         style: Style {
             position_type: PositionType::Absolute,
-            position: Rect {
+            position: UiRect {
                 left: Val::Px(left_position),
                 top: Val::Px(190.0),
                 ..Default::default()
             },
             ..Default::default()
         },
-        text: Text::with_section(
+        text: Text::from_section(
             glossary.shared_text.select_game_mode,
             TextStyle {
                 font: font,
                 font_size: 50.0,
                 color: Color::BLACK,
-            },
+            }
+        ).with_alignment(
             TextAlignment {
                 vertical: VerticalAlign::Center,
                 horizontal: HorizontalAlign::Center,
-            },
+            }
         ),
         ..Default::default()
     });
@@ -200,7 +201,7 @@ fn buttons(
                 let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
                 root.spawn_bundle(ButtonBundle {
                     style: Style {
-                        position: Rect {
+                        position: UiRect {
                             left: Val::Px(RETURN_BUTTON_SIDE / 2.0),
                             top: Val::Px(RETURN_BUTTON_SIDE / 2.0),
                             right: Val::Auto,
@@ -222,7 +223,7 @@ fn buttons(
             _ => {
                 root.spawn_bundle(ButtonBundle {
                     style: Style {
-                        position: Rect {
+                        position: UiRect {
                             left: Val::Px((WINDOW_HEIGHT * RESOLUTION - 300.0) / 2.0),
                             top: Val::Px(if index == 1 { 270.0 } else { 330.0 }),
                             right: Val::Auto,
@@ -241,7 +242,7 @@ fn buttons(
                 })
                 .with_children(|parent| {
                     parent.spawn_bundle(TextBundle {
-                        text: Text::with_section(
+                        text: Text::from_section(
                             if index == 1 {
                                 glossary.shared_text.classic_mode.clone()
                             } else {
@@ -251,11 +252,12 @@ fn buttons(
                                 font: font.clone(),
                                 font_size: FONT_SIZE,
                                 color: Color::GRAY,
-                            },
+                            }
+                        ).with_alignment(
                             TextAlignment {
                                 vertical: VerticalAlign::Center,
                                 horizontal: HorizontalAlign::Center,
-                            },
+                            }
                         ),
                         ..Default::default()
                     });

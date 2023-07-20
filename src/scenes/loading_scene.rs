@@ -96,7 +96,7 @@ fn loader_bundle(
                     Val::Px(LOADING_BORDER_WIDTH),
                     Val::Px(LOADING_BORDER_HEIGHT),
                 ),
-                position: Rect {
+                position: UiRect {
                     top: Val::Px((WINDOW_HEIGHT / 2.0) - (LOADING_BORDER_HEIGHT / 2.0)),
                     left: Val::Px(
                         (WINDOW_HEIGHT * RESOLUTION) / 2.0 - (LOADING_BORDER_WIDTH / 2.0),
@@ -120,7 +120,7 @@ fn loader_bundle(
                         Val::Px(0.0),
                         Val::Px(LOADING_BORDER_HEIGHT - LOADING_BORDER_HEIGHT * 0.2),
                     ),
-                    position: Rect::all(Val::Px(5.0)),
+                    position: UiRect::all(Val::Px(5.0)),
                     ..Default::default()
                 },
                 color: UiColor(Color::rgb(247.0 / 255.0, 104.0 / 255.0, 12.0 / 255.0)),
@@ -140,17 +140,18 @@ fn loader_bundle(
                         align_self: AlignSelf::Center,
                         ..Default::default()
                     },
-                    text: Text::with_section(
+                    text: Text::from_section(
                         "",
                         TextStyle {
                             font: asset_server.load(font_str),
                             font_size: TEXT_FONT_SIZE,
                             color: Color::WHITE,
-                        },
+                        }
+                    ).with_alignment(
                         TextAlignment {
                             vertical: VerticalAlign::Center,
                             horizontal: HorizontalAlign::Center,
-                        },
+                        }
                     ),
                     ..Default::default()
                 });
@@ -172,7 +173,7 @@ fn loading_text(
             justify_content: JustifyContent::Center,
             position_type: PositionType::Absolute,
             size: Size::new(Val::Px(LOADING_BORDER_WIDTH), Val::Px(35.0)),
-            position: Rect {
+            position: UiRect {
                 left: Val::Px((WINDOW_HEIGHT * RESOLUTION - LOADING_BORDER_WIDTH) / 2.0),
                 top: Val::Px((WINDOW_HEIGHT - LOADING_BORDER_HEIGHT) / 2.0 - 37.0),
                 bottom: Val::Auto,
@@ -200,17 +201,18 @@ fn loading_text(
                 ..Default::default()
             },
 
-            text: Text::with_section(
+            text: Text::from_section(
                 glossary.loading_scene_text.loading,
                 TextStyle {
                     font: asset_server.load(font_str),
                     font_size: LOADING_TEXT_FONT_SIZE,
                     color: Color::WHITE,
-                },
+                }
+            ).with_alignment(
                 TextAlignment {
                     vertical: VerticalAlign::Center,
                     horizontal: HorizontalAlign::Center,
-                },
+                }
             ),
             ..Default::default()
         });

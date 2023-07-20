@@ -126,24 +126,25 @@ pub fn information_texts(
                 .spawn_bundle(TextBundle {
                     style: Style {
                         position_type: PositionType::Absolute,
-                        position: Rect {
+                        position: UiRect {
                             left: Val::Px(left_position),
                             top: Val::Px(top_position),
                             ..Default::default()
                         },
                         ..Default::default()
                     },
-                    text: Text::with_section(
+                    text: Text::from_section(
                         "",
                         TextStyle {
                             font: font.clone(),
                             font_size,
                             color: Color::WHITE,
-                        },
+                        }
+                    ).with_alignment(
                         TextAlignment {
                             vertical: VerticalAlign::Center,
                             horizontal: HorizontalAlign::Center,
-                        },
+                        }
                     ),
                     ..Default::default()
                 })
@@ -223,7 +224,7 @@ fn hearts(root: &mut ChildBuilder, ingame_materials: &InGameMaterials) {
         style: Style {
             position_type: PositionType::Absolute,
             size: Size::new(Val::Px(30.0 * 5.0), Val::Px(30.0 * 2.0)),
-            position: Rect {
+            position: UiRect {
                 left: Val::Px(0.0),
                 top: Val::Px(0.0),
                 ..Default::default()
@@ -256,7 +257,7 @@ fn hearts(root: &mut ChildBuilder, ingame_materials: &InGameMaterials) {
                         style: Style {
                             size: Size::new(Val::Px(35.0), Val::Px(35.0)),
                             position_type: PositionType::Absolute,
-                            position: Rect {
+                            position: UiRect {
                                 left: Val::Px(left_position),
                                 top: Val::Px(top_position),
                                 bottom: Val::Auto,
@@ -313,7 +314,7 @@ pub fn skill_duration(root: &mut ChildBuilder) {
     root.spawn_bundle(NodeBundle {
         style: Style {
             position_type: PositionType::Absolute,
-            position: Rect {
+            position: UiRect {
                 bottom: Val::Px(5.0),
                 left: Val::Px(WINDOW_HEIGHT * RESOLUTION / 2.0 - length / 2.0),
                 ..Default::default()
@@ -355,7 +356,7 @@ pub fn skill_cooldown(root: &mut ChildBuilder) {
     root.spawn_bundle(NodeBundle {
         style: Style {
             position_type: PositionType::Absolute,
-            position: Rect {
+            position: UiRect {
                 bottom: Val::Px(WINDOW_HEIGHT / 2.0 - length / 2.0),
                 right: Val::Px(5.0),
                 ..Default::default()
