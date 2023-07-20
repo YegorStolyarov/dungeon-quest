@@ -41,6 +41,7 @@ pub fn initiate_survival_mode(mut commands: Commands, mut state: ResMut<State<Sc
     commands.insert_resource(wave);
 
     state
-        .set(SceneState::InGameSurvivalMode)
+        //workaround from https://github.com/bevyengine/bevy/issues/5552
+        .overwrite_set(SceneState::InGameSurvivalMode)
         .expect("Can't change to Ingame Classic Mode");
 }

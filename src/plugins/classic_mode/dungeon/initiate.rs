@@ -50,6 +50,7 @@ pub fn initiate_classic_mode(mut commands: Commands, mut state: ResMut<State<Sce
     commands.insert_resource(monster_spawn_controller);
 
     state
-        .set(SceneState::InGameClassicMode)
+        // workaround from https://github.com/bevyengine/bevy/issues/5552
+        .overwrite_set(SceneState::InGameClassicMode)
         .expect("Can't change to InGame Classic Mode Scene");
 }
