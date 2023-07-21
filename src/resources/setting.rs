@@ -54,6 +54,7 @@ impl Setting {
             .expect("Unable to write file");
     }
 
+    #[allow(dead_code)]  // unused but maybe needed for something
     pub fn load_setting(&mut self) {
         let setting = match File::open(SETTING_FILE) {
             Ok(mut file) => {
@@ -79,7 +80,7 @@ impl Setting {
 
 impl FromWorld for Setting {
     fn from_world(_world: &mut World) -> Self {
-        let mut setting: Setting = Setting::new(false, false);
+        let setting: Setting = Setting::new(false, false);
         // setting.load_setting();
         setting
     }

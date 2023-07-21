@@ -42,6 +42,9 @@ fn spawn_2d_camera(mut commands: Commands) {
     camera.projection.right = 1.0 * RESOLUTION;
     camera.projection.left = -1.0 * RESOLUTION;
 
+    // to fix warnings about Camera priority ambiguities
+    camera.camera.priority = 1;
+
     commands
         .spawn_bundle(camera)
         .insert(Orthographic2DCamera)

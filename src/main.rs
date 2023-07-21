@@ -1,5 +1,5 @@
 use bevy::{prelude::*, window::WindowMode};
-use bevy_kira_audio::AudioPlugin;
+use bevy_kira_audio::{AudioPlugin};
 
 use config::*;
 
@@ -30,10 +30,10 @@ fn main() {
         .init_resource::<resources::setting::Setting>()
         .init_resource::<resources::dictionary::Dictionary>()
         .add_state(scenes::SceneState::LoadingScene)
-        // .add_startup_system(plugins::music::background_audio_channel_setup)
-        // .add_system(plugins::music::play_background_music)
         .add_plugins(DefaultPlugins)
         .add_plugin(AudioPlugin)
+        .add_startup_system(plugins::music::background_audio_channel_setup)
+        .add_system(plugins::music::play_background_music)
         .add_plugin(plugins::camera::CameraPlugin)
         .add_plugin(scenes::loading_scene::LoadingScenePlugin)
         .add_plugin(scenes::main_menu_scene::MainMenuScenePlugin)
