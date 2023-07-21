@@ -252,7 +252,7 @@ fn buttons(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
                         position_type: PositionType::Absolute,
                         ..Default::default()
                     },
-                    image: UiImage(handle_image),
+                    image: UiImage::new(handle_image),
                     ..Default::default()
                 })
                 .insert(*button);

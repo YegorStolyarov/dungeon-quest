@@ -115,7 +115,7 @@ fn setup(
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                 ..Default::default()
             },
-            image: UiImage(scenes_materials.sub_background_image.clone()),
+            image: UiImage::new(scenes_materials.sub_background_image.clone()),
             ..Default::default()
         })
         .with_children(|parent| {
@@ -179,7 +179,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                 };
 
                 parent.spawn(ImageBundle {
-                    image: UiImage(image),
+                    image: UiImage::new(image),
                     style: Style {
                         position_type: PositionType::Absolute,
                         position,
@@ -465,7 +465,7 @@ fn return_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
             position_type: PositionType::Absolute,
             ..Default::default()
         },
-        image: UiImage(handle_image),
+        image: UiImage::new(handle_image),
         ..Default::default()
     })
     .insert(Name::new("ReturnButton"))
@@ -501,7 +501,7 @@ fn save_profile_button(
             position_type: PositionType::Absolute,
             ..Default::default()
         },
-        image: UiImage(handle_image),
+        image: UiImage::new(handle_image),
         ..Default::default()
     })
     .insert(Name::new("SaveProfileButton"))
@@ -529,7 +529,7 @@ fn play_again_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials
             position_type: PositionType::Absolute,
             ..Default::default()
         },
-        image: UiImage(handle_image),
+        image: UiImage::new(handle_image),
         ..Default::default()
     })
     .insert(Name::new("PlayAgainButton"))

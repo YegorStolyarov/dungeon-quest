@@ -129,7 +129,7 @@ fn setup(
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                 ..Default::default()
             },
-            image: UiImage(scenes_materials.sub_background_image.clone()),
+            image: UiImage::new(scenes_materials.sub_background_image.clone()),
             ..Default::default()
         })
         .with_children(|parent| {
@@ -191,7 +191,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                 };
 
                 parent.spawn(ImageBundle {
-                    image: UiImage(image),
+                    image: UiImage::new(image),
                     style: Style {
                         position_type: PositionType::Absolute,
                         position,
@@ -336,7 +336,7 @@ fn buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &Scenes
                 position_type: PositionType::Absolute,
                 ..Default::default()
             },
-            image: UiImage(handle_image),
+            image: UiImage::new(handle_image),
             ..Default::default()
         })
         .insert(Name::new(component_name))
@@ -394,7 +394,7 @@ fn pair_buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &S
                 ..Default::default()
             },
             background_color: BackgroundColor(color),
-            image: UiImage(handle_image),
+            image: UiImage::new(handle_image),
             ..Default::default()
         })
         .insert(Name::new(component_name))

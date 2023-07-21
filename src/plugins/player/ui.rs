@@ -267,7 +267,7 @@ fn hearts(root: &mut ChildBuilder, ingame_materials: &InGameMaterials) {
                             ..Default::default()
                         },
                         visibility: Visibility { is_visible: false },
-                        image: UiImage(ingame_materials.hearts_materials.empty_heart.clone()),
+                        image: UiImage::new(ingame_materials.hearts_materials.empty_heart.clone()),
                         ..Default::default()
                     })
                     .insert(heart)

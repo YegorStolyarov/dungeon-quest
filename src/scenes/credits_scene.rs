@@ -59,7 +59,7 @@ fn setup(
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                 ..Default::default()
             },
-            image: UiImage(scenes_materials.sub_background_image.clone()),
+            image: UiImage::new(scenes_materials.sub_background_image.clone()),
             ..Default::default()
         })
         .with_children(|parent| {
@@ -113,7 +113,7 @@ fn credits_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMateria
             };
 
             root.spawn(ImageBundle {
-                image: UiImage(image),
+                image: UiImage::new(image),
                 style: Style {
                     position_type: PositionType::Absolute,
                     position,
@@ -147,7 +147,7 @@ fn return_button_component(root: &mut ChildBuilder, scenes_materials: &ScenesMat
             position_type: PositionType::Absolute,
             ..Default::default()
         },
-        image: UiImage(handle_image),
+        image: UiImage::new(handle_image),
         ..Default::default()
     })
     .insert(ReturnButtonComponent);

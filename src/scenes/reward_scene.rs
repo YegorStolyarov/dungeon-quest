@@ -133,7 +133,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                 };
 
                 parent.spawn(ImageBundle {
-                    image: UiImage(image),
+                    image: UiImage::new(image),
                     style: Style {
                         position_type: PositionType::Absolute,
                         position,
