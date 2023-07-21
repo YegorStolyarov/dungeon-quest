@@ -59,7 +59,7 @@ impl PlayerListEffectsComponent {
 
         self.activated_effects.insert(
             effect_type,
-            Timer::new(Duration::from_secs(information.duration as u64), false),
+            Timer::new(Duration::from_secs(information.duration as u64), TimerMode::Once),
         );
     }
 }

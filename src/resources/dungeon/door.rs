@@ -1,8 +1,8 @@
 use bevy::prelude::*;
-use bevy_inspector_egui::Inspectable;
+use bevy_inspector_egui::InspectorOptions;
 use std::slice::Iter;
 
-#[derive(Component, PartialEq, Eq, Clone, Inspectable, Debug)]
+#[derive(Component, PartialEq, Eq, Clone, InspectorOptions, Debug)]
 pub enum Door {
     Left,
     Right,

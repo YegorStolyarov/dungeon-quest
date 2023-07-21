@@ -45,6 +45,7 @@ impl ButtonComponent {
     }
 }
 
+#[derive(Resource)]
 struct MainMenuSceneData {
     user_interface_root: Entity,
 }
@@ -68,7 +69,7 @@ fn setup(
     font_materials: Res<FontMaterials>,
 ) {
     let user_interface_root = commands
-        .spawn_bundle(NodeBundle {
+        .spawn(ImageBundle {
             style: Style {
                 position_type: PositionType::Absolute,
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
@@ -95,14 +96,14 @@ fn cleanup(mut commands: Commands, main_menu_scene_data: Res<MainMenuSceneData>)
 }
 
 fn main_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
-    let size: Size<Val> = Size {
+    let size: Size = Size {
         width: Val::Px(MAIN_MENU_BOX_TILE_SIZE),
         height: Val::Px(MAIN_MENU_BOX_TILE_SIZE),
     };
 
     for (row_index, row) in MAIN_MENU_BOX_ARRAY.iter().enumerate() {
         for (column_index, value) in row.iter().enumerate() {
-            let position: UiRect<Val> = UiRect {
+            let position: UiRect = UiRect {
                 left: Val::Px(10.0 + MAIN_MENU_BOX_TILE_SIZE * column_index as f32),
                 top: Val::Px(150.0 + MAIN_MENU_BOX_TILE_SIZE * row_index as f32),
                 bottom: Val::Auto,
@@ -122,7 +123,7 @@ fn main_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials)
                 _ => panic!("Unknown resources"),
             };
 
-            root.spawn_bundle(NodeBundle {
+            root.spawn(ImageBundle {
                 image: UiImage(image),
                 style: Style {
                     position_type: PositionType::Absolute,
@@ -141,7 +142,7 @@ fn buttons(root: &mut ChildBuilder, materials: &Res<FontMaterials>, dictionary: 
     let glossary = dictionary.get_glossary();
 
     for (index, button) in ButtonComponent::iterator().enumerate() {
-        let position: UiRect<Val> = UiRect {
+        let position: UiRect = UiRect {
             left: Val::Px(10.0 + MAIN_MENU_BOX_TILE_SIZE * (3.0 - 1.0) / 2.0),
             right: Val::Auto,
             top: Val::Px(150.0 + MAIN_MENU_BOX_TILE_SIZE * (index as f32 + 1.0)),
@@ -153,7 +154,7 @@ fn buttons(root: &mut ChildBuilder, materials: &Res<FontMaterials>, dictionary: 
             height: Val::Px(MAIN_MENU_BOX_TILE_SIZE),
         };
 
-        root.spawn_bundle(ButtonBundle {
+        root.spawn(ButtonBundle {
             style: Style {
                 size,
                 justify_content: JustifyContent::Center,
@@ -163,7 +164,7 @@ fn buttons(root: &mut ChildBuilder, materials: &Res<FontMaterials>, dictionary: 
                 position,
                 ..Default::default()
             },
-            color: UiColor(Color::NONE),
+            background_color: BackgroundColor(Color::NONE),
             ..Default::default()
         })
         .with_children(|parent| {
@@ -176,7 +177,7 @@ fn buttons(root: &mut ChildBuilder, materials: &Res<FontMaterials>, dictionary: 
                 ButtonComponent::Quit => glossary.main_menu_scene_text.quit.as_str(),
             };
 
-            parent.spawn_bundle(TextBundle {
+            parent.spawn(TextBundle {
                 text: Text::from_section(
                     text,
                     TextStyle {

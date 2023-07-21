@@ -1,4 +1,5 @@
 use rand::prelude::*;
+use bevy::prelude::*;
 use std::fs::File;
 use std::io::prelude::*;
 
@@ -8,6 +9,7 @@ use crate::resources::skill::skill_type::SkillType;
 use crate::resources::upgrade::upgrade_type::UpgradeType;
 use crate::resources::upgrade::Upgrade;
 
+#[derive(Resource)]
 pub struct UpgradeController {
     pub upgrades: Vec<Upgrade>,
 }

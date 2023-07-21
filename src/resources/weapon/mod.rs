@@ -1,4 +1,4 @@
-use bevy_inspector_egui::Inspectable;
+use bevy_inspector_egui::InspectorOptions;
 use serde::{Deserialize, Serialize};
 
 use crate::resources::effect::effect_type::EffectType;
@@ -11,7 +11,7 @@ use attack_type::AttackType;
 use bullet::Bullet;
 use weapon_type::WeaponType;
 
-#[derive(Serialize, Deserialize, Debug, Clone, Inspectable, Copy)]
+#[derive(Serialize, Deserialize, Debug, Clone, InspectorOptions, Copy)]
 pub struct Weapon {
     pub name: WeaponType,
     pub attack_type: AttackType,

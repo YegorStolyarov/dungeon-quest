@@ -1,5 +1,7 @@
+use bevy::prelude::*;
 use crate::resources::game_mode::GameMode;
 
+#[derive(Resource)]
 pub struct MonsterSpawnController {
     pub game_mode: GameMode,
     pub alive_monsters: i8,

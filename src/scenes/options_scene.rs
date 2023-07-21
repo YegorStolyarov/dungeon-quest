@@ -97,6 +97,7 @@ impl TextComponent {
 
 pub struct OptionsScenePlugin;
 
+#[derive(Resource)]
 struct OptionsSceneData {
     user_interface_root: Entity,
 }
@@ -123,7 +124,7 @@ fn setup(
 ) {
     // user interface root
     let user_interface_root = commands
-        .spawn_bundle(NodeBundle {
+        .spawn(ImageBundle {
             style: Style {
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                 ..Default::default()
@@ -155,7 +156,7 @@ fn cleanup(
 }
 
 fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
-    let size: Size<Val> = Size {
+    let size: Size = Size {
         width: Val::Px(MENU_BOX_TILE_SIZE),
         height: Val::Px(MENU_BOX_TILE_SIZE),
     };
@@ -163,13 +164,13 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     let start_left = (WINDOW_HEIGHT * RESOLUTION - MENU_BOX_TILE_SIZE * MENU_BOX_WIDTH_TILES) / 2.0;
 
     let start_top = (WINDOW_HEIGHT - MENU_BOX_TILE_SIZE * MENU_BOX_HEIGHT_TILES) / 2.0;
-    root.spawn_bundle(NodeBundle {
+    root.spawn(NodeBundle {
         ..Default::default()
     })
     .with_children(|parent| {
         for (row_index, row) in MENU_BOX_ARRAY.iter().enumerate() {
             for (column_index, value) in row.iter().enumerate() {
-                let position: UiRect<Val> = UiRect {
+                let position: UiRect = UiRect {
                     left: Val::Px(start_left + MENU_BOX_TILE_SIZE * column_index as f32),
                     top: Val::Px(start_top + MENU_BOX_TILE_SIZE * row_index as f32),
                     bottom: Val::Auto,
@@ -189,7 +190,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                     _ => panic!("Unknown resources"),
                 };
 
-                parent.spawn_bundle(NodeBundle {
+                parent.spawn(ImageBundle {
                     image: UiImage(image),
                     style: Style {
                         position_type: PositionType::Absolute,
@@ -239,7 +240,7 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
             _ => 35.0,
         };
 
-        root.spawn_bundle(TextBundle {
+        root.spawn(TextBundle {
             style: Style {
                 position_type: PositionType::Absolute,
                 position: UiRect {
@@ -270,7 +271,7 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
 }
 
 fn buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &ScenesMaterials) {
-    let positions: [UiRect<Val>; 3] = [
+    let positions: [UiRect; 3] = [
         UiRect {
             left: Val::Px(RETURN_BUTTON_SIZE / 2.0),
             top: Val::Px(RETURN_BUTTON_SIZE / 2.0),
@@ -327,7 +328,7 @@ fn buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &Scenes
             },
         };
 
-        root.spawn_bundle(ButtonBundle {
+        root.spawn(ButtonBundle {
             style: Style {
                 position: positions[index],
                 size,
@@ -344,7 +345,7 @@ fn buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &Scenes
 }
 
 fn pair_buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &ScenesMaterials) {
-    let positions: [UiRect<Val>; 2] = [
+    let positions: [UiRect; 2] = [
         UiRect {
             left: Val::Px(570.0),
             top: Val::Px(350.0),
@@ -381,7 +382,7 @@ fn pair_buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &S
             },
         };
 
-        root.spawn_bundle(ButtonBundle {
+        root.spawn(ButtonBundle {
             style: Style {
                 position: positions[index],
                 size: Size {
@@ -392,7 +393,7 @@ fn pair_buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &S
                 position_type: PositionType::Absolute,
                 ..Default::default()
             },
-            color: UiColor(color),
+            background_color: BackgroundColor(color),
             image: UiImage(handle_image),
             ..Default::default()
         })
@@ -463,7 +464,7 @@ fn button_handle_system(
 }
 
 fn pair_button_handle_system(
-    mut button_query: Query<(&Interaction, &PairButtonComponent, &mut UiColor)>,
+    mut button_query: Query<(&Interaction, &PairButtonComponent, &mut BackgroundColor)>,
     mut setting: ResMut<Setting>,
     mut dictionary: ResMut<Dictionary>,
 ) {

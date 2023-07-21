@@ -62,7 +62,7 @@ pub fn spawn_bullet(
             weapon_shoot_attack.spawn_bullet = false;
 
             commands
-                .spawn_bundle(SpriteBundle {
+                .spawn(SpriteBundle {
                     sprite: Sprite {
                         custom_size: Some(Vec2::new(
                             bullet_information.width * bullet_information.scale,
@@ -83,7 +83,7 @@ pub fn spawn_bullet(
                 .insert(BulletComponent {
                     target_x,
                     target_y,
-                    duration: Timer::new(Duration::from_secs(3), false),
+                    duration: Timer::new(Duration::from_secs(3), TimerMode::Once),
                     speed: bullet_information.speed,
                 });
         }

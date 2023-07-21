@@ -19,7 +19,7 @@ pub fn walls(
     let room = rooms.get_room(0.0);
 
     let walls = commands
-        .spawn_bundle(SpriteBundle {
+        .spawn(SpriteBundle {
             ..Default::default()
         })
         .with_children(|parent| {
@@ -95,7 +95,7 @@ fn wall(
     };
 
     parent
-        .spawn_bundle(SpriteBundle {
+        .spawn(SpriteBundle {
             sprite: Sprite {
                 custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
                 ..Default::default()

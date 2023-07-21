@@ -89,6 +89,7 @@ struct HeroImageComponent;
 #[derive(Component)]
 struct TextsNodeComponent;
 
+#[derive(Resource)]
 struct HighscoreSceneData {
     user_interface_root: Entity,
     background: Entity,
@@ -134,7 +135,7 @@ fn setup(
 ) {
     // background
     let background = commands
-        .spawn_bundle(SpriteBundle {
+        .spawn(SpriteBundle {
             texture: scenes_materials.sub_background_image.clone(),
             ..Default::default()
         })
@@ -147,6 +148,8 @@ fn setup(
         Vec2::new(BOOK_TILE_SIZE.width, BOOK_TILE_SIZE.width),
         7,
         1,
+        None,
+        None
     );
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
@@ -162,7 +165,7 @@ fn setup(
 
     // book
     let book = commands
-        .spawn_bundle(SpriteSheetBundle {
+        .spawn(SpriteSheetBundle {
             texture_atlas: texture_atlas_handle,
             transform: Transform {
                 translation: Vec3::new(-25.0, -30.0, 1.0),
@@ -178,7 +181,7 @@ fn setup(
         .insert(HighscoreBookComponent {
             current_page: -1,
             total_pages: profiles.len(),
-            timer: Timer::from_seconds(0.1, true),
+            timer: Timer::from_seconds(0.1, TimerMode::Repeating),
             animation_indexes: Vec::new(),
             animation_index: 0,
             is_reverse: false,
@@ -188,12 +191,12 @@ fn setup(
 
     // user interface root
     let user_interface_root = commands
-        .spawn_bundle(NodeBundle {
+        .spawn(NodeBundle {
             style: Style {
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                 ..Default::default()
             },
-            color: UiColor(Color::NONE),
+            background_color: BackgroundColor(Color::NONE),
             ..Default::default()
         })
         .with_children(|parent| {
@@ -211,7 +214,7 @@ fn setup(
 }
 
 fn buttons(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
-    let positions: [UiRect<Val>; 3] = [
+    let positions: [UiRect; 3] = [
         UiRect {
             left: Val::Px(50.0 / 2.0),
             top: Val::Px(50.0 / 2.0),
@@ -241,7 +244,7 @@ fn buttons(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
                     width: Val::Px(50.0),
                     height: Val::Px(50.0),
                 };
-                root.spawn_bundle(ButtonBundle {
+                root.spawn(ButtonBundle {
                     style: Style {
                         position: positions[index],
                         size,
@@ -260,7 +263,7 @@ fn buttons(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
                     height: Val::Px(320.0),
                 };
 
-                root.spawn_bundle(ButtonBundle {
+                root.spawn(ButtonBundle {
                     style: Style {
                         position: positions[index],
                         size,
@@ -268,7 +271,7 @@ fn buttons(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
                         position_type: PositionType::Absolute,
                         ..Default::default()
                     },
-                    color: UiColor(Color::NONE),
+                    background_color: BackgroundColor(Color::NONE),
                     ..Default::default()
                 })
                 .insert(*button);
@@ -367,7 +370,7 @@ fn book_animation_handle_system(
 }
 
 fn hero_image(root: &mut ChildBuilder) {
-    root.spawn_bundle(ImageBundle {
+    root.spawn(ImageBundle {
         style: Style {
             position: UiRect {
                 right: Val::Auto,
@@ -435,7 +438,7 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: Di
         [500.0, 300.0],
     ];
 
-    root.spawn_bundle(NodeBundle {
+    root.spawn(NodeBundle {
         focus_policy: FocusPolicy::Pass,
         style: Style {
             display: Display::None,
@@ -446,13 +449,13 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: Di
             },
             ..Default::default()
         },
-        color: UiColor(Color::NONE),
+        background_color: BackgroundColor(Color::NONE),
         ..Default::default()
     })
     .with_children(|parent| {
         for (index, prevalue) in PrefixWordComponent::iterator().enumerate() {
             parent
-                .spawn_bundle(TextBundle {
+                .spawn(TextBundle {
                     style: Style {
                         position_type: PositionType::Absolute,
                         position: UiRect {

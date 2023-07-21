@@ -77,7 +77,7 @@ pub fn spawn_monsters_classic_mode(
                 let component_name = format!("Monster {}", monster_spawn_controller.alive_monsters);
 
                 commands
-                    .spawn_bundle(SpriteSheetBundle {
+                    .spawn(SpriteSheetBundle {
                         texture_atlas: texture_atlas_handle,
                         sprite: TextureAtlasSprite {
                             custom_size: Some(Vec2::new(
@@ -112,11 +112,11 @@ pub fn spawn_monsters_classic_mode(
                             _ => 8,
                         },
                         animation_state: AnimationState::Idle,
-                        animation_timer: Timer::from_seconds(0.1, true),
+                        animation_timer: Timer::from_seconds(0.1, TimerMode::Repeating),
                     })
                     .insert(InvisibleCooldownComponent {
-                        hurt_duration: Timer::new(Duration::from_secs(0), false),
-                        duration: Timer::new(Duration::from_secs(0), false),
+                        hurt_duration: Timer::new(Duration::from_secs(0), TimerMode::Once),
+                        duration: Timer::new(Duration::from_secs(0), TimerMode::Once),
                     })
                     .insert(Name::new(component_name));
 
@@ -183,7 +183,7 @@ pub fn spawn_monsters_survival_mode(
                 let component_name = format!("Monster {}", monster_spawn_controller.alive_monsters);
 
                 commands
-                    .spawn_bundle(SpriteSheetBundle {
+                    .spawn(SpriteSheetBundle {
                         texture_atlas: texture_atlas_handle,
                         sprite: TextureAtlasSprite {
                             custom_size: Some(Vec2::new(
@@ -217,12 +217,12 @@ pub fn spawn_monsters_survival_mode(
                             _ => 8,
                         },
                         animation_state: AnimationState::Idle,
-                        animation_timer: Timer::from_seconds(0.1, true),
+                        animation_timer: Timer::from_seconds(0.1, TimerMode::Repeating),
                     })
                     .insert(MonsterListEffectsComponent::new())
                     .insert(InvisibleCooldownComponent {
-                        hurt_duration: Timer::new(Duration::from_secs(0), false),
-                        duration: Timer::new(Duration::from_secs(0), false),
+                        hurt_duration: Timer::new(Duration::from_secs(0), TimerMode::Once),
+                        duration: Timer::new(Duration::from_secs(0), TimerMode::Once),
                     })
                     .insert(Name::new(component_name));
 
@@ -249,5 +249,7 @@ fn get_texture(monster: &Monster, ingame_materials: &InGameMaterials) -> Texture
         Vec2::new(monster.origin_width, monster.origin_height),
         columns,
         1,
+        None,
+        None
     )
 }

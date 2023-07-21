@@ -19,6 +19,7 @@ struct WaveTextComponent;
 #[derive(Component)]
 struct WaveCountDownTextComponent;
 
+#[derive(Resource)]
 struct SurvivalModeUIData {
     pub user_interface_root: Entity,
 }
@@ -44,7 +45,7 @@ impl Plugin for SurvivalModeUIPlugin {
 
 fn setup(mut commands: Commands, font_materials: Res<FontMaterials>, dictionary: Res<Dictionary>) {
     let user_interface_root = commands
-        .spawn_bundle(NodeBundle {
+        .spawn(NodeBundle {
             style: Style {
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                 position_type: PositionType::Absolute,
@@ -53,7 +54,7 @@ fn setup(mut commands: Commands, font_materials: Res<FontMaterials>, dictionary:
                 align_content: AlignContent::Center,
                 ..Default::default()
             },
-            color: UiColor(Color::NONE),
+            background_color: BackgroundColor(Color::NONE),
             ..Default::default()
         })
         .with_children(|parent| {
@@ -81,7 +82,7 @@ fn center_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictiona
 
     let value = format!("{} {}", glossary.ingame_text.wave.clone(), 1);
 
-    root.spawn_bundle(TextBundle {
+    root.spawn(TextBundle {
         style: Style {
             position_type: PositionType::Absolute,
             ..Default::default()
@@ -102,7 +103,7 @@ fn center_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictiona
         ..Default::default()
     })
     .insert(CenterTextComponent {
-        timer: Timer::new(Duration::from_secs(1), false),
+        timer: Timer::new(Duration::from_secs(1), TimerMode::Once),
     })
     .insert(Name::new("CenterText"));
 }
@@ -135,7 +136,7 @@ fn center_text_handle_system(
 fn wave_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
     let font = font_materials.get_font(dictionary.get_current_language());
 
-    root.spawn_bundle(TextBundle {
+    root.spawn(TextBundle {
         style: Style {
             position_type: PositionType::Absolute,
             position: UiRect {
@@ -182,7 +183,7 @@ fn wave_countdown_text(
 ) {
     let font = font_materials.get_font(dictionary.get_current_language());
 
-    root.spawn_bundle(TextBundle {
+    root.spawn(TextBundle {
         style: Style {
             position_type: PositionType::Absolute,
             position: UiRect {
@@ -242,6 +243,6 @@ fn wave_countdown_text_handle_system(
 fn reset_center_text(mut center_text_query: Query<&mut CenterTextComponent>, wave: Res<Wave>) {
     if wave.is_changed() {
         let mut center_text = center_text_query.single_mut();
-        center_text.timer = Timer::new(Duration::from_secs(1), false);
+        center_text.timer = Timer::new(Duration::from_secs(1), TimerMode::Once);
     }
 }

@@ -16,11 +16,11 @@ pub struct SkillComponent {
 
 impl SkillComponent {
     pub fn new(skill: Skill) -> Self {
-        let mut duration = Timer::new(Duration::from_secs(0), false);
+        let mut duration = Timer::new(Duration::from_secs(0), TimerMode::Once);
         duration.tick(Duration::from_secs(0));
 
         SkillComponent {
-            cooldown: Timer::new(Duration::from_secs(2), false),
+            cooldown: Timer::new(Duration::from_secs(2), TimerMode::Once),
             duration,
             require_monsters: skill.require_monsters.unwrap_or(0),
             monster_counter: 0,

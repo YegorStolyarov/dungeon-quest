@@ -30,6 +30,7 @@ struct ReturnButtonComponent;
 
 pub struct HelpScenePlugin;
 
+#[derive(Resource)]
 struct HelpSceneData {
     user_interface_root: Entity,
 }
@@ -52,7 +53,7 @@ fn setup(
 ) {
     // user interface root
     let user_interface_root = commands
-        .spawn_bundle(NodeBundle {
+        .spawn(ImageBundle {
             style: Style {
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                 ..Default::default()
@@ -80,7 +81,7 @@ fn cleanup(mut commands: Commands, help_scene_data: Res<HelpSceneData>) {
 }
 
 fn help_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
-    let size: Size<Val> = Size {
+    let size: Size = Size {
         width: Val::Px(MENU_BOX_TILE_SIZE),
         height: Val::Px(MENU_BOX_TILE_SIZE),
     };
@@ -91,7 +92,7 @@ fn help_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials)
 
     for (row_index, row) in HELP_BOX_ARRAY.iter().enumerate() {
         for (column_index, value) in row.iter().enumerate() {
-            let position: UiRect<Val> = UiRect {
+            let position: UiRect = UiRect {
                 left: Val::Px(start_left + MENU_BOX_TILE_SIZE * column_index as f32),
                 top: Val::Px(start_top + MENU_BOX_TILE_SIZE * row_index as f32),
                 bottom: Val::Auto,
@@ -111,7 +112,7 @@ fn help_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials)
                 _ => panic!("Unknown resources"),
             };
 
-            root.spawn_bundle(NodeBundle {
+            root.spawn(ImageBundle {
                 image: UiImage(image),
                 style: Style {
                     position_type: PositionType::Absolute,
@@ -166,7 +167,7 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
             position_left = 438.0;
         }
 
-        root.spawn_bundle(TextBundle {
+        root.spawn(TextBundle {
             style: Style {
                 position_type: PositionType::Absolute,
                 position: UiRect {
@@ -219,7 +220,7 @@ fn control_texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictio
             _ => panic!("Unknown text"),
         };
 
-        root.spawn_bundle(TextBundle {
+        root.spawn(TextBundle {
             style: Style {
                 position_type: PositionType::Absolute,
                 position: UiRect {
@@ -255,7 +256,7 @@ fn return_button_component(root: &mut ChildBuilder, scenes_materials: &ScenesMat
         height: Val::Px(RETURN_BUTTON_SIDE),
     };
 
-    root.spawn_bundle(ButtonBundle {
+    root.spawn(ButtonBundle {
         style: Style {
             position: UiRect {
                 left: Val::Px(RETURN_BUTTON_SIDE / 2.0),

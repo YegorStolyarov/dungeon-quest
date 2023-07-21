@@ -1,10 +1,11 @@
+use bevy::prelude::*;
 use std::fs::File;
 use std::io::{self, BufRead};
 
 use crate::config::LIST_ROOM_FILE;
 use crate::resources::dungeon::room::Room;
 
-#[derive(Clone)]
+#[derive(Resource, Clone)]
 pub struct Rooms {
     rooms: Vec<Room>,
 }

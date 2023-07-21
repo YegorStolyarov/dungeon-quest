@@ -76,7 +76,7 @@ pub fn bullet_collision(
                     }
 
                     invinsible_cooldown.hurt_duration =
-                        Timer::new(Duration::from_secs_f32(0.3), false);
+                        Timer::new(Duration::from_secs_f32(0.3), TimerMode::Once);
 
                     monster.current_health_points = if damage > monster.current_health_points {
                         0.0
@@ -145,7 +145,7 @@ pub fn swing_weapon_collision(
                     }
                 }
 
-                invinsible_cooldown.hurt_duration = Timer::new(Duration::from_secs_f32(0.3), false);
+                invinsible_cooldown.hurt_duration = Timer::new(Duration::from_secs_f32(0.3), TimerMode::Once);
 
                 monster.current_health_points = if damage > monster.current_health_points {
                     0.0

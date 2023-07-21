@@ -26,6 +26,6 @@ impl WeaponShootAttackComponent {
         self.bullet_target_y = 0.0;
         self.spawn_bullet = false;
         self.cooldown_second = weapon.cooldown.unwrap_or(0);
-        self.cooldown = Timer::new(Duration::from_secs(1), false);
+        self.cooldown = Timer::new(Duration::from_secs(1), TimerMode::Once);
     }
 }

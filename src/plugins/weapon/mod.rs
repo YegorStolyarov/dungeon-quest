@@ -10,6 +10,7 @@ mod initiate;
 
 pub struct WeaponPlugin;
 
+#[derive(Resource)]
 pub struct WeaponEntity {
     pub entity: Entity,
 }

@@ -17,15 +17,15 @@ impl MonsterListEffectsComponent {
 
         monster_list_effects
             .activated_effects
-            .insert(EffectType::Stun, Timer::new(Duration::from_secs(0), false));
+            .insert(EffectType::Stun, Timer::new(Duration::from_secs(0), TimerMode::Once));
 
         monster_list_effects
             .activated_effects
-            .insert(EffectType::Slow, Timer::new(Duration::from_secs(0), false));
+            .insert(EffectType::Slow, Timer::new(Duration::from_secs(0), TimerMode::Once));
 
         monster_list_effects.activated_effects.insert(
             EffectType::ReduceDamage,
-            Timer::new(Duration::from_secs(0), false),
+            Timer::new(Duration::from_secs(0), TimerMode::Once),
         );
 
         monster_list_effects
@@ -35,17 +35,17 @@ impl MonsterListEffectsComponent {
         match effect_type {
             EffectType::Stun => {
                 self.activated_effects
-                    .insert(EffectType::Stun, Timer::new(Duration::from_secs(2), false));
+                    .insert(EffectType::Stun, Timer::new(Duration::from_secs(2), TimerMode::Once));
             }
             EffectType::ReduceDamage => {
                 self.activated_effects.insert(
                     EffectType::ReduceDamage,
-                    Timer::new(Duration::from_secs(10), false),
+                    Timer::new(Duration::from_secs(10), TimerMode::Once),
                 );
             }
             EffectType::Slow => {
                 self.activated_effects
-                    .insert(EffectType::Slow, Timer::new(Duration::from_secs(3), false));
+                    .insert(EffectType::Slow, Timer::new(Duration::from_secs(3), TimerMode::Once));
             }
             _ => {}
         }

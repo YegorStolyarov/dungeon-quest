@@ -35,10 +35,10 @@ pub fn initiate_weapon(
 
     let scale = weapon.scale;
 
-    let mut attack_duration = Timer::new(Duration::from_secs(0), false);
+    let mut attack_duration = Timer::new(Duration::from_secs(0), TimerMode::Once);
     attack_duration.tick(Duration::from_secs(0));
 
-    let mut cooldown = Timer::new(Duration::from_secs(0), false);
+    let mut cooldown = Timer::new(Duration::from_secs(0), TimerMode::Once);
     cooldown.tick(Duration::from_secs(0));
 
     let bullet = weapon.bullet.clone().unwrap_or(Bullet {
@@ -49,7 +49,7 @@ pub fn initiate_weapon(
     });
 
     let weapon_entity = commands
-        .spawn_bundle(SpriteBundle {
+        .spawn(SpriteBundle {
             texture: weapon_texture,
             sprite: Sprite {
                 custom_size: Some(Vec2::new(weapon_width * scale, weapon_height * scale)),

@@ -1,13 +1,12 @@
 use bevy::prelude::*;
 use bevy_kira_audio::prelude::*;
-// use bevy_kira_audio::{Audio, AudioChannel, AudioSource};
 
 use crate::resources::setting::Setting;
 use crate::scenes::SceneState;
 
 // Our type for the custom audio channel
 
-// #[derive(Resource)]
+#[derive(Resource)]
 pub struct BackgroundAudioChannel {
     background_music: Handle<AudioSource>,
     loop_started: bool,

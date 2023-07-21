@@ -1,7 +1,7 @@
 use bevy::prelude::*;
-use bevy_inspector_egui::Inspectable;
+use bevy_inspector_egui::InspectorOptions;
 
-#[derive(Component, PartialEq, Eq, Debug, Inspectable)]
+#[derive(Component, PartialEq, Eq, Debug, InspectorOptions)]
 pub enum BlockType {
     None,
     WallTop,

@@ -33,6 +33,7 @@ struct LoaderComponent {
     current_width: f32,
 }
 
+#[derive(Resource)]
 struct LoadingSceneData {
     user_interface_root: Entity,
 }
@@ -56,12 +57,12 @@ impl Plugin for LoadingScenePlugin {
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>, dictionary: Res<Dictionary>) {
     let user_interface_root = commands
-        .spawn_bundle(NodeBundle {
+        .spawn(NodeBundle {
             style: Style {
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                 ..Default::default()
             },
-            color: UiColor(Color::BLACK),
+            background_color: BackgroundColor(Color::BLACK),
             ..Default::default()
         })
         .with_children(|parent| {
@@ -86,7 +87,7 @@ fn loader_bundle(
     asset_server: &Res<AssetServer>,
     dictionary: &Res<Dictionary>,
 ) {
-    root.spawn_bundle(
+    root.spawn(
         // Border
         NodeBundle {
             style: Style {
@@ -106,13 +107,13 @@ fn loader_bundle(
                 },
                 ..Default::default()
             },
-            color: UiColor(Color::DARK_GRAY),
+            background_color: BackgroundColor(Color::DARK_GRAY),
             ..Default::default()
         },
     )
     .with_children(|parent| {
         parent
-            .spawn_bundle(NodeBundle {
+            .spawn(NodeBundle {
                 style: Style {
                     justify_content: JustifyContent::Center,
                     position_type: PositionType::Absolute,
@@ -123,7 +124,7 @@ fn loader_bundle(
                     position: UiRect::all(Val::Px(5.0)),
                     ..Default::default()
                 },
-                color: UiColor(Color::rgb(247.0 / 255.0, 104.0 / 255.0, 12.0 / 255.0)),
+                background_color: BackgroundColor(Color::rgb(247.0 / 255.0, 104.0 / 255.0, 12.0 / 255.0)),
                 ..Default::default()
             })
             .with_children(|parent| {
@@ -132,7 +133,7 @@ fn loader_bundle(
                     Language::EN => FIBBERISH_FONT,
                 };
 
-                parent.spawn_bundle(TextBundle {
+                parent.spawn(TextBundle {
                     style: Style {
                         justify_content: JustifyContent::Center,
                         position_type: PositionType::Absolute,
@@ -168,7 +169,7 @@ fn loading_text(
     asset_server: &Res<AssetServer>,
     dictionary: &Res<Dictionary>,
 ) {
-    root.spawn_bundle(NodeBundle {
+    root.spawn(NodeBundle {
         style: Style {
             justify_content: JustifyContent::Center,
             position_type: PositionType::Absolute,
@@ -181,7 +182,7 @@ fn loading_text(
             },
             ..Default::default()
         },
-        color: UiColor(Color::NONE),
+        background_color: BackgroundColor(Color::NONE),
         ..Default::default()
     })
     .with_children(|parent| {
@@ -192,7 +193,7 @@ fn loading_text(
             Language::EN => FIBBERISH_FONT,
         };
 
-        parent.spawn_bundle(TextBundle {
+        parent.spawn(TextBundle {
             style: Style {
                 justify_content: JustifyContent::Center,
                 position_type: PositionType::Absolute,

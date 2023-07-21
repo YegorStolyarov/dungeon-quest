@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use bevy::prelude::*;
 use std::fs::File;
 use std::io::prelude::*;
 
@@ -11,7 +12,7 @@ use crate::resources::skill::Skill;
 use crate::resources::weapon::weapon_type::WeaponType;
 use crate::resources::weapon::Weapon;
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Resource, Serialize, Deserialize, Debug, Clone)]
 pub struct GameData {
     heros: [Hero; 4],
     weapons: [Weapon; 11],

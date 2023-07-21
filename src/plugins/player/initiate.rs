@@ -40,12 +40,14 @@ pub fn initiate_player(
         Vec2::new(PLAYER_ORIGIN_SIZE_WIDTH, PLAYER_ORIGIN_SIZE_HEIGHT),
         9,
         1,
+        None,
+        None
     );
 
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
     let entity = commands
-        .spawn_bundle(SpriteSheetBundle {
+        .spawn(SpriteSheetBundle {
             texture_atlas: texture_atlas_handle,
             sprite: TextureAtlasSprite {
                 custom_size: Some(Vec2::new(PLAYER_SIZE_WIDTH, PLAYER_SIZE_HEIGHT)),
@@ -64,8 +66,8 @@ pub fn initiate_player(
         ))
         .insert(SkillComponent::new(skill))
         .insert(InvisibleCooldownComponent {
-            hurt_duration: Timer::new(Duration::from_secs(0), false),
-            duration: Timer::new(Duration::from_secs_f32(0.5), false),
+            hurt_duration: Timer::new(Duration::from_secs(0), TimerMode::Once),
+            duration: Timer::new(Duration::from_secs_f32(0.5), TimerMode::Once),
         })
         .insert(Name::new("Player"))
         .id();

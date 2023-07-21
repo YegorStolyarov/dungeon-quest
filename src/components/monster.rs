@@ -1,11 +1,11 @@
 use bevy::prelude::*;
-use bevy_inspector_egui::Inspectable;
+use bevy_inspector_egui::InspectorOptions;
 
 use crate::resources::effect::effect_type::EffectType;
 use crate::resources::monster::monster_class::MonsterClass;
 use crate::resources::monster::monster_skill::MonsterSkill;
 
-#[derive(Component, Inspectable)]
+#[derive(Component, InspectorOptions)]
 pub struct MonsterComponent {
     pub current_health_points: f32,
     pub max_health_points: f32,

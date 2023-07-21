@@ -16,6 +16,7 @@ mod ui;
 
 pub struct PlayerPlugin;
 
+#[derive(Resource)]
 pub struct PlayerEntity {
     pub entity: Entity,
 }

@@ -58,6 +58,7 @@ impl ButtonComponent {
     }
 }
 
+#[derive(Resource)]
 struct AnimationController {
     run_animation: bool,
     hero_image: HeroImageComponent,
@@ -78,6 +79,7 @@ enum HeroImageComponent {
     FemaleLizard,
 }
 
+#[derive(Resource)]
 struct HeroSelectSceneData {
     sprite_bundle: Entity,
     user_interface_root: Entity,
@@ -105,7 +107,7 @@ fn setup(
     mut commands: Commands,
 ) {
     let sprite_bundle = commands
-        .spawn_bundle(SpriteBundle {
+        .spawn(SpriteBundle {
             texture: scenes_materials.sub_background_image.clone(),
             ..Default::default()
         })
@@ -117,12 +119,12 @@ fn setup(
         .id();
 
     let user_interface_root = commands
-        .spawn_bundle(NodeBundle {
+        .spawn(NodeBundle {
             style: Style {
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                 ..Default::default()
             },
-            color: UiColor(Color::NONE),
+            background_color: BackgroundColor(Color::NONE),
             ..Default::default()
         })
         .with_children(|parent| {
@@ -141,7 +143,7 @@ fn setup(
     commands.insert_resource(AnimationController {
         run_animation: false,
         hero_image: HeroImageComponent::MaleElf,
-        timer: Timer::from_seconds(0.1, true),
+        timer: Timer::from_seconds(0.1, TimerMode::Repeating),
     });
 }
 
@@ -176,7 +178,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                 _ => panic!("Unknown resources"),
             };
 
-            root.spawn_bundle(SpriteBundle {
+            root.spawn(SpriteBundle {
                 texture: image,
                 transform: Transform {
                     translation: Vec3::new(
@@ -199,7 +201,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
 
 fn return_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
     let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
-    root.spawn_bundle(ButtonBundle {
+    root.spawn(ButtonBundle {
         style: Style {
             position: UiRect {
                 left: Val::Px(RETURN_BUTTON_SIZE / 2.0),
@@ -322,13 +324,13 @@ fn heros_images(
                 },
             };
 
-            let texture_atlas = TextureAtlas::from_grid(hero_tileset, Vec2::new(16.0, 28.0), 9, 1);
+            let texture_atlas = TextureAtlas::from_grid(hero_tileset, Vec2::new(16.0, 28.0), 9, 1, None, None);
             let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
             let x = hero_image_positions[index][0];
             let y = hero_image_positions[index][1];
 
-            root.spawn_bundle(SpriteSheetBundle {
+            root.spawn(SpriteSheetBundle {
                 texture_atlas: texture_atlas_handle,
                 transform: Transform {
                     translation: Vec3::new(x, y, 1.0),
@@ -351,7 +353,7 @@ fn select_hero_text(
 ) {
     let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
-    root.spawn_bundle(TextBundle {
+    root.spawn(TextBundle {
         style: Style {
             position_type: PositionType::Absolute,
             position: UiRect {
@@ -410,7 +412,7 @@ fn heros_buttons(root: &mut ChildBuilder) {
             _ => "FemaleWizard",
         };
 
-        root.spawn_bundle(ButtonBundle {
+        root.spawn(ButtonBundle {
             style: Style {
                 position_type: PositionType::Absolute,
                 position,
@@ -420,7 +422,7 @@ fn heros_buttons(root: &mut ChildBuilder) {
                 },
                 ..Default::default()
             },
-            color: UiColor(Color::NONE),
+            background_color: BackgroundColor(Color::NONE),
             ..Default::default()
         })
         .insert(Name::new(component_name))

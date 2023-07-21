@@ -5,6 +5,7 @@ use crate::materials::heros::HerosMaterials;
 use crate::materials::icon::IconMaterials;
 use crate::materials::menu_box::MenuBoxMaterials;
 
+#[derive(Resource)]
 pub struct ScenesMaterials {
     pub main_background_image: Handle<Image>,
     pub sub_background_image: Handle<Image>,

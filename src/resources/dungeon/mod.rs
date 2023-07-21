@@ -1,3 +1,5 @@
+use bevy::prelude::*;
+
 use rand::distributions::{Distribution, Uniform};
 use std::fs::File;
 use std::io::{self, BufRead};
@@ -22,6 +24,7 @@ use floor::Floor;
 
 const TOTAL_DUNGEON_FLOORS: usize = 5;
 
+#[derive(Resource)]
 pub struct Dungeon {
     pub floors: Vec<Floor>,
     pub current_floor: Floor,

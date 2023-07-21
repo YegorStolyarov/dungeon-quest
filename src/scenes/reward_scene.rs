@@ -25,6 +25,7 @@ const BOX_HEIGHT_TILES: f32 = 3.0;
 
 const BOX_ARRAY: [[i8; 6]; 3] = [[0, 1, 1, 1, 1, 2], [3, 4, 4, 4, 4, 5], [6, 7, 7, 7, 7, 8]];
 
+#[derive(Resource)]
 struct RewardSceneData {
     user_interface_root: Entity,
 }
@@ -69,13 +70,13 @@ fn setup(
     let upgrade_type = REWARDS[player_dungeon_stats.current_floor_index - 1].clone();
 
     let user_interface_root = commands
-        .spawn_bundle(NodeBundle {
+        .spawn(NodeBundle {
             style: Style {
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                 position_type: PositionType::Absolute,
                 ..Default::default()
             },
-            color: UiColor(Color::NONE),
+            background_color: BackgroundColor(Color::NONE),
             ..Default::default()
         })
         .with_children(|parent| {
@@ -97,7 +98,7 @@ fn cleanup(mut commands: Commands, reward_scene_data: Res<RewardSceneData>) {
 }
 
 fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
-    let size: Size<Val> = Size {
+    let size: Size = Size {
         width: Val::Px(BOX_TILE_SIZE),
         height: Val::Px(BOX_TILE_SIZE),
     };
@@ -105,13 +106,13 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     let start_left = (WINDOW_HEIGHT * RESOLUTION - BOX_TILE_SIZE * BOX_WIDTH_TILES) / 2.0;
     let start_top = (WINDOW_HEIGHT - BOX_TILE_SIZE * BOX_HEIGHT_TILES) / 2.0;
 
-    root.spawn_bundle(NodeBundle {
+    root.spawn(NodeBundle {
         ..Default::default()
     })
     .with_children(|parent| {
         for (row_index, row) in BOX_ARRAY.iter().enumerate() {
             for (column_index, value) in row.iter().enumerate() {
-                let position: UiRect<Val> = UiRect {
+                let position: UiRect = UiRect {
                     left: Val::Px(start_left + BOX_TILE_SIZE * column_index as f32),
                     top: Val::Px(start_top + BOX_TILE_SIZE * row_index as f32),
                     bottom: Val::Auto,
@@ -131,7 +132,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                     _ => panic!("Unknown resources"),
                 };
 
-                parent.spawn_bundle(NodeBundle {
+                parent.spawn(ImageBundle {
                     image: UiImage(image),
                     style: Style {
                         position_type: PositionType::Absolute,
@@ -177,7 +178,7 @@ fn upgrade_information(
     let width = 300.0;
     let height = 50.0;
 
-    root.spawn_bundle(NodeBundle {
+    root.spawn(NodeBundle {
         style: Style {
             position: UiRect {
                 left: Val::Px(WINDOW_HEIGHT * RESOLUTION / 2.0 - width / 2.0),
@@ -195,11 +196,11 @@ fn upgrade_information(
             position_type: PositionType::Absolute,
             ..Default::default()
         },
-        color: UiColor(Color::NONE),
+        background_color: BackgroundColor(Color::NONE),
         ..Default::default()
     })
     .with_children(|parent| {
-        parent.spawn_bundle(TextBundle {
+        parent.spawn(TextBundle {
             text: Text::from_section(
                 value,
                 TextStyle {
@@ -223,7 +224,7 @@ fn upgrade_information(
     .insert(Name::new("Reward"))
     .insert(RewardCountDownComponent(Timer::new(
         Duration::from_secs(2),
-        false,
+        TimerMode::Once,
     )));
 }
 

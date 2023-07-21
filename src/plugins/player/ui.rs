@@ -49,6 +49,7 @@ pub struct SkillDurationComponent;
 #[derive(Component)]
 pub struct SkillCooldownComponent;
 
+#[derive(Resource)]
 pub struct PlayerUIData {
     user_interface_root: Entity,
 }
@@ -60,13 +61,13 @@ pub fn setup(
     dictionary: Res<Dictionary>,
 ) {
     let user_interface_root = commands
-        .spawn_bundle(NodeBundle {
+        .spawn(NodeBundle {
             style: Style {
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                 position_type: PositionType::Absolute,
                 ..Default::default()
             },
-            color: UiColor(Color::NONE),
+            background_color: BackgroundColor(Color::NONE),
             ..Default::default()
         })
         .with_children(|parent| {
@@ -100,7 +101,7 @@ pub fn information_texts(
     let glossary = dictionary.get_glossary();
     let ingame_gloassary = glossary.ingame_text;
 
-    root.spawn_bundle(NodeBundle {
+    root.spawn(NodeBundle {
         ..Default::default()
     })
     .with_children(|parent| {
@@ -123,7 +124,7 @@ pub fn information_texts(
             };
 
             parent
-                .spawn_bundle(TextBundle {
+                .spawn(TextBundle {
                     style: Style {
                         position_type: PositionType::Absolute,
                         position: UiRect {
@@ -220,7 +221,7 @@ pub fn information_texts_handle(
 }
 
 fn hearts(root: &mut ChildBuilder, ingame_materials: &InGameMaterials) {
-    root.spawn_bundle(NodeBundle {
+    root.spawn(NodeBundle {
         style: Style {
             position_type: PositionType::Absolute,
             size: Size::new(Val::Px(30.0 * 5.0), Val::Px(30.0 * 2.0)),
@@ -231,7 +232,7 @@ fn hearts(root: &mut ChildBuilder, ingame_materials: &InGameMaterials) {
             },
             ..Default::default()
         },
-        color: UiColor(Color::NONE),
+        background_color: BackgroundColor(Color::NONE),
         ..Default::default()
     })
     .with_children(|parent| {
@@ -247,11 +248,11 @@ fn hearts(root: &mut ChildBuilder, ingame_materials: &InGameMaterials) {
                 let index = heart.index;
 
                 parent
-                    .spawn_bundle(ImageBundle {
+                    .spawn(ImageBundle {
                         calculated_size: CalculatedSize {
                             size: Size {
-                                width: 16.0,
-                                height: 16.0,
+                                width: Val::Px(16.0),
+                                height: Val::Px(16.0),
                             },
                         },
                         style: Style {
@@ -311,7 +312,7 @@ pub fn hearts_handle(
 pub fn skill_duration(root: &mut ChildBuilder) {
     let length = 300.0;
     let size = Size::new(Val::Px(length), Val::Px(10.0));
-    root.spawn_bundle(NodeBundle {
+    root.spawn(NodeBundle {
         style: Style {
             position_type: PositionType::Absolute,
             position: UiRect {
@@ -322,7 +323,7 @@ pub fn skill_duration(root: &mut ChildBuilder) {
             size,
             ..Default::default()
         },
-        color: UiColor(Color::ORANGE),
+        background_color: BackgroundColor(Color::ORANGE),
         visibility: Visibility { is_visible: false },
         ..Default::default()
     })
@@ -353,7 +354,7 @@ pub fn skill_cooldown(root: &mut ChildBuilder) {
     let length = 250.0;
     let size = Size::new(Val::Px(10.0), Val::Px(length));
 
-    root.spawn_bundle(NodeBundle {
+    root.spawn(NodeBundle {
         style: Style {
             position_type: PositionType::Absolute,
             position: UiRect {
@@ -364,7 +365,7 @@ pub fn skill_cooldown(root: &mut ChildBuilder) {
             size,
             ..Default::default()
         },
-        color: UiColor(Color::GREEN),
+        background_color: BackgroundColor(Color::GREEN),
         visibility: Visibility { is_visible: true },
         ..Default::default()
     })

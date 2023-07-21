@@ -1,5 +1,6 @@
 use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
+use bevy::prelude::*;
 
 use crate::resources::game_mode::GameMode;
 use crate::resources::hero::gender::Gender;
@@ -7,7 +8,7 @@ use crate::resources::hero::hero_class::HeroClass;
 use crate::resources::stored_profile::StoredProfile;
 use crate::scenes::hero_select_scene::ButtonComponent;
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Resource, Serialize, Deserialize, Debug, Clone)]
 pub struct Profile {
     pub name: String,
     pub game_mode: GameMode,

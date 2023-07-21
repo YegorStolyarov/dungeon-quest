@@ -72,6 +72,7 @@ impl PrefixWordComponent {
     }
 }
 
+#[derive(Resource)]
 struct ResultSceneData {
     user_interface_root: Entity,
 }
@@ -82,6 +83,7 @@ struct UserInputBox;
 #[derive(Component, Copy, Clone)]
 struct UserInput;
 
+#[derive(Resource)]
 struct UserInputController(bool);
 
 pub struct ResultScenePlugin;
@@ -108,7 +110,7 @@ fn setup(
 ) {
     // user interface root
     let user_interface_root = commands
-        .spawn_bundle(NodeBundle {
+        .spawn(ImageBundle {
             style: Style {
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                 ..Default::default()
@@ -142,7 +144,7 @@ fn cleanup(mut commands: Commands, result_scene_data: Res<ResultSceneData>) {
 }
 
 fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
-    let size: Size<Val> = Size {
+    let size: Size = Size {
         width: Val::Px(MENU_BOX_TILE_SIZE),
         height: Val::Px(MENU_BOX_TILE_SIZE),
     };
@@ -150,13 +152,13 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     let start_left = (WINDOW_HEIGHT * RESOLUTION - MENU_BOX_TILE_SIZE * MENU_BOX_WIDTH_TILES) / 2.0;
     let start_top = (WINDOW_HEIGHT - MENU_BOX_TILE_SIZE * MENU_BOX_HEIGHT_TILES) / 2.0;
 
-    root.spawn_bundle(NodeBundle {
+    root.spawn(NodeBundle {
         ..Default::default()
     })
     .with_children(|parent| {
         for (row_index, row) in MENU_BOX_ARRAY.iter().enumerate() {
             for (column_index, value) in row.iter().enumerate() {
-                let position: UiRect<Val> = UiRect {
+                let position: UiRect = UiRect {
                     left: Val::Px(start_left + MENU_BOX_TILE_SIZE * column_index as f32),
                     top: Val::Px(start_top + MENU_BOX_TILE_SIZE * row_index as f32),
                     bottom: Val::Auto,
@@ -176,7 +178,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                     _ => panic!("Unknown resources"),
                 };
 
-                parent.spawn_bundle(NodeBundle {
+                parent.spawn(ImageBundle {
                     image: UiImage(image),
                     style: Style {
                         position_type: PositionType::Absolute,
@@ -203,7 +205,7 @@ fn result_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictiona
         440.0
     };
 
-    root.spawn_bundle(TextBundle {
+    root.spawn(TextBundle {
         style: Style {
             position_type: PositionType::Absolute,
             position: UiRect {
@@ -240,7 +242,7 @@ fn texts(
     let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
 
-    root.spawn_bundle(NodeBundle {
+    root.spawn(NodeBundle {
         ..Default::default()
     })
     .with_children(|parent| {
@@ -409,7 +411,7 @@ fn texts(
             };
 
             parent
-                .spawn_bundle(TextBundle {
+                .spawn(TextBundle {
                     style: Style {
                         position_type: PositionType::Absolute,
                         position: UiRect {
@@ -450,7 +452,7 @@ fn return_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
         height: Val::Px(RETURN_BUTTON_SIDE),
     };
 
-    root.spawn_bundle(ButtonBundle {
+    root.spawn(ButtonBundle {
         style: Style {
             position: UiRect {
                 left: Val::Px(RETURN_BUTTON_SIDE / 2.0),
@@ -486,7 +488,7 @@ fn save_profile_button(
         height: Val::Px(BUTTON_SIDE),
     };
 
-    root.spawn_bundle(ButtonBundle {
+    root.spawn(ButtonBundle {
         style: Style {
             position: UiRect {
                 left: Val::Px(550.0),
@@ -514,7 +516,7 @@ fn play_again_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials
         height: Val::Px(BUTTON_SIDE),
     };
 
-    root.spawn_bundle(ButtonBundle {
+    root.spawn(ButtonBundle {
         style: Style {
             position: UiRect {
                 left: Val::Px(400.0),
@@ -595,7 +597,7 @@ fn user_input_text(
     let font = font_materials.get_font(dictionary.get_current_language());
 
     grandparent
-        .spawn_bundle(NodeBundle {
+        .spawn(NodeBundle {
             style: Style {
                 justify_content: JustifyContent::Center,
                 position_type: PositionType::Absolute,
@@ -614,13 +616,13 @@ fn user_input_text(
                 },
                 ..Default::default()
             },
-            color: UiColor(Color::DARK_GRAY),
+            background_color: BackgroundColor(Color::DARK_GRAY),
             visibility: Visibility { is_visible: false },
             ..Default::default()
         })
         .with_children(|parent| {
             parent
-                .spawn_bundle(TextBundle {
+                .spawn(TextBundle {
                     style: Style {
                         position_type: PositionType::Relative,
                         ..Default::default()

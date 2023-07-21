@@ -11,7 +11,7 @@ pub struct PlayerAnimation {
 impl PlayerAnimation {
     pub fn new() -> Self {
         PlayerAnimation {
-            animation_timer: Timer::from_seconds(0.1, true),
+            animation_timer: Timer::from_seconds(0.1, TimerMode::Repeating),
             animation_state: AnimationState::Idle,
         }
     }

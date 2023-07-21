@@ -107,8 +107,8 @@ pub fn monsters_collision_check(
                 }
             }
 
-            invinsible_cooldown.duration = Timer::new(Duration::from_secs_f32(2.0), false);
-            invinsible_cooldown.hurt_duration = Timer::new(Duration::from_secs_f32(0.3), false);
+            invinsible_cooldown.duration = Timer::new(Duration::from_secs_f32(2.0), TimerMode::Once);
+            invinsible_cooldown.hurt_duration = Timer::new(Duration::from_secs_f32(0.3), TimerMode::Once);
             player_animation.animation_state = AnimationState::Hit;
             break;
         }

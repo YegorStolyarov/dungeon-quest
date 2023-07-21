@@ -52,7 +52,7 @@ pub fn end_point_interaction_handle_system(
                         player_dungeon_stats.current_room_position = start_room_position;
 
                         ui_center_text_query.single_mut().timer =
-                            Timer::new(Duration::from_secs(1), false);
+                            Timer::new(Duration::from_secs(1), TimerMode::Once);
                         state.push(SceneState::RewardScene).unwrap();
                     }
                 }

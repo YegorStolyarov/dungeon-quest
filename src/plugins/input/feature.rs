@@ -45,13 +45,13 @@ pub fn use_skill(
                         monster.current_health_points = if monster.current_health_points < damage { 0.0 } 
                         else { monster.current_health_points - damage };
 
-                        invinsible_cooldown.hurt_duration = Timer::new(Duration::from_secs_f32(0.2), false);
+                        invinsible_cooldown.hurt_duration = Timer::new(Duration::from_secs_f32(0.2), TimerMode::Once);
                         monster_list_effects.activate(EffectType::Stun);
                     }
                 }
                 SkillType::TimeToHunt => {
                     let duration = skill.duration.unwrap() as u64;
-                    player_skill.duration = Timer::new(Duration::from_secs(duration), false);
+                    player_skill.duration = Timer::new(Duration::from_secs(duration), TimerMode::Once);
 
                   
                 }
@@ -61,14 +61,14 @@ pub fn use_skill(
                         player.current_health_points -= require_health;
 
                         let duration = skill.duration.unwrap() as u64;
-                        player_skill.duration = Timer::new(Duration::from_secs(duration), false);
+                        player_skill.duration = Timer::new(Duration::from_secs(duration), TimerMode::Once);
                     }
                 }
                 _ => {}
             }
 
-            let cooldown = skill.cooldown.unwrap() as u64;
-            player_skill.cooldown = Timer::new(Duration::from_secs(cooldown), false);
+            let cooldown = skill.cooldown.expect("No skill received. Try archer :)") as u64;
+            player_skill.cooldown = Timer::new(Duration::from_secs(cooldown), TimerMode::Once);
         }
         keyboard_input.reset(KeyCode::Space);
     }
@@ -93,7 +93,7 @@ pub fn use_mouse(
             AttackType::Swing => {
                 if weapon_swing_attack.attack_duration.finished() {
                     weapon_swing_attack.attack_duration =
-                        Timer::new(Duration::from_secs_f32(0.5), false);
+                        Timer::new(Duration::from_secs_f32(0.5), TimerMode::Once);
                 }
             }
             AttackType::Shoot => {
@@ -104,7 +104,7 @@ pub fn use_mouse(
                         weapon_shoot_attack.spawn_bullet = true;
                         weapon_shoot_attack.cooldown = Timer::new(
                             Duration::from_secs(weapon_shoot_attack.cooldown_second),
-                            false,
+                            TimerMode::Once,
                         );
                     }
 

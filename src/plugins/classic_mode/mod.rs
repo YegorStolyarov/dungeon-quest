@@ -8,6 +8,7 @@ pub mod ui;
 
 pub struct ClassicModePlugin;
 
+#[derive(Resource)]
 pub struct ClassicModeData {
     pub doors: Option<Entity>,
     pub ground: Option<Entity>,

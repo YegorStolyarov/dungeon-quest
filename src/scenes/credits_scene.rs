@@ -32,6 +32,7 @@ struct ReturnButtonComponent;
 
 pub struct CreditsScenePlugin;
 
+#[derive(Resource)]
 struct CreditsSceneData {
     user_interface_root: Entity,
 }
@@ -53,7 +54,7 @@ fn setup(
     mut commands: Commands,
 ) {
     let user_interface_root = commands
-        .spawn_bundle(NodeBundle {
+        .spawn(ImageBundle {
             style: Style {
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                 ..Default::default()
@@ -81,7 +82,7 @@ fn cleanup(mut commands: Commands, credits_scene_data: Res<CreditsSceneData>) {
 }
 
 fn credits_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
-    let size: Size<Val> = Size {
+    let size: Size = Size {
         width: Val::Px(BOX_TILE_SIZE),
         height: Val::Px(BOX_TILE_SIZE),
     };
@@ -91,7 +92,7 @@ fn credits_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMateria
 
     for (row_index, row) in BOX_ARRAY.iter().enumerate() {
         for (column_index, value) in row.iter().enumerate() {
-            let position: UiRect<Val> = UiRect {
+            let position: UiRect = UiRect {
                 left: Val::Px(start_left + BOX_TILE_SIZE * column_index as f32),
                 top: Val::Px(start_top + BOX_TILE_SIZE * row_index as f32),
                 bottom: Val::Auto,
@@ -111,7 +112,7 @@ fn credits_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMateria
                 _ => panic!("Unknown resources"),
             };
 
-            root.spawn_bundle(NodeBundle {
+            root.spawn(ImageBundle {
                 image: UiImage(image),
                 style: Style {
                     position_type: PositionType::Absolute,
@@ -133,7 +134,7 @@ fn return_button_component(root: &mut ChildBuilder, scenes_materials: &ScenesMat
         height: Val::Px(RETURN_BUTTON_SIDE),
     };
 
-    root.spawn_bundle(ButtonBundle {
+    root.spawn(ButtonBundle {
         style: Style {
             position: UiRect {
                 left: Val::Px(RETURN_BUTTON_SIDE / 2.0),
@@ -181,7 +182,7 @@ fn button_handle_system(
 fn credits_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &Dictionary) {
     let font = font_materials.get_font(dictionary.get_current_language());
     let glossary = dictionary.get_glossary();
-    root.spawn_bundle(TextBundle {
+    root.spawn(TextBundle {
         style: Style {
             position_type: PositionType::Absolute,
             position: UiRect {
@@ -219,7 +220,7 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
 
     for (index, line) in lines.enumerate() {
         let text = line.unwrap();
-        root.spawn_bundle(TextBundle {
+        root.spawn(TextBundle {
             style: Style {
                 position_type: PositionType::Absolute,
                 position: UiRect {

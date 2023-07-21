@@ -45,6 +45,7 @@ impl ButtonComponent {
 
 pub struct GameModeSelectScenePlugin;
 
+#[derive(Resource)]
 struct GameModeSelectSceneData {
     user_interface_root: Entity,
 }
@@ -71,7 +72,7 @@ fn setup(
 ) {
     // user interface root
     let user_interface_root = commands
-        .spawn_bundle(NodeBundle {
+        .spawn(ImageBundle {
             style: Style {
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                 ..Default::default()
@@ -101,7 +102,7 @@ fn cleanup(mut commands: Commands, game_mode_select_scene_data: Res<GameModeSele
 }
 
 fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
-    let size: Size<Val> = Size {
+    let size: Size = Size {
         width: Val::Px(BOX_TILE_SIZE),
         height: Val::Px(BOX_TILE_SIZE),
     };
@@ -111,7 +112,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
 
     for (row_index, row) in BOX_ARRAY.iter().enumerate() {
         for (column_index, value) in row.iter().enumerate() {
-            let position: UiRect<Val> = UiRect {
+            let position: UiRect = UiRect {
                 left: Val::Px(start_left + BOX_TILE_SIZE * column_index as f32),
                 top: Val::Px(start_top + BOX_TILE_SIZE * row_index as f32),
                 bottom: Val::Auto,
@@ -131,7 +132,7 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                 _ => panic!("Unknown resources"),
             };
 
-            root.spawn_bundle(NodeBundle {
+            root.spawn(ImageBundle {
                 image: UiImage(image),
                 style: Style {
                     position_type: PositionType::Absolute,
@@ -159,7 +160,7 @@ fn select_game_mode_text(
         300.0
     };
 
-    root.spawn_bundle(TextBundle {
+    root.spawn(TextBundle {
         style: Style {
             position_type: PositionType::Absolute,
             position: UiRect {
@@ -199,7 +200,7 @@ fn buttons(
         match button {
             ButtonComponent::Return => {
                 let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
-                root.spawn_bundle(ButtonBundle {
+                root.spawn(ButtonBundle {
                     style: Style {
                         position: UiRect {
                             left: Val::Px(RETURN_BUTTON_SIDE / 2.0),
@@ -221,7 +222,7 @@ fn buttons(
                 .insert(button.clone());
             }
             _ => {
-                root.spawn_bundle(ButtonBundle {
+                root.spawn(ButtonBundle {
                     style: Style {
                         position: UiRect {
                             left: Val::Px((WINDOW_HEIGHT * RESOLUTION - 300.0) / 2.0),
@@ -237,11 +238,11 @@ fn buttons(
                         position_type: PositionType::Absolute,
                         ..Default::default()
                     },
-                    color: UiColor(Color::NONE),
+                    background_color: BackgroundColor(Color::NONE),
                     ..Default::default()
                 })
                 .with_children(|parent| {
-                    parent.spawn_bundle(TextBundle {
+                    parent.spawn(TextBundle {
                         text: Text::from_section(
                             if index == 1 {
                                 glossary.shared_text.classic_mode.clone()

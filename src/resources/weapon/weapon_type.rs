@@ -1,7 +1,7 @@
-use bevy_inspector_egui::Inspectable;
+use bevy_inspector_egui::prelude::InspectorOptions;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Inspectable, Copy)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Copy, InspectorOptions)]
 pub enum WeaponType {
     Bow,
     Spear,

@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy_inspector_egui::Inspectable;
+use bevy_inspector_egui::InspectorOptions;
 
 use crate::resources::game_data::GameData;
 use crate::resources::hero::hero_class::HeroClass;
@@ -7,7 +7,7 @@ use crate::resources::hero::power::Power;
 use crate::resources::hero::stats::Stats;
 use crate::resources::upgrade::Upgrade;
 
-#[derive(Component, Inspectable)]
+#[derive(Component, InspectorOptions)]
 pub struct PlayerComponent {
     pub class: HeroClass,
     pub current_health_points: f32,

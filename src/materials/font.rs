@@ -2,6 +2,7 @@ use bevy::prelude::*;
 
 use crate::resources::language::Language;
 
+#[derive(Resource)]
 pub struct FontMaterials {
     pub roboto_font: Handle<Font>,
     pub fibberish_font: Handle<Font>,

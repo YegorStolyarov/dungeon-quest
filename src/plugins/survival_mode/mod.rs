@@ -5,6 +5,7 @@ use crate::scenes::SceneState;
 pub mod dungeon;
 pub mod ui;
 
+#[derive(Resource)]
 pub struct SurvivalModeData {
     pub ground: Option<Entity>,
     pub walls: Option<Entity>,

@@ -6,7 +6,7 @@ use std::io::prelude::*;
 use crate::config::*;
 use crate::resources::language::Language;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Resource, Serialize, Deserialize, Debug)]
 pub struct Setting {
     enable_sound: bool,
     enable_music: bool,

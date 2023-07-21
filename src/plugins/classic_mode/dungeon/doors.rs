@@ -17,7 +17,7 @@ pub fn doors(
     mut data: ResMut<ClassicModeData>,
 ) {
     let doors = commands
-        .spawn_bundle(SpriteBundle {
+        .spawn(SpriteBundle {
             ..Default::default()
         })
         .with_children(|parent| {
@@ -57,7 +57,7 @@ pub fn horizontal_door(parent: &mut ChildBuilder, door: &Door, ingame_materials:
     };
 
     parent
-        .spawn_bundle(SpriteBundle {
+        .spawn(SpriteBundle {
             sprite: Sprite {
                 custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
                 ..Default::default()
@@ -102,12 +102,12 @@ pub fn vertical_door(
     };
 
     grandparent
-        .spawn_bundle(SpriteBundle {
+        .spawn(SpriteBundle {
             ..Default::default()
         })
         .with_children(|parent| {
             parent
-                .spawn_bundle(SpriteBundle {
+                .spawn(SpriteBundle {
                     sprite: Sprite {
                         custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE * 2.0)),
                         ..Default::default()
@@ -122,7 +122,7 @@ pub fn vertical_door(
                 .insert(Name::new("Left Verticalt Door Part"));
 
             parent
-                .spawn_bundle(SpriteBundle {
+                .spawn(SpriteBundle {
                     sprite: Sprite {
                         custom_size: Some(Vec2::new(TILE_SIZE * 2.0, TILE_SIZE * 2.0)),
                         ..Default::default()
@@ -138,7 +138,7 @@ pub fn vertical_door(
                 .insert(door.clone());
 
             parent
-                .spawn_bundle(SpriteBundle {
+                .spawn(SpriteBundle {
                     sprite: Sprite {
                         custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE * 2.0)),
                         ..Default::default()

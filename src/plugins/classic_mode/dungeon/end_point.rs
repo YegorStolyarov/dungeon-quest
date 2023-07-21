@@ -19,7 +19,7 @@ pub fn end_point(
     let center_column = TOTAL_TILE_WIDTH / 2;
 
     let end_point = commands
-        .spawn_bundle(SpriteBundle {
+        .spawn(SpriteBundle {
             sprite: Sprite {
                 custom_size: Some(Vec2::new(50.0, 50.0)),
                 ..Default::default()

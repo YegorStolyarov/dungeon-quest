@@ -16,7 +16,7 @@ pub fn ground(
     let start_y = 0.0 + (TOTAL_TILE_HEIGHT * TILE_SIZE / 2.0 - TILE_SIZE / 2.0);
 
     let ground = commands
-        .spawn_bundle(SpriteBundle {
+        .spawn(SpriteBundle {
             sprite: Sprite {
                 color: Color::BLACK,
                 custom_size: Some(Vec2::new(
@@ -38,7 +38,7 @@ pub fn ground(
                     let component_name = format!("Layer[{},{}]", row_index, column_index);
 
                     parent
-                        .spawn_bundle(SpriteBundle {
+                        .spawn(SpriteBundle {
                             sprite: Sprite {
                                 custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
                                 ..Default::default()

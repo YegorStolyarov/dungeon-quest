@@ -1,7 +1,7 @@
-use bevy_inspector_egui::Inspectable;
+use bevy_inspector_egui::InspectorOptions;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Inspectable, Copy, Hash, Eq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, InspectorOptions, Copy, Hash, Eq)]
 pub enum EffectType {
     SpeedUp,
     EvasionUp,
