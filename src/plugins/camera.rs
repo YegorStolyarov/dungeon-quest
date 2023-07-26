@@ -1,7 +1,6 @@
 use bevy::prelude::*;
 
 use crate::components::player::PlayerComponent;
-use crate::config::*;
 use crate::scenes::SceneState;
 
 #[derive(Component)]
@@ -17,13 +16,9 @@ impl Plugin for CameraPlugin {
         app.add_startup_system(spawn_user_interface_camera);
         app.add_startup_system(spawn_2d_camera);
 
-        app.add_system_set(
-            SystemSet::on_update(SceneState::InGameSurvivalMode).with_system(camera_follow),
-        );
+        app.add_system(camera_follow.in_set(OnUpdate(SceneState::InGameSurvivalMode)));
 
-        app.add_system_set(
-            SystemSet::on_exit(SceneState::InGameSurvivalMode).with_system(reset_camera),
-        );
+        app.add_system(reset_camera.in_schedule(OnExit(SceneState::InGameSurvivalMode)));
     }
 }
 
@@ -37,13 +32,13 @@ fn spawn_user_interface_camera(mut commands: Commands) {
 fn spawn_2d_camera(mut commands: Commands) {
     let mut camera = Camera2dBundle::default();
 
-    camera.projection.top = 1.0;
-    camera.projection.bottom = -1.0;
-    camera.projection.right = 1.0 * RESOLUTION;
-    camera.projection.left = -1.0 * RESOLUTION;
+    // camera.projection.top = 1.0;
+    // camera.projection.bottom = -1.0;
+    // camera.projection.right = 1.0 * RESOLUTION;
+    // camera.projection.left = -1.0 * RESOLUTION;
 
     // to fix warnings about Camera priority ambiguities
-    camera.camera.priority = 1;
+    camera.camera.order = 1;
 
     commands
         .spawn(camera)

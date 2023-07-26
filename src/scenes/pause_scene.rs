@@ -6,6 +6,7 @@ use crate::materials::font::FontMaterials;
 use crate::materials::menu_box::MenuBoxMaterials;
 use crate::materials::scenes::ScenesMaterials;
 use crate::resources::dictionary::Dictionary;
+use crate::resources::game_mode::GameMode;
 use crate::resources::profile::Profile;
 use crate::scenes::SceneState;
 
@@ -40,11 +41,9 @@ pub struct PauseScenePlugin;
 
 impl Plugin for PauseScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(SystemSet::on_enter(SceneState::PauseScene).with_system(setup));
-        app.add_system_set(
-            SystemSet::on_update(SceneState::PauseScene).with_system(button_handle_system),
-        );
-        app.add_system_set(SystemSet::on_exit(SceneState::PauseScene).with_system(cleanup));
+        app.add_system(setup.in_schedule(OnEnter(SceneState::PauseScene)));
+        app.add_system(button_handle_system.in_set(OnUpdate(SceneState::PauseScene)));
+        app.add_system(cleanup.in_schedule(OnExit(SceneState::PauseScene)));
     }
 }
 
@@ -178,10 +177,7 @@ fn buttons(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: 
                         color: Color::GRAY,
                     }
                 ).with_alignment(
-                    TextAlignment {
-                        vertical: VerticalAlign::Center,
-                        horizontal: HorizontalAlign::Center,
-                    }
+                    TextAlignment::Center
                 ),
                 ..Default::default()
             });
@@ -198,7 +194,7 @@ fn button_handle_system(
     >,
     mut text_query: Query<&mut Text>,
     mut profile: ResMut<Profile>,
-    mut state: ResMut<State<SceneState>>,
+    mut next_state: ResMut<NextState<SceneState>>,
 ) {
     for (interaction, button, children) in button_query.iter_mut() {
         let mut text = text_query.get_mut(children[0]).unwrap();
@@ -209,7 +205,11 @@ fn button_handle_system(
                 if *button == ButtonComponent::Quit {
                     profile.is_run_finished = true;
                 }
-                state.pop().unwrap();
+                let prev_state = match profile.game_mode {
+                    GameMode::ClassicMode => SceneState::InGameClassicMode,
+                    GameMode::SurvivalMode => SceneState::InGameSurvivalMode
+                };
+                next_state.set(prev_state);
             }
         }
     }

@@ -1,3 +1,5 @@
+use bevy::prelude::States;
+
 pub mod credits_scene;
 pub mod game_mode_select_scene;
 pub mod help_scene;
@@ -11,8 +13,9 @@ pub mod result_scene;
 pub mod reward_scene;
 pub mod rewards_scene;
 
-#[derive(Debug, Clone, Eq, PartialEq, Hash)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, States)]
 pub enum SceneState {
+    #[default]
     LoadingScene,
     MainMenuScene,
     HighscoreScene,

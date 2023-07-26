@@ -32,7 +32,7 @@ pub fn horizontal_door_interaction_handle(
         let cleared_positions = dungeon.current_floor.cleared_positions.clone();
 
         for (door, door_transform, door_sprite, visibility) in door_query.iter_mut() {
-            if visibility.is_visible {
+            if visibility == Visibility::Inherited {
                 continue;
             }
 
@@ -107,7 +107,7 @@ pub fn vertical_door_interaction_handle(
         let cleared_positions = dungeon.current_floor.cleared_positions.clone();
 
         for (visibility, children) in vertical_door_query.iter_mut() {
-            if !visibility.is_visible {
+            if visibility == Visibility::Hidden {
                 continue;
             }
             for child in children.iter() {

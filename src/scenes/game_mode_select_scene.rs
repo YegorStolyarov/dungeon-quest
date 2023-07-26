@@ -52,15 +52,10 @@ struct GameModeSelectSceneData {
 
 impl Plugin for GameModeSelectScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(SystemSet::on_enter(SceneState::GameModeSelectScene).with_system(setup));
-        app.add_system_set(
-            SystemSet::on_update(SceneState::GameModeSelectScene)
-                .with_system(button_handle_system)
-                .with_system(return_button_handle),
-        );
-        app.add_system_set(
-            SystemSet::on_exit(SceneState::GameModeSelectScene).with_system(cleanup),
-        );
+        app.add_system(setup.in_schedule(OnEnter(SceneState::GameModeSelectScene)));
+        app.add_system(button_handle_system.in_set(OnUpdate(SceneState::GameModeSelectScene)));
+        app.add_system(return_button_handle.in_set(OnUpdate(SceneState::GameModeSelectScene)));
+        app.add_system(cleanup.in_schedule(OnExit(SceneState::GameModeSelectScene)));
     }
 }
 
@@ -178,10 +173,7 @@ fn select_game_mode_text(
                 color: Color::BLACK,
             }
         ).with_alignment(
-            TextAlignment {
-                vertical: VerticalAlign::Center,
-                horizontal: HorizontalAlign::Center,
-            }
+            TextAlignment::Center
         ),
         ..Default::default()
     });
@@ -255,10 +247,7 @@ fn buttons(
                                 color: Color::GRAY,
                             }
                         ).with_alignment(
-                            TextAlignment {
-                                vertical: VerticalAlign::Center,
-                                horizontal: HorizontalAlign::Center,
-                            }
+                            TextAlignment::Center
                         ),
                         ..Default::default()
                     });
@@ -276,7 +265,7 @@ fn button_handle_system(
     >,
     mut text_query: Query<&mut Text>,
     mut profile: ResMut<Profile>,
-    mut state: ResMut<State<SceneState>>,
+    mut state: ResMut<NextState<SceneState>>,
 ) {
     for (interaction, button, children) in button_query.iter_mut() {
         let mut text = text_query.get_mut(children[0]).unwrap();
@@ -287,13 +276,11 @@ fn button_handle_system(
                 if *button == ButtonComponent::ClassicMode {
                     profile.set_game_mode(GameMode::ClassicMode);
                     state
-                        .set(SceneState::HeroSelectScene)
-                        .expect("Couldn't switch state to Hero Select Scene");
+                        .set(SceneState::HeroSelectScene);
                 } else if *button == ButtonComponent::SurvivalMode {
                     profile.set_game_mode(GameMode::SurvivalMode);
                     state
-                        .set(SceneState::HeroSelectScene)
-                        .expect("Couldn't switch state to Hero Select Scene");
+                        .set(SceneState::HeroSelectScene);
                 }
             }
         }
@@ -306,22 +293,21 @@ fn return_button_handle(
         (Changed<Interaction>, With<Button>),
     >,
     scenes_materials: Res<ScenesMaterials>,
-    mut state: ResMut<State<SceneState>>,
+    mut state: ResMut<NextState<SceneState>>,
 ) {
     for (interaction, button, mut ui_image) in button_query.iter_mut() {
         if *button == ButtonComponent::Return {
             match *interaction {
                 Interaction::None => {
-                    ui_image.0 = scenes_materials.icon_materials.home_icon_normal.clone()
+                    ui_image.texture = scenes_materials.icon_materials.home_icon_normal.clone()
                 }
                 Interaction::Hovered => {
-                    ui_image.0 = scenes_materials.icon_materials.home_icon_hovered.clone()
+                    ui_image.texture = scenes_materials.icon_materials.home_icon_hovered.clone()
                 }
                 Interaction::Clicked => {
-                    ui_image.0 = scenes_materials.icon_materials.home_icon_clicked.clone();
+                    ui_image.texture = scenes_materials.icon_materials.home_icon_clicked.clone();
                     state
-                        .set(SceneState::MainMenuScene)
-                        .expect("Couldn't switch state to Main Menu Scene");
+                        .set(SceneState::MainMenuScene);
                 }
             }
         }

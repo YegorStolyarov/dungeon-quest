@@ -54,11 +54,9 @@ pub struct MainMenuScenePlugin;
 
 impl Plugin for MainMenuScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(SystemSet::on_enter(SceneState::MainMenuScene).with_system(setup));
-        app.add_system_set(SystemSet::on_exit(SceneState::MainMenuScene).with_system(cleanup));
-        app.add_system_set(
-            SystemSet::on_update(SceneState::MainMenuScene).with_system(button_handle_system),
-        );
+        app.add_system(setup.in_schedule(OnEnter(SceneState::MainMenuScene)));
+        app.add_system(button_handle_system.in_set(OnUpdate(SceneState::MainMenuScene)));
+        app.add_system(cleanup.in_schedule(OnExit(SceneState::MainMenuScene)));
     }
 }
 
@@ -186,10 +184,7 @@ fn buttons(root: &mut ChildBuilder, materials: &Res<FontMaterials>, dictionary: 
                         color: Color::GRAY,
                     }
                 ).with_alignment(
-                    TextAlignment {
-                        vertical: VerticalAlign::Center,
-                        horizontal: HorizontalAlign::Center,
-                    }
+                    TextAlignment::Center
                 ),
                 ..Default::default()
             });
@@ -204,7 +199,7 @@ fn button_handle_system(
         (Changed<Interaction>, With<Button>),
     >,
     mut text_query: Query<&mut Text>,
-    mut state: ResMut<State<SceneState>>,
+    mut state: ResMut<NextState<SceneState>>,
     mut exit: EventWriter<AppExit>,
 ) {
     for (interaction, button, children) in button_query.iter_mut() {
@@ -216,20 +211,15 @@ fn button_handle_system(
                 text.sections[0].style.color = Color::RED;
                 match button {
                     ButtonComponent::Play => state
-                        .set(SceneState::GameModeSelectScene)
-                        .expect("Couldn't switch state to Loading Scene"),
+                        .set(SceneState::GameModeSelectScene),
                     ButtonComponent::Highscore => state
-                        .set(SceneState::HighscoreScene)
-                        .expect("Couldn't switch state to Highscore Scene"),
+                        .set(SceneState::HighscoreScene),
                     ButtonComponent::Options => state
-                        .set(SceneState::OptionsScene)
-                        .expect("Couldn't switch state to Options Scene"),
+                        .set(SceneState::OptionsScene),
                     ButtonComponent::Help => state
-                        .set(SceneState::HelpScene)
-                        .expect("Couldn't switch state to Help Scene"),
+                        .set(SceneState::HelpScene),
                     ButtonComponent::Credits => state
-                        .set(SceneState::CreditsScene)
-                        .expect("Couldn't switch state to Credits Scene"),
+                        .set(SceneState::CreditsScene),
                     ButtonComponent::Quit => exit.send(AppExit),
                 }
             }

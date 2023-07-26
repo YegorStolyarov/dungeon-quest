@@ -33,7 +33,7 @@ pub fn end_point(
                 ..Default::default()
             },
             texture: ingame_materials.dungeon_materials.ladder.clone(),
-            visibility: Visibility { is_visible: false },
+            visibility: Visibility::Hidden,
             ..Default::default()
         })
         .insert(EndPoint)
@@ -53,14 +53,14 @@ pub fn end_point_handle_system(
         let end_room_position = dungeon.current_floor.end_room_position;
 
         if end_room_position == current_position {
-            visibility.is_visible = true;
+            *visibility = Visibility::Visible;
             if dungeon.current_floor.is_last_floor {
                 *handle_image = ingame_materials.dungeon_materials.treasure.clone();
             } else {
                 *handle_image = ingame_materials.dungeon_materials.ladder.clone();
             }
         } else {
-            visibility.is_visible = false;
+            *visibility = Visibility::Hidden;
         }
     }
 }

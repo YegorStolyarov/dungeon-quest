@@ -20,7 +20,7 @@ pub fn end_point_interaction_handle_system(
     mut player_dungeon_stats: ResMut<PlayerDungeonStats>,
     mut ui_center_text_query: Query<&mut CenterTextComponent>,
     potion_query: Query<Entity, With<PotionComponent>>,
-    mut state: ResMut<State<SceneState>>,
+    mut state: ResMut<NextState<SceneState>>,
     mut dungeon: ResMut<Dungeon>,
     mut profile: ResMut<Profile>,
     mut commands: Commands,
@@ -37,7 +37,7 @@ pub fn end_point_interaction_handle_system(
         let ep_translation = end_point_transform.translation;
         let ep_size = end_point_sprite.custom_size.unwrap();
 
-        if visibility.is_visible {
+        if visibility == Visibility::Inherited {
             if collide(p_translation, p_size, ep_translation, ep_size).is_some() {
                 if dungeon.current_floor.is_last_floor {
                     profile.is_run_completed = true;
@@ -53,7 +53,7 @@ pub fn end_point_interaction_handle_system(
 
                         ui_center_text_query.single_mut().timer =
                             Timer::new(Duration::from_secs(1), TimerMode::Once);
-                        state.push(SceneState::RewardScene).unwrap();
+                        state.set(SceneState::RewardScene);
                     }
                 }
 

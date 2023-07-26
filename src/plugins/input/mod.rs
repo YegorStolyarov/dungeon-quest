@@ -9,42 +9,34 @@ pub mod movement;
 
 pub struct InputHandlePlugin;
 
+
 impl Plugin for InputHandlePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(
-            SystemSet::on_enter(SceneState::InGameClassicMode).with_system(cleanup::cleanup_mouse),
-        );
+        app.add_system(cleanup::cleanup_mouse.in_schedule(OnEnter(SceneState::InGameClassicMode)));
 
-        app.add_system_set(
-            SystemSet::on_resume(SceneState::InGameClassicMode).with_system(cleanup::cleanup_mouse),
-        );
+        // app.add_system_set(
+        //     SystemSet::on_resume(SceneState::InGameClassicMode).with_system(cleanup::cleanup_mouse),
+        // );
 
-        app.add_system_set(
-            SystemSet::on_update(SceneState::InGameClassicMode)
-                .with_system(movement::player_movement_handle_system.after("Stats"))
-                .with_system(feature::pause)
-                .with_system(feature::use_skill)
-                .with_system(feature::use_mouse)
-                .with_system(cheat::unlock_room_cheat),
-        );
+        app.add_system(feature::pause.in_set(OnUpdate(SceneState::InGameClassicMode)));
+        app.add_system(feature::use_skill.in_set(OnUpdate(SceneState::InGameClassicMode)));
+        app.add_system(feature::use_mouse.in_set(OnUpdate(SceneState::InGameClassicMode)));
+        app.add_system(cheat::unlock_room_cheat.in_set(OnUpdate(SceneState::InGameClassicMode)));
 
-        app.add_system_set(
-            SystemSet::on_enter(SceneState::InGameSurvivalMode).with_system(cleanup::cleanup_mouse),
-        );
+        app.add_system(cleanup::cleanup_mouse.in_schedule(OnEnter(SceneState::InGameSurvivalMode)));
 
-        app.add_system_set(
-            SystemSet::on_resume(SceneState::InGameSurvivalMode)
-                .with_system(cleanup::cleanup_mouse),
-        );
+        // app.add_system_set(
+        //     SystemSet::on_resume(SceneState::InGameSurvivalMode)
+        //         .with_system(cleanup::cleanup_mouse),
+        // );
 
-        app.add_system_set(
-            SystemSet::on_update(SceneState::InGameSurvivalMode)
-                .with_system(movement::player_movement_handle_system.after("Stats"))
-                .with_system(feature::use_skill)
-                .with_system(feature::pause)
-                .with_system(feature::use_mouse)
-                .with_system(cheat::knight_skill_cheat)
-                .with_system(cheat::damage_player_cheat),
-        );
+        app.add_system(feature::use_skill.in_set(OnUpdate(SceneState::InGameSurvivalMode)));
+        app.add_system(feature::pause.in_set(OnUpdate(SceneState::InGameSurvivalMode)));
+        app.add_system(feature::use_mouse.in_set(OnUpdate(SceneState::InGameSurvivalMode)));
+        app.add_system(cheat::knight_skill_cheat.in_set(OnUpdate(SceneState::InGameSurvivalMode)));
+        app.add_system(cheat::damage_player_cheat.in_set(OnUpdate(SceneState::InGameSurvivalMode)));
+
+        app.add_system(movement::player_movement_handle_system.after(crate::plugins::player::stats::update_stats).run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
+
     }
 }

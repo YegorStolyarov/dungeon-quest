@@ -8,7 +8,7 @@ use crate::resources::game_mode::GameMode;
 use crate::resources::monster::monster_spawn_controller::MonsterSpawnController;
 use crate::scenes::SceneState;
 
-pub fn initiate_survival_mode(mut commands: Commands, mut state: ResMut<State<SceneState>>) {
+pub fn initiate_survival_mode(mut commands: Commands, mut state: ResMut<NextState<SceneState>>) {
     let dungeon_mode_data = SurvivalModeData {
         walls: None,
         ground: None,
@@ -41,7 +41,5 @@ pub fn initiate_survival_mode(mut commands: Commands, mut state: ResMut<State<Sc
     commands.insert_resource(wave);
 
     state
-        //workaround from https://github.com/bevyengine/bevy/issues/5552
-        .overwrite_set(SceneState::InGameSurvivalMode)
-        .expect("Can't change to Ingame Classic Mode");
+        .set(SceneState::InGameSurvivalMode);
 }

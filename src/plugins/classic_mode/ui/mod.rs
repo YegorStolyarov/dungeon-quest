@@ -23,15 +23,12 @@ struct ClassicModeUIData {
 
 impl Plugin for ClassicModeUIPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(SystemSet::on_enter(SceneState::InGameClassicMode).with_system(setup));
+        app.add_system(setup.in_schedule(OnEnter(SceneState::InGameClassicMode)));
 
-        app.add_system_set(
-            SystemSet::on_update(SceneState::InGameClassicMode)
-                .with_system(center_text_handle_system)
-                .with_system(top_right_conner_text_handle_system),
-        );
+        app.add_system(center_text_handle_system.in_set(OnUpdate(SceneState::InGameClassicMode)));
+        app.add_system(top_right_conner_text_handle_system.in_set(OnUpdate(SceneState::InGameClassicMode)));
 
-        app.add_system_set(SystemSet::on_exit(SceneState::InGameClassicMode).with_system(cleanup));
+        app.add_system(cleanup.in_schedule(OnExit(SceneState::InGameClassicMode)));
     }
 }
 
@@ -87,10 +84,7 @@ fn center_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictiona
             }
 
         ).with_alignment(
-            TextAlignment {
-                vertical: VerticalAlign::Center,
-                horizontal: HorizontalAlign::Center,
-            }
+            TextAlignment::Center
         ),
         ..Default::default()
     })
@@ -110,7 +104,7 @@ fn center_text_handle_system(
     center_text.timer.tick(time.delta());
 
     if center_text.timer.finished() {
-        visibility.is_visible = false;
+        *visibility = Visibility::Hidden;
     } else {
         let glossary = dictionary.get_glossary();
         let current_floor_index = player_dungeon_stats.current_floor_index;
@@ -122,7 +116,7 @@ fn center_text_handle_system(
         );
 
         text.sections[0].value = value;
-        visibility.is_visible = true;
+        *visibility = Visibility::Visible;
     }
 }
 
@@ -146,10 +140,7 @@ fn floor_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionar
                 color: Color::WHITE,
             }
         ).with_alignment(
-            TextAlignment {
-                vertical: VerticalAlign::Center,
-                horizontal: HorizontalAlign::Center,
-            }
+            TextAlignment::Center
         ),
         ..Default::default()
     })

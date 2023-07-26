@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy_kira_audio::prelude::*;
+use bevy_kira_audio::prelude::{AudioSource, Audio, AudioControl};
 
 use crate::resources::setting::Setting;
 use crate::scenes::SceneState;
@@ -39,7 +39,7 @@ pub fn play_background_music(
                 background_audio_channel.background_music.clone(),
             ).looped();
         } else {
-            match *state.current() {
+            match state.0 {
                 SceneState::InGameClassicMode | SceneState::InGameSurvivalMode => {
                     background_audio_channel.loop_started = false;
                     audio.stop();

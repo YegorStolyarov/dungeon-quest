@@ -37,11 +37,9 @@ struct HelpSceneData {
 
 impl Plugin for HelpScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(SystemSet::on_enter(SceneState::HelpScene).with_system(setup));
-        app.add_system_set(
-            SystemSet::on_update(SceneState::HelpScene).with_system(button_handle_system),
-        );
-        app.add_system_set(SystemSet::on_exit(SceneState::HelpScene).with_system(cleanup));
+        app.add_system(setup.in_schedule(OnEnter(SceneState::HelpScene)));
+        app.add_system(button_handle_system.in_set(OnUpdate(SceneState::HelpScene)));
+        app.add_system(cleanup.in_schedule(OnExit(SceneState::HelpScene)));
     }
 }
 
@@ -185,10 +183,7 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
                     color: Color::BLACK,
                 }
             ).with_alignment(
-                TextAlignment {
-                    vertical: VerticalAlign::Center,
-                    horizontal: HorizontalAlign::Center,
-                }
+                TextAlignment::Center
             ),
             ..Default::default()
         });
@@ -238,10 +233,7 @@ fn control_texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictio
                     color: Color::BLACK,
                 }
             ).with_alignment(
-                TextAlignment {
-                    vertical: VerticalAlign::Center,
-                    horizontal: HorizontalAlign::Center,
-                }
+                TextAlignment::Center
             ),
             ..Default::default()
         });
@@ -281,21 +273,20 @@ fn button_handle_system(
         (Changed<Interaction>, With<ReturnButtonComponent>),
     >,
     scenes_materials: Res<ScenesMaterials>,
-    mut state: ResMut<State<SceneState>>,
+    mut state: ResMut<NextState<SceneState>>,
 ) {
     for (interaction, mut ui_image) in button_query.iter_mut() {
         match *interaction {
             Interaction::None => {
-                ui_image.0 = scenes_materials.icon_materials.home_icon_normal.clone()
+                ui_image.texture = scenes_materials.icon_materials.home_icon_normal.clone()
             }
             Interaction::Hovered => {
-                ui_image.0 = scenes_materials.icon_materials.home_icon_hovered.clone()
+                ui_image.texture = scenes_materials.icon_materials.home_icon_hovered.clone()
             }
             Interaction::Clicked => {
-                ui_image.0 = scenes_materials.icon_materials.home_icon_clicked.clone();
+                ui_image.texture = scenes_materials.icon_materials.home_icon_clicked.clone();
                 state
-                    .set(SceneState::MainMenuScene)
-                    .expect("Couldn't switch state to Main Menu Scene");
+                    .set(SceneState::MainMenuScene);
             }
         }
     }

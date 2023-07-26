@@ -42,16 +42,11 @@ pub struct LoadingScenePlugin;
 
 impl Plugin for LoadingScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(
-            SystemSet::on_enter(SceneState::LoadingScene)
-                .with_system(setup)
-                .with_system(load_materials)
-                .with_system(load_data),
-        );
-        app.add_system_set(
-            SystemSet::on_update(SceneState::LoadingScene).with_system(update_loader),
-        );
-        app.add_system_set(SystemSet::on_exit(SceneState::LoadingScene).with_system(cleanup));
+        app.add_system(setup.in_schedule(OnEnter(SceneState::LoadingScene)));
+        app.add_system(load_materials.in_schedule(OnEnter(SceneState::LoadingScene)));
+        app.add_system(load_data.in_schedule(OnEnter(SceneState::LoadingScene)));
+        app.add_system(update_loader.in_set(OnUpdate(SceneState::LoadingScene)));
+        app.add_system(cleanup.in_schedule(OnExit(SceneState::LoadingScene)));
     }
 }
 
@@ -149,10 +144,7 @@ fn loader_bundle(
                             color: Color::WHITE,
                         }
                     ).with_alignment(
-                        TextAlignment {
-                            vertical: VerticalAlign::Center,
-                            horizontal: HorizontalAlign::Center,
-                        }
+                        TextAlignment::Center
                     ),
                     ..Default::default()
                 });
@@ -210,10 +202,7 @@ fn loading_text(
                     color: Color::WHITE,
                 }
             ).with_alignment(
-                TextAlignment {
-                    vertical: VerticalAlign::Center,
-                    horizontal: HorizontalAlign::Center,
-                }
+                TextAlignment::Center
             ),
             ..Default::default()
         });
@@ -222,7 +211,7 @@ fn loading_text(
 
 fn update_loader(
     mut query: Query<(&mut LoaderComponent, &mut Style, &Children)>,
-    mut state: ResMut<State<SceneState>>,
+    mut state: ResMut<NextState<SceneState>>,
     mut text_query: Query<&mut Text>,
 ) {
     for (mut loader, mut style, children) in query.iter_mut() {
@@ -237,8 +226,7 @@ fn update_loader(
             }
         } else {
             state
-                .set(SceneState::MainMenuScene)
-                .expect("Couldn't switch state to Main Menu Scene");
+                .set(SceneState::MainMenuScene);
         }
     }
 }

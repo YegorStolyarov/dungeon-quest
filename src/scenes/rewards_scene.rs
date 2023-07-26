@@ -14,7 +14,9 @@ use crate::materials::scenes::ScenesMaterials;
 use crate::resources::dictionary::Dictionary;
 use crate::resources::dungeon::wave::Wave;
 use crate::resources::game_data::GameData;
+use crate::resources::game_mode::GameMode;
 use crate::resources::hero::hero_class::HeroClass;
+use crate::resources::profile::Profile;
 use crate::resources::upgrade::upgrade_controller::UpgradeController;
 use crate::resources::upgrade::upgrade_type::UpgradeType;
 use crate::scenes::SceneState;
@@ -57,11 +59,9 @@ pub struct RewardsScenePlugin;
 
 impl Plugin for RewardsScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(SystemSet::on_enter(SceneState::RewardsScene).with_system(setup));
-        app.add_system_set(
-            SystemSet::on_update(SceneState::RewardsScene).with_system(button_handle_system),
-        );
-        app.add_system_set(SystemSet::on_exit(SceneState::RewardsScene).with_system(cleanup));
+        app.add_system(setup.in_schedule(OnEnter(SceneState::RewardsScene)));
+        app.add_system(button_handle_system.in_set(OnUpdate(SceneState::RewardsScene)));
+        app.add_system(cleanup.in_schedule(OnExit(SceneState::RewardsScene)));
     }
 }
 
@@ -218,10 +218,7 @@ fn buttons(
                                 color: Color::GRAY,
                             }
                         ).with_alignment(
-                            TextAlignment {
-                                vertical: VerticalAlign::Center,
-                                horizontal: HorizontalAlign::Center,
-                            }
+                            TextAlignment::Center
                         ),
                         ..Default::default()
                     });
@@ -251,9 +248,10 @@ fn button_handle_system(
         &mut WeaponShootAttackComponent,
     )>,
     upgrade_controller: Res<UpgradeController>,
-    mut state: ResMut<State<SceneState>>,
+    mut next_state: ResMut<NextState<SceneState>>,
     game_data: Res<GameData>,
     mut wave: ResMut<Wave>,
+    profile: Res<Profile>
 ) {
     for (interaction, reward, children) in button_query.iter_mut() {
         let mut text = text_query.get_mut(children[0]).unwrap();
@@ -291,7 +289,11 @@ fn button_handle_system(
                     }
                 }
                 wave.next_wave();
-                state.pop().unwrap();
+                let prev_state = match profile.game_mode {
+                    GameMode::ClassicMode => SceneState::InGameClassicMode,
+                    GameMode::SurvivalMode => SceneState::InGameSurvivalMode
+                };
+                next_state.set(prev_state);
             }
         }
     }

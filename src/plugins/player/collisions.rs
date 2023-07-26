@@ -75,13 +75,13 @@ pub fn monsters_collision_check(
         mut player,
         mut player_animation,
         mut player_list_effects,
-        mut invinsible_cooldown,
+        mut invincible_cooldown,
         player_transform,
     ) = player_query.single_mut();
     let player_size = Vec2::new(PLAYER_SIZE_WIDTH, PLAYER_SIZE_HEIGHT);
     let player_position = player_transform.translation;
 
-    if !invinsible_cooldown.duration.finished() {
+    if !invincible_cooldown.duration.finished() {
         return;
     }
 
@@ -107,12 +107,29 @@ pub fn monsters_collision_check(
                 }
             }
 
-            invinsible_cooldown.duration = Timer::new(Duration::from_secs_f32(2.0), TimerMode::Once);
-            invinsible_cooldown.hurt_duration = Timer::new(Duration::from_secs_f32(0.3), TimerMode::Once);
+            invincible_cooldown.duration = Timer::new(Duration::from_secs_f32(2.0), TimerMode::Once);
+            invincible_cooldown.hurt_duration = Timer::new(Duration::from_secs_f32(0.3), TimerMode::Once);
             player_animation.animation_state = AnimationState::Hit;
             break;
         }
     }
+}
+
+
+pub fn monsters_collision_check_survival(
+    player_query: Query<(
+        &mut PlayerComponent,
+        &mut PlayerAnimation,
+        &mut PlayerListEffectsComponent,
+        &mut InvisibleCooldownComponent,
+        &Transform,
+    )>,
+    monsters_query: Query<(&MonsterComponent, &Transform), Without<PlayerComponent>>,
+) {
+    monsters_collision_check(
+        player_query,
+        monsters_query
+    );
 }
 
 pub fn potions_collision(

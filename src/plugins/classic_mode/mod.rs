@@ -18,34 +18,26 @@ pub struct ClassicModeData {
 
 impl Plugin for ClassicModePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(
-            SystemSet::on_enter(SceneState::PreClassicMode)
-                .with_system(dungeon::initiate::initiate_classic_mode.label("Initiate")),
-        );
+        // label("Initiate") - removed because unused
+        app.add_system(dungeon::initiate::initiate_classic_mode.in_schedule(OnEnter(SceneState::PreClassicMode)));
 
-        app.add_system_set(
-            SystemSet::on_enter(SceneState::InGameClassicMode)
-                .with_system(dungeon::ground::ground)
-                .with_system(dungeon::doors::doors)
-                .with_system(dungeon::walls::walls)
-                .with_system(dungeon::end_point::end_point),
-        );
+        app.add_systems((
+            dungeon::ground::ground,
+            dungeon::doors::doors,
+            dungeon::walls::walls,
+            dungeon::end_point::end_point
+        ).in_schedule(OnEnter(SceneState::InGameClassicMode)));
 
-        app.add_system_set(
-            SystemSet::on_update(SceneState::InGameClassicMode)
-                .with_system(dungeon::doors::horizontal_doors_system)
-                .with_system(dungeon::doors::vertical_doors_system)
-                .with_system(dungeon::walls::temporary_walls_system)
-                .with_system(dungeon::end_point::end_point_handle_system)
-                .with_system(interactions::door::horizontal_door_interaction_handle)
-                .with_system(interactions::door::vertical_door_interaction_handle)
-                .with_system(interactions::end_point::end_point_interaction_handle_system)
-                .with_system(interactions::unlock_room::cleared_room_check),
-        );
+        app.add_system(dungeon::doors::horizontal_doors_system.in_set(OnUpdate(SceneState::InGameClassicMode)));
+        app.add_system(dungeon::doors::vertical_doors_system.in_set(OnUpdate(SceneState::InGameClassicMode)));
+        app.add_system(dungeon::walls::temporary_walls_system.in_set(OnUpdate(SceneState::InGameClassicMode)));
+        app.add_system(dungeon::end_point::end_point_handle_system.in_set(OnUpdate(SceneState::InGameClassicMode)));
+        app.add_system(interactions::door::horizontal_door_interaction_handle.in_set(OnUpdate(SceneState::InGameClassicMode)));
+        app.add_system(interactions::door::vertical_door_interaction_handle.in_set(OnUpdate(SceneState::InGameClassicMode)));
+        app.add_system(interactions::end_point::end_point_interaction_handle_system.in_set(OnUpdate(SceneState::InGameClassicMode)));
+        app.add_system(interactions::unlock_room::cleared_room_check.in_set(OnUpdate(SceneState::InGameClassicMode)));
 
-        app.add_system_set(
-            SystemSet::on_exit(SceneState::InGameClassicMode).with_system(clean_up_classic_mode),
-        );
+        app.add_system(clean_up_classic_mode.in_schedule(OnExit(SceneState::InGameClassicMode)));
     }
 }
 

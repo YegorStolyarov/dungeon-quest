@@ -1,7 +1,7 @@
 use bevy::prelude::*;
-use bevy::render::camera::RenderTarget;
 use bevy::sprite::Anchor;
 use std::f32::consts::PI;
+use bevy::window::PrimaryWindow;
 
 use crate::components::player::PlayerComponent;
 use crate::components::weapon::WeaponComponent;
@@ -37,14 +37,12 @@ pub fn aim(
         &mut WeaponSwingAttackComponent,
         &mut Transform,
     )>,
-    wnds: Res<Windows>,
+    primary_query: Query<&Window, With<PrimaryWindow>>,
     time: Res<Time>,
 ) {
     let (camera, camera_transform) = q_camera.single();
-    let wnd = if let RenderTarget::Window(id) = camera.target {
-        wnds.get(id).unwrap()
-    } else {
-        wnds.get_primary().unwrap()
+    let Ok(wnd) = primary_query.get_single() else {
+        return;
     };
 
     if let Some(screen_pos) = wnd.cursor_position() {
@@ -117,15 +115,14 @@ pub fn aim(
 
 pub fn change_weapon_texture(
     mut weapon_query: Query<(
-        &WeaponComponent,
+        Ref<WeaponComponent>,
         &mut Sprite,
-        &mut Handle<Image>,
-        ChangeTrackers<WeaponComponent>,
+        &mut Handle<Image>
     )>,
     ingame_materials: Res<InGameMaterials>,
 ) {
-    let (weapon, mut sprite, mut texture, tracker) = weapon_query.single_mut();
-    if tracker.is_changed() {
+    let (weapon, mut sprite, mut texture) = weapon_query.single_mut();
+    if weapon.is_changed() {
         sprite.custom_size = Some(Vec2::new(
             weapon.size_width * weapon.scale,
             weapon.size_height * weapon.scale,

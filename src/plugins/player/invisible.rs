@@ -5,30 +5,30 @@ use bevy::{
 
 use crate::components::{invinsible_cooldown::InvisibleCooldownComponent, player::PlayerComponent};
 
-pub fn invinsible_cooldown(
-    mut invinsible_cooldown_query: Query<&mut InvisibleCooldownComponent, With<PlayerComponent>>,
+pub fn invincible_cooldown(
+    mut invincible_cooldown_query: Query<&mut InvisibleCooldownComponent, With<PlayerComponent>>,
     time: Res<Time>,
 ) {
-    let mut invinsible_cooldown = invinsible_cooldown_query.single_mut();
+    let mut invincible_cooldown = invincible_cooldown_query.single_mut();
 
-    if !invinsible_cooldown.duration.finished() {
-        invinsible_cooldown.duration.tick(time.delta());
+    if !invincible_cooldown.duration.finished() {
+        invincible_cooldown.duration.tick(time.delta());
     }
 
-    if !invinsible_cooldown.hurt_duration.finished() {
-        invinsible_cooldown.hurt_duration.tick(time.delta());
+    if !invincible_cooldown.hurt_duration.finished() {
+        invincible_cooldown.hurt_duration.tick(time.delta());
     }
 }
 
 pub fn hurt_duration_color(
-    mut invinsible_cooldown_query: Query<
+    mut invincible_cooldown_query: Query<
         (&InvisibleCooldownComponent, &mut TextureAtlasSprite),
         With<PlayerComponent>,
     >,
 ) {
-    let (invinsible_cooldown, mut texture) = invinsible_cooldown_query.single_mut();
+    let (invincible_cooldown, mut texture) = invincible_cooldown_query.single_mut();
 
-    if !invinsible_cooldown.hurt_duration.finished() {
+    if !invincible_cooldown.hurt_duration.finished() {
         texture.color = Color::RED;
     } else {
         texture.color = Color::default();

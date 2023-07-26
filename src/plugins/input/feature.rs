@@ -19,9 +19,9 @@ use crate::resources::weapon::attack_type::AttackType;
 use crate::resources::weapon::weapon_type::WeaponType;
 use crate::scenes::SceneState;
 
-pub fn pause(mut keyboard_input: ResMut<Input<KeyCode>>, mut state: ResMut<State<SceneState>>) {
+pub fn pause(mut keyboard_input: ResMut<Input<KeyCode>>, mut state: ResMut<NextState<SceneState>>) {
     if keyboard_input.pressed(KeyCode::Escape) {
-        state.push(SceneState::PauseScene).unwrap();
+        state.set(SceneState::PauseScene);
         keyboard_input.reset(KeyCode::Escape);
     }
 }
@@ -39,13 +39,13 @@ pub fn use_skill(
 
             match player_skill.skill.name {
                 SkillType::Thunderstorm => {
-                    for (mut monster, mut invinsible_cooldown, mut monster_list_effects) in monsters_query.iter_mut()
+                    for (mut monster, mut invincible_cooldown, mut monster_list_effects) in monsters_query.iter_mut()
                     {
                         let damage = player.intelligence;
                         monster.current_health_points = if monster.current_health_points < damage { 0.0 } 
                         else { monster.current_health_points - damage };
 
-                        invinsible_cooldown.hurt_duration = Timer::new(Duration::from_secs_f32(0.2), TimerMode::Once);
+                        invincible_cooldown.hurt_duration = Timer::new(Duration::from_secs_f32(0.2), TimerMode::Once);
                         monster_list_effects.activate(EffectType::Stun);
                     }
                 }

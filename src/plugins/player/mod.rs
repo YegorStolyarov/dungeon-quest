@@ -11,7 +11,7 @@ mod initiate;
 mod invisible;
 mod profile;
 mod skill;
-mod stats;
+pub mod stats;
 mod ui;
 
 pub struct PlayerPlugin;
@@ -26,73 +26,45 @@ pub const PLAYER_SIZE_HEIGHT: f32 = 28.0 * 3.5;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(
-            SystemSet::on_enter(SceneState::PreClassicMode).with_system(initiate::initiate_player),
-        );
+        app.add_system(initiate::initiate_player.in_schedule(OnEnter(SceneState::PreClassicMode)));
 
-        app.add_system_set(
-            SystemSet::on_enter(SceneState::InGameClassicMode).with_system(ui::setup),
-        );
+        app.add_system(ui::setup.in_schedule(OnEnter(SceneState::InGameClassicMode)));
+        app.add_system(invisible::invincible_cooldown.run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
+        app.add_system(invisible::hurt_duration_color.run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
+        app.add_system(effect::update_effects.run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
+        app.add_system(ui::hearts_handle.run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
+        app.add_system(ui::skill_duration_handle.run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
+        app.add_system(collisions::potions_collision.run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
+        app.add_system(ui::skill_cooldown_handle.run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
+        app.add_system(health::end_run_check.run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
+        app.add_system(profile::finish_run.run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
+        app.add_system(skill::cooldown.run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
+        app.add_system(skill::duration.run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
+        app.add_system(skill::knight_skill.run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
 
-        app.add_system_set(
-            SystemSet::on_update(SceneState::InGameClassicMode)
-                .with_system(invisible::invinsible_cooldown)
-                .with_system(invisible::hurt_duration_color)
-                .with_system(collisions::monsters_collision_check)
-                .with_system(effect::update_effects.label("Effect"))
-                .with_system(stats::update_stats.label("Stats").after("Effect"))
-                .with_system(ui::information_texts_handle.after("Stats"))
-                .with_system(ui::hearts_handle)
-                .with_system(ui::skill_duration_handle)
-                .with_system(collisions::potions_collision)
-                .with_system(ui::skill_cooldown_handle)
-                .with_system(animation::player_animation_system)
-                .with_system(health::end_run_check)
-                .with_system(profile::finish_run)
-                .with_system(skill::cooldown)
-                .with_system(skill::duration)
-                .with_system(skill::knight_skill),
-        );
+        app.add_system(animation::player_animation_system.in_set(OnUpdate(SceneState::InGameClassicMode)));
+        app.add_system(collisions::monsters_collision_check.in_set(OnUpdate(SceneState::InGameClassicMode)));
 
-        app.add_system_set(
-            SystemSet::on_exit(SceneState::InGameClassicMode)
-                .with_system(cleanup::cleanup_player)
-                .with_system(ui::cleanup),
-        );
+        app.add_systems((
+            cleanup::cleanup_player,
+            ui::cleanup
+        ).in_schedule(OnExit(SceneState::InGameClassicMode)));
 
-        app.add_system_set(
-            SystemSet::on_enter(SceneState::PreSurvivalMode).with_system(initiate::initiate_player),
-        );
+        app.add_system(initiate::initiate_player.in_schedule(OnEnter(SceneState::PreSurvivalMode)));
 
-        app.add_system_set(
-            SystemSet::on_enter(SceneState::InGameSurvivalMode).with_system(ui::setup),
-        );
+        app.add_system(ui::setup.in_schedule(OnEnter(SceneState::InGameSurvivalMode)));
 
-        app.add_system_set(
-            SystemSet::on_update(SceneState::InGameSurvivalMode)
-                .with_system(invisible::invinsible_cooldown)
-                .with_system(invisible::hurt_duration_color)
-                .with_system(collisions::monsters_collision_check.label("Hit"))
-                .with_system(effect::update_effects.label("Effect"))
-                .with_system(stats::update_stats.label("Stats").after("Effect"))
-                .with_system(ui::information_texts_handle.after("Stats"))
-                .with_system(ui::hearts_handle)
-                .with_system(ui::skill_duration_handle)
-                .with_system(ui::skill_cooldown_handle)
-                .with_system(animation::player_animation_system.after("Hit"))
-                .with_system(collisions::potions_collision)
-                .with_system(health::end_run_check)
-                .with_system(profile::finish_run)
-                .with_system(skill::cooldown)
-                .with_system(skill::duration)
-                .with_system(skill::knight_skill),
-        );
+        app.add_system(collisions::monsters_collision_check_survival.in_set(OnUpdate(SceneState::InGameSurvivalMode)));
 
-        app.add_system_set(
-            SystemSet::on_exit(SceneState::InGameSurvivalMode)
-                .with_system(cleanup::cleanup_player)
-                .with_system(ui::cleanup)
-                .with_system(cleanup::save_cleared_waves),
-        );
+        app.add_system(stats::update_stats.after(effect::update_effects).run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
+        app.add_system(ui::information_texts_handle.after(stats::update_stats).run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
+        app.add_system(animation::player_animation_system.after(collisions::monsters_collision_check_survival).run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
+
+
+        app.add_systems((
+            cleanup::cleanup_player,
+            ui::cleanup,
+            cleanup::save_cleared_waves
+        ).in_schedule(OnExit(SceneState::InGameSurvivalMode)));
     }
 }

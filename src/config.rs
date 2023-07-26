@@ -4,8 +4,8 @@ pub const RESOLUTION: f32 = 16.0 / 9.0;
 pub const WINDOW_HEIGHT: f32 = 576.0;
 
 // Monitor information
-pub const MONITOR_HEIGHT: f32 = 1080.0;
-pub const MONITOR_WIDTH: f32 = 1920.0;
+pub const MONITOR_HEIGHT: i32 = 1080;
+pub const MONITOR_WIDTH: i32 = 1920;
 
 pub const MAIN_MENU_BACKGROUND_IMAGE: &str = "images/main_menu_background.png";
 pub const SUB_MENU_BACKGROUND_IMAGE: &str = "images/sub_menu_background.png";

@@ -100,15 +100,12 @@ pub struct HighscoreScenePlugin;
 
 impl Plugin for HighscoreScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(SystemSet::on_enter(SceneState::HighscoreScene).with_system(setup));
-        app.add_system_set(
-            SystemSet::on_update(SceneState::HighscoreScene)
-                .with_system(button_handle_system)
-                .with_system(book_animation_handle_system)
-                .with_system(hero_image_handle_system)
-                .with_system(texts_handle_system),
-        );
-        app.add_system_set(SystemSet::on_exit(SceneState::HighscoreScene).with_system(cleanup));
+        app.add_system(setup.in_schedule(OnEnter(SceneState::HighscoreScene)));
+        app.add_system(button_handle_system.in_set(OnUpdate(SceneState::HighscoreScene)));
+        app.add_system(book_animation_handle_system.in_set(OnUpdate(SceneState::HighscoreScene)));
+        app.add_system(hero_image_handle_system.in_set(OnUpdate(SceneState::HighscoreScene)));
+        app.add_system(texts_handle_system.in_set(OnUpdate(SceneState::HighscoreScene)));
+        app.add_system(cleanup.in_schedule(OnExit(SceneState::HighscoreScene)));
     }
 }
 
@@ -287,22 +284,21 @@ fn button_handle_system(
     >,
     mut highscore_book_query: Query<&mut HighscoreBookComponent>,
     scenes_materials: Res<ScenesMaterials>,
-    mut state: ResMut<State<SceneState>>,
+    mut state: ResMut<NextState<SceneState>>,
 ) {
     for (interaction, button, mut ui_image) in button_query.iter_mut() {
         match *button {
             ButtonComponent::Return => match *interaction {
                 Interaction::None => {
-                    ui_image.0 = scenes_materials.icon_materials.home_icon_normal.clone()
+                    ui_image.texture = scenes_materials.icon_materials.home_icon_normal.clone()
                 }
                 Interaction::Hovered => {
-                    ui_image.0 = scenes_materials.icon_materials.home_icon_hovered.clone()
+                    ui_image.texture = scenes_materials.icon_materials.home_icon_hovered.clone()
                 }
                 Interaction::Clicked => {
-                    ui_image.0 = scenes_materials.icon_materials.home_icon_clicked.clone();
+                    ui_image.texture = scenes_materials.icon_materials.home_icon_clicked.clone();
                     state
-                        .set(SceneState::MainMenuScene)
-                        .expect("Couldn't switch state to Main Menu Scene");
+                        .set(SceneState::MainMenuScene);
                 }
             },
             ButtonComponent::Next => {
@@ -385,7 +381,7 @@ fn hero_image(root: &mut ChildBuilder) {
             ),
             ..Default::default()
         },
-        visibility: Visibility { is_visible: false },
+        visibility: Visibility::Hidden,
         ..Default::default()
     })
     .insert(HeroImageComponent);
@@ -400,7 +396,7 @@ fn hero_image_handle_system(
         let highscore_book = highscore_book_query.get_single_mut().unwrap();
         if highscore_book.current_page != -1 && highscore_book.animation_indexes.is_empty() {
             let index = highscore_book.current_page as usize;
-            ui_image.0 = match highscore_book.profiles[index].hero_class {
+            ui_image.texture = match highscore_book.profiles[index].hero_class {
                 HeroClass::Elf => match highscore_book.profiles[index].gender {
                     Gender::Male => scenes_materials.heros_materials.male_elf.clone(),
                     Gender::Female => scenes_materials.heros_materials.female_elf.clone(),
@@ -418,9 +414,9 @@ fn hero_image_handle_system(
                     Gender::Female => scenes_materials.heros_materials.female_wizard.clone(),
                 },
             };
-            visibility.is_visible = true;
+            *visibility = Visibility::Visible;
         } else {
-            visibility.is_visible = false;
+            *visibility = Visibility::Hidden;
         }
     }
 }
@@ -465,7 +461,7 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: Di
                         },
                         ..Default::default()
                     },
-                    visibility: Visibility { is_visible: true },
+                    visibility: Visibility::Inherited,
                     text: Text::from_section(
                         "",
                         TextStyle {
@@ -474,10 +470,7 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: Di
                             color: Color::BLACK,
                         }
                     ).with_alignment(
-                        TextAlignment {
-                            vertical: VerticalAlign::Center,
-                            horizontal: HorizontalAlign::Center,
-                        }
+                        TextAlignment::Center
                     ),
                     ..Default::default()
                 })

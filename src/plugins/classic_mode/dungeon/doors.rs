@@ -164,7 +164,7 @@ pub fn horizontal_doors_system(
     if player_dungeon_stats.is_changed() {
         for (_horizontal_door, door, mut visibility) in horizontal_door_query.iter_mut() {
             if !player_dungeon_stats.is_room_cleared {
-                visibility.is_visible = true;
+                *visibility = Visibility::Visible;
             } else {
                 let current_floor = dungeon.current_floor.clone();
                 let current_position = current_floor.current_position;
@@ -185,17 +185,17 @@ pub fn horizontal_doors_system(
                     false
                 };
 
-                visibility.is_visible = if *door == Door::Right {
+                *visibility = if *door == Door::Right {
                     if has_right_room {
-                        false
+                        Visibility::Hidden
                     } else {
-                        true
+                        Visibility::Inherited
                     }
                 } else {
                     if has_left_room {
-                        false
+                        Visibility::Hidden
                     } else {
-                        true
+                        Visibility::Inherited
                     }
                 }
             }
@@ -231,11 +231,11 @@ pub fn vertical_doors_system(
                 false
             };
 
-            visibility.is_visible = has_next_room;
+            *visibility = if has_next_room {Visibility::Inherited} else {Visibility::Hidden};
 
             for child in children.iter() {
                 let mut child_visibility = visibility_query.get_mut(*child).unwrap();
-                child_visibility.is_visible = has_next_room;
+                *child_visibility = if has_next_room {Visibility::Inherited} else {Visibility::Hidden};
             }
 
             if has_next_room {

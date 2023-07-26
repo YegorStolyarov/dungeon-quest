@@ -90,14 +90,11 @@ pub struct ResultScenePlugin;
 
 impl Plugin for ResultScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(SystemSet::on_enter(SceneState::ResultScene).with_system(setup));
-        app.add_system_set(
-            SystemSet::on_update(SceneState::ResultScene)
-                .with_system(button_handle_system)
-                .with_system(user_input_visibility_handle)
-                .with_system(user_input_handle),
-        );
-        app.add_system_set(SystemSet::on_exit(SceneState::ResultScene).with_system(cleanup));
+        app.add_system(setup.in_schedule(OnEnter(SceneState::ResultScene)));
+        app.add_system(button_handle_system.in_set(OnUpdate(SceneState::ResultScene)));
+        app.add_system(user_input_visibility_handle.in_set(OnUpdate(SceneState::ResultScene)));
+        app.add_system(user_input_handle.in_set(OnUpdate(SceneState::ResultScene)));
+        app.add_system(cleanup.in_schedule(OnExit(SceneState::ResultScene)));
     }
 }
 
@@ -223,10 +220,7 @@ fn result_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictiona
                 color: Color::BLACK,
             }
         ).with_alignment(
-            TextAlignment {
-                vertical: VerticalAlign::Center,
-                horizontal: HorizontalAlign::Center,
-            }
+            TextAlignment::Center
         ),
         ..Default::default()
     })
@@ -421,7 +415,7 @@ fn texts(
                         },
                         ..Default::default()
                     },
-                    visibility: Visibility { is_visible: true },
+                    visibility: Visibility::Inherited,
                     text: Text::from_section(
                         value,
                         TextStyle {
@@ -430,10 +424,7 @@ fn texts(
                             color: Color::BLACK,
                         }
                     ).with_alignment(
-                        TextAlignment {
-                            vertical: VerticalAlign::Center,
-                            horizontal: HorizontalAlign::Center,
-                        }
+                        TextAlignment::Center
                     ),
                     ..Default::default()
                 })
@@ -543,31 +534,30 @@ fn button_handle_system(
     >,
     scenes_materials: Res<ScenesMaterials>,
     mut user_input_controller: ResMut<UserInputController>,
-    mut state: ResMut<State<SceneState>>,
+    mut state: ResMut<NextState<SceneState>>,
     mut string: Local<String>,
 ) {
     for (button, interaction, mut ui_image) in button_query.iter_mut() {
         match *button {
             ButtonComponent::Return => match *interaction {
                 Interaction::None => {
-                    ui_image.0 = scenes_materials.icon_materials.home_icon_normal.clone()
+                    ui_image.texture = scenes_materials.icon_materials.home_icon_normal.clone()
                 }
                 Interaction::Hovered => {
-                    ui_image.0 = scenes_materials.icon_materials.home_icon_hovered.clone()
+                    ui_image.texture = scenes_materials.icon_materials.home_icon_hovered.clone()
                 }
                 Interaction::Clicked => {
-                    ui_image.0 = scenes_materials.icon_materials.home_icon_clicked.clone();
+                    ui_image.texture = scenes_materials.icon_materials.home_icon_clicked.clone();
                     state
-                        .set(SceneState::MainMenuScene)
-                        .expect("Couldn't switch state to Main Menu Scene");
+                        .set(SceneState::MainMenuScene);
                 }
             },
             ButtonComponent::SaveProfile => match *interaction {
                 Interaction::None => {
-                    ui_image.0 = scenes_materials.icon_materials.leaderboard.clone()
+                    ui_image.texture = scenes_materials.icon_materials.leaderboard.clone()
                 }
                 Interaction::Hovered => {
-                    ui_image.0 = scenes_materials.icon_materials.leaderboard_hovered.clone()
+                    ui_image.texture = scenes_materials.icon_materials.leaderboard_hovered.clone()
                 }
                 Interaction::Clicked => {
                     user_input_controller.0 = true;
@@ -575,14 +565,13 @@ fn button_handle_system(
                 }
             },
             ButtonComponent::PlayAgain => match *interaction {
-                Interaction::None => ui_image.0 = scenes_materials.icon_materials.restart.clone(),
+                Interaction::None => ui_image.texture = scenes_materials.icon_materials.restart.clone(),
                 Interaction::Hovered => {
-                    ui_image.0 = scenes_materials.icon_materials.restart_hovered.clone()
+                    ui_image.texture = scenes_materials.icon_materials.restart_hovered.clone()
                 }
                 Interaction::Clicked => {
                     state
-                        .set(SceneState::GameModeSelectScene)
-                        .expect("Couldn't switch state to Game Mode Select Scene");
+                        .set(SceneState::GameModeSelectScene);
                 }
             },
         };
@@ -617,7 +606,7 @@ fn user_input_text(
                 ..Default::default()
             },
             background_color: BackgroundColor(Color::DARK_GRAY),
-            visibility: Visibility { is_visible: false },
+            visibility: Visibility::Hidden,
             ..Default::default()
         })
         .with_children(|parent| {
@@ -635,12 +624,9 @@ fn user_input_text(
                             color: Color::WHITE,
                         }
                     ).with_alignment(
-                        TextAlignment {
-                            vertical: VerticalAlign::Center,
-                            horizontal: HorizontalAlign::Center,
-                        }
+                        TextAlignment::Center
                     ),
-                    visibility: Visibility { is_visible: false },
+                    visibility: Visibility::Hidden,
                     ..Default::default()
                 })
                 .insert(UserInput)
@@ -660,19 +646,19 @@ fn user_input_visibility_handle(
     if user_input_controller.is_changed() {
         if user_input_controller.0 == true {
             for mut visibility in set.p0().iter_mut() {
-                visibility.is_visible = true;
+                *visibility = Visibility::Visible;
             }
 
             for mut visibility in set.p1().iter_mut() {
-                visibility.is_visible = true;
+                *visibility = Visibility::Visible;
             }
         } else {
             for mut visibility in set.p0().iter_mut() {
-                visibility.is_visible = false;
+                *visibility = Visibility::Hidden;
             }
 
             for mut visibility in set.p1().iter_mut() {
-                visibility.is_visible = false;
+                *visibility = Visibility::Hidden;
             }
         }
     }
@@ -682,7 +668,7 @@ fn user_input_handle(
     mut user_input_query: Query<&mut Text, With<UserInput>>,
     mut user_input_controller: ResMut<UserInputController>,
     mut char_evr: EventReader<ReceivedCharacter>,
-    mut state: ResMut<State<SceneState>>,
+    mut state: ResMut<NextState<SceneState>>,
     mut user_name: Local<String>,
     mut profile: ResMut<Profile>,
     keys: Res<Input<KeyCode>>,
@@ -693,8 +679,7 @@ fn user_input_handle(
             stored_profile(profile.convert_to_stored_profile());
             user_name.clear();
             state
-                .set(SceneState::HighscoreScene)
-                .expect("Couldn't switch state to HighscoreScene");
+                .set(SceneState::HighscoreScene);
         }
 
         if keys.just_pressed(KeyCode::Escape) {

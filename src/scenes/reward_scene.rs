@@ -13,8 +13,10 @@ use crate::materials::menu_box::MenuBoxMaterials;
 use crate::materials::scenes::ScenesMaterials;
 use crate::resources::dictionary::Dictionary;
 use crate::resources::game_data::GameData;
+use crate::resources::game_mode::GameMode;
 use crate::resources::hero::hero_class::HeroClass;
 use crate::resources::player::player_dungeon_stats::PlayerDungeonStats;
+use crate::resources::profile::Profile;
 use crate::resources::upgrade::upgrade_controller::UpgradeController;
 use crate::resources::upgrade::upgrade_type::UpgradeType;
 use crate::scenes::SceneState;
@@ -50,13 +52,10 @@ pub struct RewardScenePlugin;
 
 impl Plugin for RewardScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(SystemSet::on_enter(SceneState::RewardScene).with_system(setup));
-        app.add_system_set(
-            SystemSet::on_update(SceneState::RewardScene)
-                .with_system(colddown_handle)
-                .with_system(collect_reward),
-        );
-        app.add_system_set(SystemSet::on_exit(SceneState::RewardScene).with_system(cleanup));
+        app.add_system(setup.in_schedule(OnEnter(SceneState::RewardScene)));
+        app.add_system(colddown_handle.in_set(OnUpdate(SceneState::RewardScene)));
+        app.add_system(collect_reward.in_set(OnUpdate(SceneState::RewardScene)));
+        app.add_system(cleanup.in_schedule(OnExit(SceneState::RewardScene)));
     }
 }
 
@@ -209,10 +208,7 @@ fn upgrade_information(
                     color: Color::DARK_GRAY,
                 }
             ).with_alignment(
-                TextAlignment {
-                    vertical: VerticalAlign::Center,
-                    horizontal: HorizontalAlign::Center,
-                }
+                TextAlignment::Center
             ),
             ..Default::default()
         });
@@ -230,13 +226,18 @@ fn upgrade_information(
 
 fn colddown_handle(
     mut countdown_query: Query<&mut RewardCountDownComponent>,
-    mut state: ResMut<State<SceneState>>,
+    mut next_state: ResMut<NextState<SceneState>>,
     time: Res<Time>,
+    profile: Res<Profile>
 ) {
     let mut countdown = countdown_query.single_mut();
     countdown.0.tick(time.delta());
     if countdown.0.finished() {
-        state.pop().unwrap();
+        let prev_state = match profile.game_mode {
+            GameMode::ClassicMode => SceneState::InGameClassicMode,
+            GameMode::SurvivalMode => SceneState::InGameSurvivalMode
+        };
+        next_state.set(prev_state);
     }
 }
 

@@ -59,7 +59,7 @@ pub fn bullet_collision(
                     * weapon_shoot_attack.bullet_information.scale,
             );
 
-            for (mut monster, mut monster_list_effects, mut invinsible_cooldown, transform) in
+            for (mut monster, mut monster_list_effects, mut invincible_cooldown, transform) in
                 monsters_query.iter_mut()
             {
                 let monster_size = Vec2::new(monster.width, monster.height);
@@ -75,7 +75,7 @@ pub fn bullet_collision(
                         }
                     }
 
-                    invinsible_cooldown.hurt_duration =
+                    invincible_cooldown.hurt_duration =
                         Timer::new(Duration::from_secs_f32(0.3), TimerMode::Once);
 
                     monster.current_health_points = if damage > monster.current_health_points {
@@ -130,7 +130,7 @@ pub fn swing_weapon_collision(
             damage += 1.0;
         }
 
-        for (mut monster, mut monster_list_effects, mut invinsible_cooldown, transform) in
+        for (mut monster, mut monster_list_effects, mut invincible_cooldown, transform) in
             monsters_query.iter_mut()
         {
             let monster_size = Vec2::new(monster.width, monster.height);
@@ -145,7 +145,7 @@ pub fn swing_weapon_collision(
                     }
                 }
 
-                invinsible_cooldown.hurt_duration = Timer::new(Duration::from_secs_f32(0.3), TimerMode::Once);
+                invincible_cooldown.hurt_duration = Timer::new(Duration::from_secs_f32(0.3), TimerMode::Once);
 
                 monster.current_health_points = if damage > monster.current_health_points {
                     0.0

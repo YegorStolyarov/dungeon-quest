@@ -142,10 +142,7 @@ pub fn information_texts(
                             color: Color::WHITE,
                         }
                     ).with_alignment(
-                        TextAlignment {
-                            vertical: VerticalAlign::Center,
-                            horizontal: HorizontalAlign::Center,
-                        }
+                        TextAlignment::Center
                     ),
                     ..Default::default()
                 })
@@ -250,10 +247,11 @@ fn hearts(root: &mut ChildBuilder, ingame_materials: &InGameMaterials) {
                 parent
                     .spawn(ImageBundle {
                         calculated_size: CalculatedSize {
-                            size: Size {
-                                width: Val::Px(16.0),
-                                height: Val::Px(16.0),
+                            size: Vec2{
+                                x: 16.0,
+                                y: 16.0,
                             },
+                            ..default()
                         },
                         style: Style {
                             size: Size::new(Val::Px(35.0), Val::Px(35.0)),
@@ -266,7 +264,7 @@ fn hearts(root: &mut ChildBuilder, ingame_materials: &InGameMaterials) {
                             },
                             ..Default::default()
                         },
-                        visibility: Visibility { is_visible: false },
+                        visibility: Visibility::Hidden,
                         image: UiImage::new(ingame_materials.hearts_materials.empty_heart.clone()),
                         ..Default::default()
                     })
@@ -292,18 +290,18 @@ pub fn hearts_handle(
 
     for (heart, mut visibility, mut ui_image) in heart_query.iter_mut() {
         if heart.index <= max_health_points {
-            visibility.is_visible = true;
+            *visibility = Visibility::Visible;
         }
 
-        ui_image.0 = ingame_materials.hearts_materials.empty_heart.clone();
+        ui_image.texture = ingame_materials.hearts_materials.empty_heart.clone();
 
         if heart.index <= current_health_points_floor {
-            ui_image.0 = ingame_materials.hearts_materials.full_heart.clone();
+            ui_image.texture = ingame_materials.hearts_materials.full_heart.clone();
         }
 
         if current_health_points_floor < current_health_points {
             if heart.index == current_health_points_floor + 1.0 {
-                ui_image.0 = ingame_materials.hearts_materials.half_heart.clone();
+                ui_image.texture = ingame_materials.hearts_materials.half_heart.clone();
             }
         }
     }
@@ -324,7 +322,7 @@ pub fn skill_duration(root: &mut ChildBuilder) {
             ..Default::default()
         },
         background_color: BackgroundColor(Color::ORANGE),
-        visibility: Visibility { is_visible: false },
+        visibility: Visibility::Hidden,
         ..Default::default()
     })
     .insert(SkillDurationComponent);
@@ -339,13 +337,13 @@ pub fn skill_duration_handle(
     let player_skill = player_skill_query.single();
 
     if !player_skill.duration.finished() {
-        visibility.is_visible = true;
+        *visibility = Visibility::Visible;
         let percent_left = player_skill.duration.percent_left();
         let length = max_length * percent_left;
         style.position.left = Val::Px(WINDOW_HEIGHT * RESOLUTION / 2.0 - length / 2.0);
         style.size.width = Val::Px(length);
     } else {
-        visibility.is_visible = false;
+        *visibility = Visibility::Hidden;
         style.size.width = Val::Px(max_length);
     }
 }
@@ -366,7 +364,7 @@ pub fn skill_cooldown(root: &mut ChildBuilder) {
             ..Default::default()
         },
         background_color: BackgroundColor(Color::GREEN),
-        visibility: Visibility { is_visible: true },
+        visibility: Visibility::Inherited,
         ..Default::default()
     })
     .insert(SkillCooldownComponent);
@@ -390,12 +388,12 @@ pub fn skill_cooldown_handle(
         }
     } else {
         if !player_skill.cooldown.finished() {
-            visibility.is_visible = true;
+            *visibility = Visibility::Visible;
             let percent_left = player_skill.cooldown.percent_left();
             let length = max_length * percent_left;
             style.size.height = Val::Px(length);
         } else {
-            visibility.is_visible = false;
+            *visibility = Visibility::Hidden;
             style.size.height = Val::Px(max_length);
         }
     }

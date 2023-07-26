@@ -178,19 +178,19 @@ pub fn temporary_walls_system(
         for (wall, mut visibility) in wall_query.iter_mut() {
             if wall.wall_type == WallType::Temporary {
                 if wall.row_index == 0 || wall.row_index == 1 {
-                    visibility.is_visible = !has_above_room;
+                    *visibility = if has_above_room {Visibility::Hidden} else {Visibility::Inherited};
                 }
 
                 if wall.row_index == total_room_rows - 1 || wall.row_index == total_room_rows - 2 {
-                    visibility.is_visible = !has_below_room;
+                    *visibility = if has_below_room {Visibility::Hidden} else {Visibility::Inherited};
                 }
 
                 if wall.value == -8 {
-                    visibility.is_visible = !has_right_room;
+                    *visibility = if has_right_room {Visibility::Hidden} else {Visibility::Inherited};
                 }
 
                 if wall.value == -7 {
-                    visibility.is_visible = !has_left_room;
+                    *visibility = if has_left_room {Visibility::Hidden} else {Visibility::Inherited};
                 }
             }
         }

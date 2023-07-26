@@ -26,20 +26,15 @@ struct SurvivalModeUIData {
 
 impl Plugin for SurvivalModeUIPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(SystemSet::on_enter(SceneState::InGameSurvivalMode).with_system(setup));
+        app.add_system(setup.in_schedule(OnEnter(SceneState::InGameSurvivalMode)));
+        // expect that unpause causes to trigger OnEnter in this state
+        app.add_system(reset_center_text.in_schedule(OnEnter(SceneState::InGameSurvivalMode)));
 
-        app.add_system_set(
-            SystemSet::on_update(SceneState::InGameSurvivalMode)
-                .with_system(center_text_handle_system)
-                .with_system(wave_text_handle_system)
-                .with_system(wave_countdown_text_handle_system),
-        );
+        app.add_system(center_text_handle_system.in_set(OnUpdate(SceneState::InGameSurvivalMode)));
+        app.add_system(wave_text_handle_system.in_set(OnUpdate(SceneState::InGameSurvivalMode)));
+        app.add_system(wave_countdown_text_handle_system.in_set(OnUpdate(SceneState::InGameSurvivalMode)));
 
-        app.add_system_set(
-            SystemSet::on_resume(SceneState::InGameSurvivalMode).with_system(reset_center_text),
-        );
-
-        app.add_system_set(SystemSet::on_exit(SceneState::InGameSurvivalMode).with_system(cleanup));
+        app.add_system(cleanup.in_schedule(OnExit(SceneState::InGameSurvivalMode)));
     }
 }
 
@@ -95,10 +90,7 @@ fn center_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictiona
                 color: Color::WHITE,
             }
         ).with_alignment(
-            TextAlignment {
-                vertical: VerticalAlign::Center,
-                horizontal: HorizontalAlign::Center,
-            }
+            TextAlignment::Center
         ),
         ..Default::default()
     })
@@ -117,7 +109,7 @@ fn center_text_handle_system(
     let (mut center_text, mut text, mut visibility) = text_query.single_mut();
     center_text.timer.tick(time.delta());
     if center_text.timer.finished() {
-        visibility.is_visible = false;
+        *visibility = Visibility::Hidden;
     } else {
         let glossary = dictionary.get_glossary();
         let current_floor_index = wave.wave_number;
@@ -129,7 +121,7 @@ fn center_text_handle_system(
         );
 
         text.sections[0].value = value;
-        visibility.is_visible = true;
+        *visibility = Visibility::Visible;
     }
 }
 
@@ -154,10 +146,7 @@ fn wave_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary
                 color: Color::WHITE,
             }
         ).with_alignment(
-            TextAlignment {
-                vertical: VerticalAlign::Center,
-                horizontal: HorizontalAlign::Center,
-            }
+            TextAlignment::Center
         ),
         ..Default::default()
     })
@@ -201,10 +190,7 @@ fn wave_countdown_text(
                 color: Color::WHITE,
             }
         ).with_alignment(
-            TextAlignment {
-                vertical: VerticalAlign::Center,
-                horizontal: HorizontalAlign::Center,
-            }
+            TextAlignment::Center
         ),
         ..Default::default()
     })

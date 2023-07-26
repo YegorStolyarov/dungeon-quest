@@ -14,26 +14,14 @@ pub struct SurvivalModePlugin;
 
 impl Plugin for SurvivalModePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(
-            SystemSet::on_enter(SceneState::PreSurvivalMode)
-                .with_system(dungeon::initiate::initiate_survival_mode),
-        );
+        app.add_system(dungeon::initiate::initiate_survival_mode.in_schedule(OnEnter(SceneState::PreSurvivalMode)));
 
-        app.add_system_set(
-            SystemSet::on_enter(SceneState::InGameSurvivalMode)
-                .with_system(dungeon::ground::ground)
-                .with_system(dungeon::walls::walls),
-        );
+        app.add_system(dungeon::ground::ground.in_schedule(OnEnter(SceneState::InGameSurvivalMode)));
+        app.add_system(dungeon::walls::walls.in_schedule(OnEnter(SceneState::InGameSurvivalMode)));
 
-        app.add_system_set(
-            SystemSet::on_update(SceneState::InGameSurvivalMode)
-                .with_system(dungeon::wave::countdown),
-        );
+        app.add_system(dungeon::wave::countdown.in_set(OnUpdate(SceneState::InGameSurvivalMode)));
 
-        app.add_system_set(
-            SystemSet::on_exit(SceneState::InGameSurvivalMode)
-                .with_system(cleanup_survival_mode_data),
-        );
+        app.add_system(cleanup_survival_mode_data.in_schedule(OnExit(SceneState::InGameSurvivalMode)));
     }
 }
 

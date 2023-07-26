@@ -8,7 +8,7 @@ use crate::resources::monster::monster_spawn_controller::MonsterSpawnController;
 use crate::resources::player::player_dungeon_stats::PlayerDungeonStats;
 use crate::scenes::SceneState;
 
-pub fn initiate_classic_mode(mut commands: Commands, mut state: ResMut<State<SceneState>>) {
+pub fn initiate_classic_mode(mut commands: Commands, mut state: ResMut<NextState<SceneState>>) {
     let dungeon = Dungeon::new();
 
     let player_dungeon_stats = PlayerDungeonStats {
@@ -50,7 +50,5 @@ pub fn initiate_classic_mode(mut commands: Commands, mut state: ResMut<State<Sce
     commands.insert_resource(monster_spawn_controller);
 
     state
-        // workaround from https://github.com/bevyengine/bevy/issues/5552
-        .overwrite_set(SceneState::InGameClassicMode)
-        .expect("Can't change to InGame Classic Mode Scene");
+        .set(SceneState::InGameClassicMode);
 }

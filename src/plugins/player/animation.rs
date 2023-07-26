@@ -14,10 +14,10 @@ pub fn player_animation_system(
         &Handle<TextureAtlas>,
     )>,
 ) {
-    for (mut player_animation, invinsible_cooldown, mut sprite, texture_atlas_handle) in
+    for (mut player_animation, invincible_cooldown, mut sprite, texture_atlas_handle) in
         query.iter_mut()
     {
-        if !invinsible_cooldown.hurt_duration.finished() {
+        if !invincible_cooldown.hurt_duration.finished() {
             let texture_atlas = texture_atlases.get(texture_atlas_handle).unwrap();
             sprite.index = texture_atlas.textures.len() - 1;
         } else {

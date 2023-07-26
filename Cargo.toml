@@ -10,6 +10,9 @@ default = [
     "bevy/bevy_winit",
     "bevy/bevy_render",
     "bevy/bevy_ui",
+    "bevy/bevy_text",
+    "bevy/bevy_sprite",
+    "bevy/bevy_core_pipeline",
     "bevy/png",
     "bevy/x11"
 ]
