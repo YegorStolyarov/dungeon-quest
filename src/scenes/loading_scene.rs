@@ -8,7 +8,7 @@ use crate::materials::dungeon::DungeonMaterials;
 use crate::materials::flag::FlagMaterials;
 use crate::materials::font::FontMaterials;
 use crate::materials::hearts::HeartsMaterials;
-use crate::materials::heros::HerosMaterials;
+use crate::materials::heroes::HeroesMaterials;
 use crate::materials::icon::IconMaterials;
 use crate::materials::ingame::InGameMaterials;
 use crate::materials::menu_box::MenuBoxMaterials;
@@ -266,15 +266,15 @@ fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
             restart_hovered: asset_server.load("icons/restart_hovered.png"),
         },
         book_tileset: asset_server.load("scenes/book.png"),
-        heros_materials: HerosMaterials {
-            male_elf: asset_server.load("scenes/heros/male_elf.png"),
-            male_knight: asset_server.load("scenes/heros/male_knight.png"),
-            male_wizard: asset_server.load("scenes/heros/male_wizard.png"),
-            male_lizard: asset_server.load("scenes/heros/male_lizard.png"),
-            female_elf: asset_server.load("scenes/heros/female_elf.png"),
-            female_knight: asset_server.load("scenes/heros/female_knight.png"),
-            female_wizard: asset_server.load("scenes/heros/female_wizard.png"),
-            female_lizard: asset_server.load("scenes/heros/female_lizard.png"),
+        heroes_materials: HeroesMaterials {
+            male_elf: asset_server.load("scenes/heroes/male_elf.png"),
+            male_knight: asset_server.load("scenes/heroes/male_knight.png"),
+            male_wizard: asset_server.load("scenes/heroes/male_wizard.png"),
+            male_lizard: asset_server.load("scenes/heroes/male_lizard.png"),
+            female_elf: asset_server.load("scenes/heroes/female_elf.png"),
+            female_knight: asset_server.load("scenes/heroes/female_knight.png"),
+            female_wizard: asset_server.load("scenes/heroes/female_wizard.png"),
+            female_lizard: asset_server.load("scenes/heroes/female_lizard.png"),
         },
         flag_materials: FlagMaterials {
             vietnam: asset_server.load("scenes/vietnam.png"),
@@ -283,15 +283,15 @@ fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
     };
 
     let ingame_materials: InGameMaterials = InGameMaterials {
-        heros_materials: HerosMaterials {
-            male_elf: asset_server.load("ingame/heros/male_elf.png"),
-            male_knight: asset_server.load("ingame/heros/male_knight.png"),
-            male_wizard: asset_server.load("ingame/heros/male_wizard.png"),
-            male_lizard: asset_server.load("ingame/heros/male_lizard.png"),
-            female_elf: asset_server.load("ingame/heros/female_elf.png"),
-            female_knight: asset_server.load("ingame/heros/female_knight.png"),
-            female_wizard: asset_server.load("ingame/heros/female_wizard.png"),
-            female_lizard: asset_server.load("ingame/heros/female_lizard.png"),
+        heroes_materials: HeroesMaterials {
+            male_elf: asset_server.load("ingame/heroes/male_elf.png"),
+            male_knight: asset_server.load("ingame/heroes/male_knight.png"),
+            male_wizard: asset_server.load("ingame/heroes/male_wizard.png"),
+            male_lizard: asset_server.load("ingame/heroes/male_lizard.png"),
+            female_elf: asset_server.load("ingame/heroes/female_elf.png"),
+            female_knight: asset_server.load("ingame/heroes/female_knight.png"),
+            female_wizard: asset_server.load("ingame/heroes/female_wizard.png"),
+            female_lizard: asset_server.load("ingame/heroes/female_lizard.png"),
         },
         weapons_materials: WeaponsMaterials {
             bow: asset_server.load("ingame/weapons/bow.png"),

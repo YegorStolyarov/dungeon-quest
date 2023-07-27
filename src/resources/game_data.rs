@@ -14,7 +14,7 @@ use crate::resources::weapon::Weapon;
 
 #[derive(Resource, Serialize, Deserialize, Debug, Clone)]
 pub struct GameData {
-    heros: [Hero; 4],
+    heroes: [Hero; 4],
     weapons: [Weapon; 11],
     skills: [Skill; 4],
     player_list_effects_information: [Effect; 8],
@@ -44,7 +44,7 @@ impl GameData {
     }
 
     pub fn get_hero(&self, hero_class: HeroClass) -> Hero {
-        self.heros
+        self.heroes
             .iter()
             .find(|hero| hero.hero_class == hero_class)
             .unwrap()

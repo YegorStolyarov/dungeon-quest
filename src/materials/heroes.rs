@@ -4,7 +4,7 @@ use crate::resources::hero::gender::Gender;
 use crate::resources::hero::hero_class::HeroClass;
 
 #[derive(Clone)]
-pub struct HerosMaterials {
+pub struct HeroesMaterials {
     pub male_elf: Handle<Image>,
     pub male_knight: Handle<Image>,
     pub male_wizard: Handle<Image>,
@@ -15,7 +15,7 @@ pub struct HerosMaterials {
     pub female_lizard: Handle<Image>,
 }
 
-impl HerosMaterials {
+impl HeroesMaterials {
     pub fn get_texture(&self, hero_class: HeroClass, gender: Gender) -> Handle<Image> {
         return match hero_class {
             HeroClass::Elf => match gender {

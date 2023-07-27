@@ -32,7 +32,7 @@ pub fn initiate_player(
     let player = PlayerComponent::new(class.clone(), game_data.clone());
 
     let hero_tileset = ingame_materials
-        .heros_materials
+        .heroes_materials
         .get_texture(class.clone(), gender);
 
     let texture_atlas = TextureAtlas::from_grid(

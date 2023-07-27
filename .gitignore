@@ -14,8 +14,8 @@ setting.json
 resources/results/frames/*
 !resources/results/frames/note.txt
 
-resources/results/heros/*
-!resources/results/heros/note.txt
+resources/results/heroes/*
+!resources/results/heroes/note.txt
 
 resources/results/GUIs/*
 !resources/results/GUIs/note.txt

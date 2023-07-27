@@ -3,7 +3,7 @@ pub mod dungeon;
 pub mod flag;
 pub mod font;
 pub mod hearts;
-pub mod heros;
+pub mod heroes;
 pub mod icon;
 pub mod ingame;
 pub mod menu_box;

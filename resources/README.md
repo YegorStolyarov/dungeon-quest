@@ -1,6 +1,6 @@
 # 0x72 Resource crops
 
-## I. For heros:
+## I. For heroes:
 ```python
 python scripts/hero_crops.py
 ```

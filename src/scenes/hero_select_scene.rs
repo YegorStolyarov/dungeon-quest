@@ -112,7 +112,7 @@ fn setup(
         })
         .with_children(|parent| {
             menu_box(parent, &scenes_materials.menu_box_materials);
-            heros_images(parent, &ingame_materials, texture_atlases)
+            heroes_images(parent, &ingame_materials, texture_atlases)
         })
         .insert(Name::new("SpriteBundle"))
         .id();
@@ -124,17 +124,13 @@ fn setup(
                 height: Val::Percent(100.0),
                 ..Default::default()
             },
-            transform: Transform{
-                translation: Vec3::new(0.0, 0.0, 10.0),
-                ..Default::default()
-            },
             background_color: BackgroundColor(Color::NONE),
             ..Default::default()
         })
         .with_children(|parent| {
             select_hero_text(parent, &font_materials, &dictionary);
             return_button(parent, &scenes_materials);
-            heros_buttons(parent);
+            heroes_buttons(parent);
         })
         .insert(Name::new("UIRoot"))
         .id();
@@ -249,7 +245,7 @@ fn return_button_handle(
     }
 }
 
-fn heros_images(
+fn heroes_images(
     root: &mut ChildBuilder,
     ingame_materials: &InGameMaterials,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
@@ -275,48 +271,48 @@ fn heros_images(
             match hero_class {
                 HeroClass::Elf => match gender {
                     Gender::Male => {
-                        hero_tileset = ingame_materials.heros_materials.male_elf.clone();
+                        hero_tileset = ingame_materials.heroes_materials.male_elf.clone();
                         hero_image = HeroImageComponent::MaleElf;
                         component_name = format!("{}_{}", "Elf", "Male");
                     }
                     Gender::Female => {
-                        hero_tileset = ingame_materials.heros_materials.female_elf.clone();
+                        hero_tileset = ingame_materials.heroes_materials.female_elf.clone();
                         hero_image = HeroImageComponent::FemaleElf;
                         component_name = format!("{}_{}", "Elf", "Female");
                     }
                 },
                 HeroClass::Knight => match gender {
                     Gender::Male => {
-                        hero_tileset = ingame_materials.heros_materials.male_knight.clone();
+                        hero_tileset = ingame_materials.heroes_materials.male_knight.clone();
                         hero_image = HeroImageComponent::MaleKnight;
                         component_name = format!("{}_{}", "Knight", "Male");
                     }
                     Gender::Female => {
-                        hero_tileset = ingame_materials.heros_materials.female_knight.clone();
+                        hero_tileset = ingame_materials.heroes_materials.female_knight.clone();
                         hero_image = HeroImageComponent::FemaleKnight;
                         component_name = format!("{}_{}", "Knight", "Female");
                     }
                 },
                 HeroClass::Lizard => match gender {
                     Gender::Male => {
-                        hero_tileset = ingame_materials.heros_materials.male_lizard.clone();
+                        hero_tileset = ingame_materials.heroes_materials.male_lizard.clone();
                         hero_image = HeroImageComponent::MaleLizard;
                         component_name = format!("{}_{}", "Lizard", "Male");
                     }
                     Gender::Female => {
-                        hero_tileset = ingame_materials.heros_materials.female_lizard.clone();
+                        hero_tileset = ingame_materials.heroes_materials.female_lizard.clone();
                         hero_image = HeroImageComponent::FemaleLizard;
                         component_name = format!("{}_{}", "Lizard", "Female");
                     }
                 },
                 HeroClass::Wizard => match gender {
                     Gender::Male => {
-                        hero_tileset = ingame_materials.heros_materials.male_wizard.clone();
+                        hero_tileset = ingame_materials.heroes_materials.male_wizard.clone();
                         hero_image = HeroImageComponent::MaleWizard;
                         component_name = format!("{}_{}", "Wizard", "Male");
                     }
                     Gender::Female => {
-                        hero_tileset = ingame_materials.heros_materials.female_wizard.clone();
+                        hero_tileset = ingame_materials.heroes_materials.female_wizard.clone();
                         hero_image = HeroImageComponent::FemaleWizard;
                         component_name = format!("{}_{}", "Wizard", "Female");
                     }
@@ -333,7 +329,7 @@ fn heros_images(
                 texture_atlas: texture_atlas_handle,
                 transform: Transform {
                     translation: Vec3::new(x, y, 0.2),
-                    scale: Vec3::splat(6.0),
+                    scale: Vec3::splat(4.0),
                     ..Default::default()
                 },
                 ..Default::default()
@@ -374,7 +370,7 @@ fn select_hero_text(
     .insert(Name::new("SelectHeroText"));
 }
 
-fn heros_buttons(root: &mut ChildBuilder) {
+fn heroes_buttons(root: &mut ChildBuilder) {
     let button_positions: [[f32; 2]; 8] = [
         [210.0, 170.0],
         [380.0, 170.0],

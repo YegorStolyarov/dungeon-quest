@@ -397,20 +397,20 @@ fn hero_image_handle_system(
             let index = highscore_book.current_page as usize;
             ui_image.texture = match highscore_book.profiles[index].hero_class {
                 HeroClass::Elf => match highscore_book.profiles[index].gender {
-                    Gender::Male => scenes_materials.heros_materials.male_elf.clone(),
-                    Gender::Female => scenes_materials.heros_materials.female_elf.clone(),
+                    Gender::Male => scenes_materials.heroes_materials.male_elf.clone(),
+                    Gender::Female => scenes_materials.heroes_materials.female_elf.clone(),
                 },
                 HeroClass::Knight => match highscore_book.profiles[index].gender {
-                    Gender::Male => scenes_materials.heros_materials.male_knight.clone(),
-                    Gender::Female => scenes_materials.heros_materials.female_knight.clone(),
+                    Gender::Male => scenes_materials.heroes_materials.male_knight.clone(),
+                    Gender::Female => scenes_materials.heroes_materials.female_knight.clone(),
                 },
                 HeroClass::Lizard => match highscore_book.profiles[index].gender {
-                    Gender::Male => scenes_materials.heros_materials.male_lizard.clone(),
-                    Gender::Female => scenes_materials.heros_materials.female_lizard.clone(),
+                    Gender::Male => scenes_materials.heroes_materials.male_lizard.clone(),
+                    Gender::Female => scenes_materials.heroes_materials.female_lizard.clone(),
                 },
                 HeroClass::Wizard => match highscore_book.profiles[index].gender {
-                    Gender::Male => scenes_materials.heros_materials.male_wizard.clone(),
-                    Gender::Female => scenes_materials.heros_materials.female_wizard.clone(),
+                    Gender::Male => scenes_materials.heroes_materials.male_wizard.clone(),
+                    Gender::Female => scenes_materials.heroes_materials.female_wizard.clone(),
                 },
             };
             *visibility = Visibility::Visible;

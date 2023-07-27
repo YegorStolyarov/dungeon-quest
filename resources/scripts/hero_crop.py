@@ -14,7 +14,7 @@ def getBox(arr, totalFrame = 1):
     return (x, y, x+w, y+h)
 
 def saveCrop(img, title, box):
-    path = os.path.join('./results/heros/' + title + '.png')
+    path = os.path.join('./results/heroes/' + title + '.png')
     try:
         croppedImg = img.crop(box)
         croppedImg.save(path)
