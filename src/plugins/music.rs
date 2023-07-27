@@ -39,7 +39,7 @@ pub fn play_background_music(
                 background_audio_channel.background_music.clone(),
             ).looped();
         } else {
-            match state.0 {
+            match state.get() {
                 SceneState::InGameClassicMode | SceneState::InGameSurvivalMode => {
                     background_audio_channel.loop_started = false;
                     audio.stop();

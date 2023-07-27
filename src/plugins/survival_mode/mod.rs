@@ -14,14 +14,16 @@ pub struct SurvivalModePlugin;
 
 impl Plugin for SurvivalModePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(dungeon::initiate::initiate_survival_mode.in_schedule(OnEnter(SceneState::PreSurvivalMode)));
+        app.add_systems(OnEnter(SceneState::PreSurvivalMode), dungeon::initiate::initiate_survival_mode);
 
-        app.add_system(dungeon::ground::ground.in_schedule(OnEnter(SceneState::InGameSurvivalMode)));
-        app.add_system(dungeon::walls::walls.in_schedule(OnEnter(SceneState::InGameSurvivalMode)));
+        app.add_systems(OnEnter(SceneState::InGameSurvivalMode), (
+            dungeon::ground::ground,
+            dungeon::walls::walls
+        ));
 
-        app.add_system(dungeon::wave::countdown.in_set(OnUpdate(SceneState::InGameSurvivalMode)));
+        app.add_systems(Update, dungeon::wave::countdown.run_if(in_state(SceneState::InGameSurvivalMode)));
 
-        app.add_system(cleanup_survival_mode_data.in_schedule(OnExit(SceneState::InGameSurvivalMode)));
+        app.add_systems(OnExit(SceneState::InGameSurvivalMode), cleanup_survival_mode_data);
     }
 }
 

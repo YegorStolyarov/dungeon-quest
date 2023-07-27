@@ -39,9 +39,9 @@ struct CreditsSceneData {
 
 impl Plugin for CreditsScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(setup.in_schedule(OnEnter(SceneState::CreditsScene)));
-        app.add_system(button_handle_system.in_set(OnUpdate(SceneState::CreditsScene)));
-        app.add_system(cleanup.in_schedule(OnExit(SceneState::CreditsScene)));
+        app.add_systems(OnEnter(SceneState::CreditsScene), setup);
+        app.add_systems(Update, button_handle_system.run_if(in_state(SceneState::CreditsScene)));
+        app.add_systems(OnExit(SceneState::CreditsScene), cleanup);
     }
 }
 
@@ -54,7 +54,8 @@ fn setup(
     let user_interface_root = commands
         .spawn(ImageBundle {
             style: Style {
-                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                width: Val::Percent(100.0),
+                height: Val::Percent(100.0),
                 ..Default::default()
             },
             image: UiImage::new(scenes_materials.sub_background_image.clone()),
@@ -80,22 +81,12 @@ fn cleanup(mut commands: Commands, credits_scene_data: Res<CreditsSceneData>) {
 }
 
 fn credits_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
-    let size: Size = Size {
-        width: Val::Px(BOX_TILE_SIZE),
-        height: Val::Px(BOX_TILE_SIZE),
-    };
 
     let start_left = (WINDOW_HEIGHT * RESOLUTION - BOX_TILE_SIZE * BOX_WIDTH_TILES) / 2.0;
     let start_top = (WINDOW_HEIGHT - BOX_TILE_SIZE * BOX_HEIGHT_TILES) / 2.0;
 
     for (row_index, row) in BOX_ARRAY.iter().enumerate() {
         for (column_index, value) in row.iter().enumerate() {
-            let position: UiRect = UiRect {
-                left: Val::Px(start_left + BOX_TILE_SIZE * column_index as f32),
-                top: Val::Px(start_top + BOX_TILE_SIZE * row_index as f32),
-                bottom: Val::Auto,
-                right: Val::Auto,
-            };
 
             let image: Handle<Image> = match value {
                 0 => menu_box_materials.top_right.clone(),
@@ -114,8 +105,12 @@ fn credits_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMateria
                 image: UiImage::new(image),
                 style: Style {
                     position_type: PositionType::Absolute,
-                    position,
-                    size,
+                    left: Val::Px(start_left + BOX_TILE_SIZE * column_index as f32),
+                    top: Val::Px(start_top + BOX_TILE_SIZE * row_index as f32),
+                    bottom: Val::Auto,
+                    right: Val::Auto,
+                    width: Val::Px(BOX_TILE_SIZE),
+                    height: Val::Px(BOX_TILE_SIZE),
                     ..Default::default()
                 },
                 ..Default::default()
@@ -127,20 +122,14 @@ fn credits_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMateria
 fn return_button_component(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
     let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
 
-    let size = Size {
-        width: Val::Px(RETURN_BUTTON_SIDE),
-        height: Val::Px(RETURN_BUTTON_SIDE),
-    };
-
     root.spawn(ButtonBundle {
         style: Style {
-            position: UiRect {
-                left: Val::Px(RETURN_BUTTON_SIDE / 2.0),
-                top: Val::Px(RETURN_BUTTON_SIDE / 2.0),
-                right: Val::Auto,
-                bottom: Val::Auto,
-            },
-            size,
+            left: Val::Px(RETURN_BUTTON_SIDE / 2.0),
+            top: Val::Px(RETURN_BUTTON_SIDE / 2.0),
+            right: Val::Auto,
+            bottom: Val::Auto,
+            width: Val::Px(RETURN_BUTTON_SIDE),
+            height: Val::Px(RETURN_BUTTON_SIDE),
             justify_content: JustifyContent::Center,
             position_type: PositionType::Absolute,
             ..Default::default()
@@ -167,7 +156,7 @@ fn button_handle_system(
             Interaction::Hovered => {
                 ui_image.texture = scenes_materials.icon_materials.home_icon_hovered.clone()
             }
-            Interaction::Clicked => {
+            Interaction::Pressed => {
                 ui_image.texture = scenes_materials.icon_materials.home_icon_clicked.clone();
                 state
                     .set(SceneState::MainMenuScene);
@@ -182,11 +171,8 @@ fn credits_text(root: &mut ChildBuilder, font_materials: &FontMaterials, diction
     root.spawn(TextBundle {
         style: Style {
             position_type: PositionType::Absolute,
-            position: UiRect {
-                left: Val::Px(445.0),
-                top: Val::Px(65.0),
-                ..Default::default()
-            },
+            left: Val::Px(445.0),
+            top: Val::Px(65.0),
             ..Default::default()
         },
         text: Text::from_section(
@@ -217,11 +203,8 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
         root.spawn(TextBundle {
             style: Style {
                 position_type: PositionType::Absolute,
-                position: UiRect {
-                    left: Val::Px(260.0),
-                    top: Val::Px(110.0 + (index as f32) * 24.0),
-                    ..Default::default()
-                },
+                left: Val::Px(260.0),
+                top: Val::Px(110.0 + (index as f32) * 24.0),
                 ..Default::default()
             },
             text: Text::from_section(

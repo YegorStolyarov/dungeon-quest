@@ -23,12 +23,14 @@ struct ClassicModeUIData {
 
 impl Plugin for ClassicModeUIPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(setup.in_schedule(OnEnter(SceneState::InGameClassicMode)));
+        app.add_systems(OnEnter(SceneState::InGameClassicMode), setup);
 
-        app.add_system(center_text_handle_system.in_set(OnUpdate(SceneState::InGameClassicMode)));
-        app.add_system(top_right_conner_text_handle_system.in_set(OnUpdate(SceneState::InGameClassicMode)));
+        app.add_systems(Update, (
+            center_text_handle_system,
+            top_right_conner_text_handle_system
+        ).run_if(in_state(SceneState::InGameClassicMode)));
 
-        app.add_system(cleanup.in_schedule(OnExit(SceneState::InGameClassicMode)));
+        app.add_systems(OnExit(SceneState::InGameClassicMode), cleanup);
     }
 }
 
@@ -36,7 +38,8 @@ fn setup(mut commands: Commands, font_materials: Res<FontMaterials>, dictionary:
     let user_interface_root = commands
         .spawn(NodeBundle {
             style: Style {
-                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                width: Val::Percent(100.0),
+                height: Val::Percent(100.0),
                 position_type: PositionType::Absolute,
                 align_items: AlignItems::Center,
                 justify_content: JustifyContent::Center,
@@ -125,11 +128,8 @@ fn floor_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionar
     root.spawn(TextBundle {
         style: Style {
             position_type: PositionType::Absolute,
-            position: UiRect {
-                top: Val::Px(0.0),
-                right: Val::Px(10.0),
-                ..Default::default()
-            },
+            top: Val::Px(0.0),
+            right: Val::Px(10.0),
             ..Default::default()
         },
         text: Text::from_section(

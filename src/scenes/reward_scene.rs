@@ -52,10 +52,11 @@ pub struct RewardScenePlugin;
 
 impl Plugin for RewardScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(setup.in_schedule(OnEnter(SceneState::RewardScene)));
-        app.add_system(colddown_handle.in_set(OnUpdate(SceneState::RewardScene)));
-        app.add_system(collect_reward.in_set(OnUpdate(SceneState::RewardScene)));
-        app.add_system(cleanup.in_schedule(OnExit(SceneState::RewardScene)));
+        app.add_systems(OnEnter(SceneState::RewardScene),setup);
+        app.add_systems(Update,(
+            colddown_handle, collect_reward
+        ).run_if(in_state(SceneState::RewardScene)));
+        app.add_systems(OnExit(SceneState::RewardScene),cleanup);
     }
 }
 
@@ -71,7 +72,8 @@ fn setup(
     let user_interface_root = commands
         .spawn(NodeBundle {
             style: Style {
-                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                width: Val::Percent(100.0),
+                height: Val::Percent(100.0),
                 position_type: PositionType::Absolute,
                 ..Default::default()
             },
@@ -97,10 +99,6 @@ fn cleanup(mut commands: Commands, reward_scene_data: Res<RewardSceneData>) {
 }
 
 fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
-    let size: Size = Size {
-        width: Val::Px(BOX_TILE_SIZE),
-        height: Val::Px(BOX_TILE_SIZE),
-    };
 
     let start_left = (WINDOW_HEIGHT * RESOLUTION - BOX_TILE_SIZE * BOX_WIDTH_TILES) / 2.0;
     let start_top = (WINDOW_HEIGHT - BOX_TILE_SIZE * BOX_HEIGHT_TILES) / 2.0;
@@ -111,12 +109,6 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     .with_children(|parent| {
         for (row_index, row) in BOX_ARRAY.iter().enumerate() {
             for (column_index, value) in row.iter().enumerate() {
-                let position: UiRect = UiRect {
-                    left: Val::Px(start_left + BOX_TILE_SIZE * column_index as f32),
-                    top: Val::Px(start_top + BOX_TILE_SIZE * row_index as f32),
-                    bottom: Val::Auto,
-                    right: Val::Auto,
-                };
 
                 let image: Handle<Image> = match value {
                     0 => menu_box_materials.top_right.clone(),
@@ -135,8 +127,12 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                     image: UiImage::new(image),
                     style: Style {
                         position_type: PositionType::Absolute,
-                        position,
-                        size,
+                        left: Val::Px(start_left + BOX_TILE_SIZE * column_index as f32),
+                        top: Val::Px(start_top + BOX_TILE_SIZE * row_index as f32),
+                        bottom: Val::Auto,
+                        right: Val::Auto,
+                        width: Val::Px(BOX_TILE_SIZE),
+                        height: Val::Px(BOX_TILE_SIZE),
                         ..Default::default()
                     },
 
@@ -179,16 +175,12 @@ fn upgrade_information(
 
     root.spawn(NodeBundle {
         style: Style {
-            position: UiRect {
-                left: Val::Px(WINDOW_HEIGHT * RESOLUTION / 2.0 - width / 2.0),
-                top: Val::Px(WINDOW_HEIGHT / 2.0 - height / 2.0),
-                right: Val::Auto,
-                bottom: Val::Auto,
-            },
-            size: Size {
-                width: Val::Px(width),
-                height: Val::Px(height),
-            },
+            left: Val::Px(WINDOW_HEIGHT * RESOLUTION / 2.0 - width / 2.0),
+            top: Val::Px(WINDOW_HEIGHT / 2.0 - height / 2.0),
+            right: Val::Auto,
+            bottom: Val::Auto,
+            width: Val::Px(width),
+            height: Val::Px(height),
             justify_content: JustifyContent::Center,
             align_items: AlignItems::Center,
             align_content: AlignContent::Center,

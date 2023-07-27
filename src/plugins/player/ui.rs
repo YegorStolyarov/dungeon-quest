@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use std::slice::Iter;
+use bevy::ui::ContentSize;
 
 use crate::components::player::PlayerComponent;
 use crate::components::skill::SkillComponent;
@@ -63,7 +64,8 @@ pub fn setup(
     let user_interface_root = commands
         .spawn(NodeBundle {
             style: Style {
-                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                width: Val::Percent(100.0),
+                height: Val::Percent(100.0),
                 position_type: PositionType::Absolute,
                 ..Default::default()
             },
@@ -127,11 +129,8 @@ pub fn information_texts(
                 .spawn(TextBundle {
                     style: Style {
                         position_type: PositionType::Absolute,
-                        position: UiRect {
-                            left: Val::Px(left_position),
-                            top: Val::Px(top_position),
-                            ..Default::default()
-                        },
+                        left: Val::Px(left_position),
+                        top: Val::Px(top_position),
                         ..Default::default()
                     },
                     text: Text::from_section(
@@ -221,12 +220,10 @@ fn hearts(root: &mut ChildBuilder, ingame_materials: &InGameMaterials) {
     root.spawn(NodeBundle {
         style: Style {
             position_type: PositionType::Absolute,
-            size: Size::new(Val::Px(30.0 * 5.0), Val::Px(30.0 * 2.0)),
-            position: UiRect {
-                left: Val::Px(0.0),
-                top: Val::Px(0.0),
-                ..Default::default()
-            },
+            width: Val::Px(30.0 * 5.0),
+            height: Val::Px(30.0 * 2.0),
+            left: Val::Px(0.0),
+            top: Val::Px(0.0),
             ..Default::default()
         },
         background_color: BackgroundColor(Color::NONE),
@@ -246,22 +243,21 @@ fn hearts(root: &mut ChildBuilder, ingame_materials: &InGameMaterials) {
 
                 parent
                     .spawn(ImageBundle {
-                        calculated_size: CalculatedSize {
-                            size: Vec2{
-                                x: 16.0,
-                                y: 16.0,
-                            },
-                            ..default()
-                        },
+                        // calculated_size: ContentSize {
+                        //     size: Vec2{
+                        //         x: 16.0,
+                        //         y: 16.0,
+                        //     },
+                        //     ..default()
+                        // },
                         style: Style {
-                            size: Size::new(Val::Px(35.0), Val::Px(35.0)),
+                            width: Val::Px(35.0),
+                            height: Val::Px(35.0),
                             position_type: PositionType::Absolute,
-                            position: UiRect {
-                                left: Val::Px(left_position),
-                                top: Val::Px(top_position),
-                                bottom: Val::Auto,
-                                right: Val::Auto,
-                            },
+                            left: Val::Px(left_position),
+                            top: Val::Px(top_position),
+                            bottom: Val::Auto,
+                            right: Val::Auto,
                             ..Default::default()
                         },
                         visibility: Visibility::Hidden,
@@ -309,16 +305,13 @@ pub fn hearts_handle(
 
 pub fn skill_duration(root: &mut ChildBuilder) {
     let length = 300.0;
-    let size = Size::new(Val::Px(length), Val::Px(10.0));
     root.spawn(NodeBundle {
         style: Style {
             position_type: PositionType::Absolute,
-            position: UiRect {
-                bottom: Val::Px(5.0),
-                left: Val::Px(WINDOW_HEIGHT * RESOLUTION / 2.0 - length / 2.0),
-                ..Default::default()
-            },
-            size,
+            bottom: Val::Px(5.0),
+            left: Val::Px(WINDOW_HEIGHT * RESOLUTION / 2.0 - length / 2.0),
+            width: Val::Px(length),
+            height: Val::Px(10.0),
             ..Default::default()
         },
         background_color: BackgroundColor(Color::ORANGE),
@@ -340,27 +333,24 @@ pub fn skill_duration_handle(
         *visibility = Visibility::Visible;
         let percent_left = player_skill.duration.percent_left();
         let length = max_length * percent_left;
-        style.position.left = Val::Px(WINDOW_HEIGHT * RESOLUTION / 2.0 - length / 2.0);
-        style.size.width = Val::Px(length);
+        style.left = Val::Px(WINDOW_HEIGHT * RESOLUTION / 2.0 - length / 2.0);
+        style.width = Val::Px(length);
     } else {
         *visibility = Visibility::Hidden;
-        style.size.width = Val::Px(max_length);
+        style.width = Val::Px(max_length);
     }
 }
 
 pub fn skill_cooldown(root: &mut ChildBuilder) {
     let length = 250.0;
-    let size = Size::new(Val::Px(10.0), Val::Px(length));
 
     root.spawn(NodeBundle {
         style: Style {
             position_type: PositionType::Absolute,
-            position: UiRect {
-                bottom: Val::Px(WINDOW_HEIGHT / 2.0 - length / 2.0),
-                right: Val::Px(5.0),
-                ..Default::default()
-            },
-            size,
+            bottom: Val::Px(WINDOW_HEIGHT / 2.0 - length / 2.0),
+            right: Val::Px(5.0),
+            width: Val::Px(10.0),
+            height: Val::Px(length),
             ..Default::default()
         },
         background_color: BackgroundColor(Color::GREEN),
@@ -384,17 +374,17 @@ pub fn skill_cooldown_handle(
         if monster_counter <= require_monsters {
             let percent = monster_counter / require_monsters;
             let length = max_length * percent;
-            style.size.height = Val::Px(length);
+            style.height = Val::Px(length);
         }
     } else {
         if !player_skill.cooldown.finished() {
             *visibility = Visibility::Visible;
             let percent_left = player_skill.cooldown.percent_left();
             let length = max_length * percent_left;
-            style.size.height = Val::Px(length);
+            style.height = Val::Px(length);
         } else {
             *visibility = Visibility::Hidden;
-            style.size.height = Val::Px(max_length);
+            style.height = Val::Px(max_length);
         }
     }
 }

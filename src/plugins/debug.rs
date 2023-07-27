@@ -10,7 +10,7 @@
 // impl Plugin for DebugPlugin {
 //     fn build(&self, app: &mut App) {
 //         if cfg!(debug_assertions) {
-//             app.add_plugin(WorldInspectorPlugin::new())
+//             app.add_plugins(WorldInspectorPlugin::new())
 //                 .register_inspectable::<Door>()
 //                 .register_inspectable::<BlockType>()
 //                 .register_inspectable::<PlayerComponent>();

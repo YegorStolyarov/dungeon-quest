@@ -104,11 +104,13 @@ struct OptionsSceneData {
 
 impl Plugin for OptionsScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(setup.in_schedule(OnEnter(SceneState::OptionsScene)));
-        app.add_system(button_handle_system.in_set(OnUpdate(SceneState::OptionsScene)));
-        app.add_system(pair_button_handle_system.in_set(OnUpdate(SceneState::OptionsScene)));
-        app.add_system(text_handle_system.in_set(OnUpdate(SceneState::OptionsScene)));
-        app.add_system(cleanup.in_schedule(OnExit(SceneState::OptionsScene)));
+        app.add_systems(OnEnter(SceneState::OptionsScene), setup);
+        app.add_systems(Update, (
+            button_handle_system,
+            pair_button_handle_system,
+            text_handle_system
+        ).run_if(in_state(SceneState::OptionsScene)));
+        app.add_systems(OnExit(SceneState::OptionsScene), cleanup);
     }
 }
 
@@ -123,7 +125,8 @@ fn setup(
     let user_interface_root = commands
         .spawn(ImageBundle {
             style: Style {
-                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                width: Val::Percent(100.0),
+                height: Val::Percent(100.0),
                 ..Default::default()
             },
             image: UiImage::new(scenes_materials.sub_background_image.clone()),
@@ -153,10 +156,6 @@ fn cleanup(
 }
 
 fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
-    let size: Size = Size {
-        width: Val::Px(MENU_BOX_TILE_SIZE),
-        height: Val::Px(MENU_BOX_TILE_SIZE),
-    };
 
     let start_left = (WINDOW_HEIGHT * RESOLUTION - MENU_BOX_TILE_SIZE * MENU_BOX_WIDTH_TILES) / 2.0;
 
@@ -167,12 +166,6 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     .with_children(|parent| {
         for (row_index, row) in MENU_BOX_ARRAY.iter().enumerate() {
             for (column_index, value) in row.iter().enumerate() {
-                let position: UiRect = UiRect {
-                    left: Val::Px(start_left + MENU_BOX_TILE_SIZE * column_index as f32),
-                    top: Val::Px(start_top + MENU_BOX_TILE_SIZE * row_index as f32),
-                    bottom: Val::Auto,
-                    right: Val::Auto,
-                };
 
                 let image: Handle<Image> = match value {
                     0 => menu_box_materials.top_right.clone(),
@@ -191,8 +184,12 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                     image: UiImage::new(image),
                     style: Style {
                         position_type: PositionType::Absolute,
-                        position,
-                        size,
+                        left: Val::Px(start_left + MENU_BOX_TILE_SIZE * column_index as f32),
+                        top: Val::Px(start_top + MENU_BOX_TILE_SIZE * row_index as f32),
+                        bottom: Val::Auto,
+                        right: Val::Auto,
+                        width: Val::Px(MENU_BOX_TILE_SIZE),
+                        height: Val::Px(MENU_BOX_TILE_SIZE),
                         ..Default::default()
                     },
 
@@ -240,11 +237,8 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
         root.spawn(TextBundle {
             style: Style {
                 position_type: PositionType::Absolute,
-                position: UiRect {
-                    left: Val::Px(position_of_texts[index][0]),
-                    top: Val::Px(position_of_texts[index][1]),
-                    ..Default::default()
-                },
+                left: Val::Px(position_of_texts[index][0]),
+                top: Val::Px(position_of_texts[index][1]),
                 ..Default::default()
             },
             text: Text::from_section(
@@ -311,21 +305,20 @@ fn buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &Scenes
             ButtonComponent::EnableMusic => "EnableMusic",
         };
 
-        let size = match button {
-            ButtonComponent::Return => Size {
-                width: Val::Px(RETURN_BUTTON_SIZE),
-                height: Val::Px(RETURN_BUTTON_SIZE),
-            },
-            _ => Size {
-                width: Val::Px(NORMAL_BUTTON_SIZE),
-                height: Val::Px(NORMAL_BUTTON_SIZE),
-            },
+        let (width, height) = match button {
+            ButtonComponent::Return => (Val::Px(RETURN_BUTTON_SIZE), Val::Px(RETURN_BUTTON_SIZE)),
+            _ => (Val::Px(NORMAL_BUTTON_SIZE), Val::Px(NORMAL_BUTTON_SIZE))
         };
 
+        let rect = positions[index];
         root.spawn(ButtonBundle {
             style: Style {
-                position: positions[index],
-                size,
+                left: rect.left,
+                right: rect.right,
+                top: rect.top,
+                bottom: rect.bottom,
+                width,
+                height,
                 justify_content: JustifyContent::Center,
                 position_type: PositionType::Absolute,
                 ..Default::default()
@@ -376,13 +369,15 @@ fn pair_buttons(root: &mut ChildBuilder, setting: &Setting, scenes_materials: &S
             },
         };
 
+        let rect = positions[index];
         root.spawn(ButtonBundle {
             style: Style {
-                position: positions[index],
-                size: Size {
-                    width: Val::Px(NORMAL_BUTTON_SIZE),
-                    height: Val::Px(NORMAL_BUTTON_SIZE),
-                },
+                left: rect.left,
+                right: rect.right,
+                top: rect.top,
+                bottom: rect.bottom,
+                width: Val::Px(NORMAL_BUTTON_SIZE),
+                height: Val::Px(NORMAL_BUTTON_SIZE),
                 justify_content: JustifyContent::Center,
                 position_type: PositionType::Absolute,
                 ..Default::default()
@@ -414,7 +409,7 @@ fn button_handle_system(
                 Interaction::Hovered => {
                     ui_image.texture = scenes_materials.icon_materials.home_icon_hovered.clone()
                 }
-                Interaction::Clicked => {
+                Interaction::Pressed => {
                     ui_image.texture = scenes_materials.icon_materials.home_icon_clicked.clone();
                     state
                         .set(SceneState::MainMenuScene);
@@ -431,7 +426,7 @@ fn button_handle_system(
                 Interaction::Hovered => {
                     ui_image.texture = scenes_materials.icon_materials.sound_icon_hovered.clone()
                 }
-                Interaction::Clicked => {
+                Interaction::Pressed => {
                     let enable_sound = setting.get_enable_sound();
                     setting.set_enable_sound(!enable_sound);
                 }
@@ -447,7 +442,7 @@ fn button_handle_system(
                 Interaction::Hovered => {
                     ui_image.texture = scenes_materials.icon_materials.music_icon_hovered.clone()
                 }
-                Interaction::Clicked => {
+                Interaction::Pressed => {
                     let enable_music = setting.get_enable_music();
                     setting.set_enable_music(!enable_music);
                 }
@@ -468,7 +463,7 @@ fn pair_button_handle_system(
                     Language::VI => ui_color.0 = SELECTED_FLAG_COLOR,
                     Language::EN => ui_color.0 = NORMAL_FLAG_COLOR,
                 },
-                Interaction::Clicked => {
+                Interaction::Pressed => {
                     if setting.get_language() != Language::VI {
                         setting.set_language(Language::VI);
                         dictionary.set_current_language(Language::VI);
@@ -480,7 +475,7 @@ fn pair_button_handle_system(
                     Language::VI => ui_color.0 = NORMAL_FLAG_COLOR,
                     Language::EN => ui_color.0 = SELECTED_FLAG_COLOR,
                 },
-                Interaction::Clicked => {
+                Interaction::Pressed => {
                     if setting.get_language() != Language::EN {
                         setting.set_language(Language::EN);
                         dictionary.set_current_language(Language::EN);

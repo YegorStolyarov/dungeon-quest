@@ -52,10 +52,12 @@ struct GameModeSelectSceneData {
 
 impl Plugin for GameModeSelectScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(setup.in_schedule(OnEnter(SceneState::GameModeSelectScene)));
-        app.add_system(button_handle_system.in_set(OnUpdate(SceneState::GameModeSelectScene)));
-        app.add_system(return_button_handle.in_set(OnUpdate(SceneState::GameModeSelectScene)));
-        app.add_system(cleanup.in_schedule(OnExit(SceneState::GameModeSelectScene)));
+        app.add_systems(OnEnter(SceneState::GameModeSelectScene), setup);
+        app.add_systems(Update, (
+            button_handle_system,
+            return_button_handle
+        ).run_if(in_state(SceneState::GameModeSelectScene)));
+        app.add_systems(OnExit(SceneState::GameModeSelectScene), cleanup);
     }
 }
 
@@ -69,7 +71,8 @@ fn setup(
     let user_interface_root = commands
         .spawn(ImageBundle {
             style: Style {
-                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                width: Val::Percent(100.0),
+                height: Val::Percent(100.0),
                 ..Default::default()
             },
             image: UiImage::new(scenes_materials.sub_background_image.clone()),
@@ -97,22 +100,12 @@ fn cleanup(mut commands: Commands, game_mode_select_scene_data: Res<GameModeSele
 }
 
 fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
-    let size: Size = Size {
-        width: Val::Px(BOX_TILE_SIZE),
-        height: Val::Px(BOX_TILE_SIZE),
-    };
 
     let start_left = (WINDOW_HEIGHT * RESOLUTION - BOX_TILE_SIZE * BOX_WIDTH_TILES) / 2.0;
     let start_top = (WINDOW_HEIGHT - BOX_TILE_SIZE * BOX_HEIGHT_TILES) / 2.0;
 
     for (row_index, row) in BOX_ARRAY.iter().enumerate() {
         for (column_index, value) in row.iter().enumerate() {
-            let position: UiRect = UiRect {
-                left: Val::Px(start_left + BOX_TILE_SIZE * column_index as f32),
-                top: Val::Px(start_top + BOX_TILE_SIZE * row_index as f32),
-                bottom: Val::Auto,
-                right: Val::Auto,
-            };
 
             let image: Handle<Image> = match value {
                 0 => menu_box_materials.top_right.clone(),
@@ -131,8 +124,12 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                 image: UiImage::new(image),
                 style: Style {
                     position_type: PositionType::Absolute,
-                    position,
-                    size,
+                    left: Val::Px(start_left + BOX_TILE_SIZE * column_index as f32),
+                    top: Val::Px(start_top + BOX_TILE_SIZE * row_index as f32),
+                    bottom: Val::Auto,
+                    right: Val::Auto,
+                    width: Val::Px(BOX_TILE_SIZE),
+                    height: Val::Px(BOX_TILE_SIZE),
                     ..Default::default()
                 },
                 ..Default::default()
@@ -158,11 +155,8 @@ fn select_game_mode_text(
     root.spawn(TextBundle {
         style: Style {
             position_type: PositionType::Absolute,
-            position: UiRect {
-                left: Val::Px(left_position),
-                top: Val::Px(190.0),
-                ..Default::default()
-            },
+            left: Val::Px(left_position),
+            top: Val::Px(190.0),
             ..Default::default()
         },
         text: Text::from_section(
@@ -194,16 +188,12 @@ fn buttons(
                 let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
                 root.spawn(ButtonBundle {
                     style: Style {
-                        position: UiRect {
-                            left: Val::Px(RETURN_BUTTON_SIDE / 2.0),
-                            top: Val::Px(RETURN_BUTTON_SIDE / 2.0),
-                            right: Val::Auto,
-                            bottom: Val::Auto,
-                        },
-                        size: Size {
-                            width: Val::Px(RETURN_BUTTON_SIDE),
-                            height: Val::Px(RETURN_BUTTON_SIDE),
-                        },
+                        left: Val::Px(RETURN_BUTTON_SIDE / 2.0),
+                        top: Val::Px(RETURN_BUTTON_SIDE / 2.0),
+                        right: Val::Auto,
+                        bottom: Val::Auto,
+                        width: Val::Px(RETURN_BUTTON_SIDE),
+                        height: Val::Px(RETURN_BUTTON_SIDE),
                         justify_content: JustifyContent::Center,
                         position_type: PositionType::Absolute,
                         ..Default::default()
@@ -216,16 +206,12 @@ fn buttons(
             _ => {
                 root.spawn(ButtonBundle {
                     style: Style {
-                        position: UiRect {
-                            left: Val::Px((WINDOW_HEIGHT * RESOLUTION - 300.0) / 2.0),
-                            top: Val::Px(if index == 1 { 270.0 } else { 330.0 }),
-                            right: Val::Auto,
-                            bottom: Val::Auto,
-                        },
-                        size: Size {
-                            width: Val::Px(300.0),
-                            height: Val::Px(FONT_SIZE),
-                        },
+                        left: Val::Px((WINDOW_HEIGHT * RESOLUTION - 300.0) / 2.0),
+                        top: Val::Px(if index == 1 { 270.0 } else { 330.0 }),
+                        right: Val::Auto,
+                        bottom: Val::Auto,
+                        width: Val::Px(300.0),
+                        height: Val::Px(FONT_SIZE),
                         justify_content: JustifyContent::Center,
                         position_type: PositionType::Absolute,
                         ..Default::default()
@@ -272,7 +258,7 @@ fn button_handle_system(
         match *interaction {
             Interaction::None => text.sections[0].style.color = Color::GRAY,
             Interaction::Hovered => text.sections[0].style.color = Color::BLACK,
-            Interaction::Clicked => {
+            Interaction::Pressed => {
                 if *button == ButtonComponent::ClassicMode {
                     profile.set_game_mode(GameMode::ClassicMode);
                     state
@@ -304,7 +290,7 @@ fn return_button_handle(
                 Interaction::Hovered => {
                     ui_image.texture = scenes_materials.icon_materials.home_icon_hovered.clone()
                 }
-                Interaction::Clicked => {
+                Interaction::Pressed => {
                     ui_image.texture = scenes_materials.icon_materials.home_icon_clicked.clone();
                     state
                         .set(SceneState::MainMenuScene);

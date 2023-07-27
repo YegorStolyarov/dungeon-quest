@@ -54,9 +54,9 @@ pub struct MainMenuScenePlugin;
 
 impl Plugin for MainMenuScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(setup.in_schedule(OnEnter(SceneState::MainMenuScene)));
-        app.add_system(button_handle_system.in_set(OnUpdate(SceneState::MainMenuScene)));
-        app.add_system(cleanup.in_schedule(OnExit(SceneState::MainMenuScene)));
+        app.add_systems(OnEnter(SceneState::MainMenuScene), setup);
+        app.add_systems(Update,button_handle_system.run_if(in_state(SceneState::MainMenuScene)));
+        app.add_systems(OnExit(SceneState::MainMenuScene), cleanup);
     }
 }
 
@@ -70,7 +70,8 @@ fn setup(
         .spawn(ImageBundle {
             style: Style {
                 position_type: PositionType::Absolute,
-                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                width: Val::Percent(100.0),
+                height: Val::Percent(100.0),
                 ..Default::default()
             },
             image: UiImage::new(scenes_materials.main_background_image.clone()),
@@ -94,19 +95,9 @@ fn cleanup(mut commands: Commands, main_menu_scene_data: Res<MainMenuSceneData>)
 }
 
 fn main_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
-    let size: Size = Size {
-        width: Val::Px(MAIN_MENU_BOX_TILE_SIZE),
-        height: Val::Px(MAIN_MENU_BOX_TILE_SIZE),
-    };
 
     for (row_index, row) in MAIN_MENU_BOX_ARRAY.iter().enumerate() {
         for (column_index, value) in row.iter().enumerate() {
-            let position: UiRect = UiRect {
-                left: Val::Px(10.0 + MAIN_MENU_BOX_TILE_SIZE * column_index as f32),
-                top: Val::Px(150.0 + MAIN_MENU_BOX_TILE_SIZE * row_index as f32),
-                bottom: Val::Auto,
-                right: Val::Auto,
-            };
 
             let image: Handle<Image> = match value {
                 0 => menu_box_materials.top_right.clone(),
@@ -125,8 +116,12 @@ fn main_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials)
                 image: UiImage::new(image),
                 style: Style {
                     position_type: PositionType::Absolute,
-                    position,
-                    size,
+                    left: Val::Px(10.0 + MAIN_MENU_BOX_TILE_SIZE * column_index as f32),
+                    top: Val::Px(150.0 + MAIN_MENU_BOX_TILE_SIZE * row_index as f32),
+                    bottom: Val::Auto,
+                    right: Val::Auto,
+                    width: Val::Px(MAIN_MENU_BOX_TILE_SIZE),
+                    height: Val::Px(MAIN_MENU_BOX_TILE_SIZE),
                     ..Default::default()
                 },
 
@@ -140,26 +135,19 @@ fn buttons(root: &mut ChildBuilder, materials: &Res<FontMaterials>, dictionary: 
     let glossary = dictionary.get_glossary();
 
     for (index, button) in ButtonComponent::iterator().enumerate() {
-        let position: UiRect = UiRect {
-            left: Val::Px(10.0 + MAIN_MENU_BOX_TILE_SIZE * (3.0 - 1.0) / 2.0),
-            right: Val::Auto,
-            top: Val::Px(150.0 + MAIN_MENU_BOX_TILE_SIZE * (index as f32 + 1.0)),
-            bottom: Val::Auto,
-        };
-
-        let size = Size {
-            width: Val::Px(MAIN_MENU_BOX_TILE_SIZE * 3.0),
-            height: Val::Px(MAIN_MENU_BOX_TILE_SIZE),
-        };
 
         root.spawn(ButtonBundle {
             style: Style {
-                size,
+                width: Val::Px(MAIN_MENU_BOX_TILE_SIZE * 3.0),
+                height: Val::Px(MAIN_MENU_BOX_TILE_SIZE),
                 justify_content: JustifyContent::Center,
                 position_type: PositionType::Absolute,
                 align_items: AlignItems::Center,
                 align_self: AlignSelf::FlexEnd,
-                position,
+                left: Val::Px(10.0 + MAIN_MENU_BOX_TILE_SIZE * (3.0 - 1.0) / 2.0),
+                right: Val::Auto,
+                top: Val::Px(150.0 + MAIN_MENU_BOX_TILE_SIZE * (index as f32 + 1.0)),
+                bottom: Val::Auto,
                 ..Default::default()
             },
             background_color: BackgroundColor(Color::NONE),
@@ -207,7 +195,7 @@ fn button_handle_system(
         match *interaction {
             Interaction::None => text.sections[0].style.color = Color::GRAY,
             Interaction::Hovered => text.sections[0].style.color = Color::BLACK,
-            Interaction::Clicked => {
+            Interaction::Pressed => {
                 text.sections[0].style.color = Color::RED;
                 match button {
                     ButtonComponent::Play => state

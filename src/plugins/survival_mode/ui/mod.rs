@@ -26,15 +26,18 @@ struct SurvivalModeUIData {
 
 impl Plugin for SurvivalModeUIPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(setup.in_schedule(OnEnter(SceneState::InGameSurvivalMode)));
-        // expect that unpause causes to trigger OnEnter in this state
-        app.add_system(reset_center_text.in_schedule(OnEnter(SceneState::InGameSurvivalMode)));
+        app.add_systems(OnEnter(SceneState::InGameSurvivalMode), (
+            setup,
+            reset_center_text
+        ));
 
-        app.add_system(center_text_handle_system.in_set(OnUpdate(SceneState::InGameSurvivalMode)));
-        app.add_system(wave_text_handle_system.in_set(OnUpdate(SceneState::InGameSurvivalMode)));
-        app.add_system(wave_countdown_text_handle_system.in_set(OnUpdate(SceneState::InGameSurvivalMode)));
+        app.add_systems(Update, (
+            center_text_handle_system,
+            wave_text_handle_system,
+            wave_countdown_text_handle_system
+        ).run_if(in_state(SceneState::InGameSurvivalMode)));
 
-        app.add_system(cleanup.in_schedule(OnExit(SceneState::InGameSurvivalMode)));
+        app.add_systems(OnExit(SceneState::InGameSurvivalMode), cleanup);
     }
 }
 
@@ -42,7 +45,8 @@ fn setup(mut commands: Commands, font_materials: Res<FontMaterials>, dictionary:
     let user_interface_root = commands
         .spawn(NodeBundle {
             style: Style {
-                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                width: Val::Percent(100.0),
+                height: Val::Percent(100.0),
                 position_type: PositionType::Absolute,
                 align_items: AlignItems::Center,
                 justify_content: JustifyContent::Center,
@@ -131,11 +135,8 @@ fn wave_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary
     root.spawn(TextBundle {
         style: Style {
             position_type: PositionType::Absolute,
-            position: UiRect {
-                top: Val::Px(0.0),
-                right: Val::Px(10.0),
-                ..Default::default()
-            },
+            top: Val::Px(0.0),
+            right: Val::Px(10.0),
             ..Default::default()
         },
         text: Text::from_section(
@@ -175,11 +176,8 @@ fn wave_countdown_text(
     root.spawn(TextBundle {
         style: Style {
             position_type: PositionType::Absolute,
-            position: UiRect {
-                top: Val::Px(35.0),
-                right: Val::Px(10.0),
-                ..Default::default()
-            },
+            top: Val::Px(35.0),
+            right: Val::Px(10.0),
             ..Default::default()
         },
         text: Text::from_section(

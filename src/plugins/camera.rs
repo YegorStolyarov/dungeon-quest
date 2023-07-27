@@ -13,12 +13,12 @@ pub struct CameraPlugin;
 
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(spawn_user_interface_camera);
-        app.add_startup_system(spawn_2d_camera);
+        app.add_systems(Startup, spawn_user_interface_camera);
+        app.add_systems(Startup, spawn_2d_camera);
 
-        app.add_system(camera_follow.in_set(OnUpdate(SceneState::InGameSurvivalMode)));
+        app.add_systems(Update, camera_follow.run_if(in_state(SceneState::InGameSurvivalMode)));
 
-        app.add_system(reset_camera.in_schedule(OnExit(SceneState::InGameSurvivalMode)));
+        app.add_systems(OnExit(SceneState::InGameSurvivalMode), reset_camera);
     }
 }
 

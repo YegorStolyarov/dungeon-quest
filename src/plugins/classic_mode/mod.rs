@@ -19,25 +19,27 @@ pub struct ClassicModeData {
 impl Plugin for ClassicModePlugin {
     fn build(&self, app: &mut App) {
         // label("Initiate") - removed because unused
-        app.add_system(dungeon::initiate::initiate_classic_mode.in_schedule(OnEnter(SceneState::PreClassicMode)));
+        app.add_systems(OnEnter(SceneState::PreClassicMode), dungeon::initiate::initiate_classic_mode);
 
-        app.add_systems((
+        app.add_systems(OnEnter(SceneState::InGameClassicMode), (
             dungeon::ground::ground,
             dungeon::doors::doors,
             dungeon::walls::walls,
             dungeon::end_point::end_point
-        ).in_schedule(OnEnter(SceneState::InGameClassicMode)));
+        ));
 
-        app.add_system(dungeon::doors::horizontal_doors_system.in_set(OnUpdate(SceneState::InGameClassicMode)));
-        app.add_system(dungeon::doors::vertical_doors_system.in_set(OnUpdate(SceneState::InGameClassicMode)));
-        app.add_system(dungeon::walls::temporary_walls_system.in_set(OnUpdate(SceneState::InGameClassicMode)));
-        app.add_system(dungeon::end_point::end_point_handle_system.in_set(OnUpdate(SceneState::InGameClassicMode)));
-        app.add_system(interactions::door::horizontal_door_interaction_handle.in_set(OnUpdate(SceneState::InGameClassicMode)));
-        app.add_system(interactions::door::vertical_door_interaction_handle.in_set(OnUpdate(SceneState::InGameClassicMode)));
-        app.add_system(interactions::end_point::end_point_interaction_handle_system.in_set(OnUpdate(SceneState::InGameClassicMode)));
-        app.add_system(interactions::unlock_room::cleared_room_check.in_set(OnUpdate(SceneState::InGameClassicMode)));
+        app.add_systems(Update, (
+            dungeon::doors::horizontal_doors_system,
+            dungeon::doors::vertical_doors_system,
+            dungeon::walls::temporary_walls_system,
+            dungeon::end_point::end_point_handle_system,
+            interactions::door::horizontal_door_interaction_handle,
+            interactions::door::vertical_door_interaction_handle,
+            interactions::end_point::end_point_interaction_handle_system,
+            interactions::unlock_room::cleared_room_check
+        ).run_if(in_state(SceneState::InGameClassicMode)));
 
-        app.add_system(clean_up_classic_mode.in_schedule(OnExit(SceneState::InGameClassicMode)));
+        app.add_systems(OnExit(SceneState::InGameClassicMode), clean_up_classic_mode);
     }
 }
 

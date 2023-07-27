@@ -100,12 +100,14 @@ pub struct HighscoreScenePlugin;
 
 impl Plugin for HighscoreScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(setup.in_schedule(OnEnter(SceneState::HighscoreScene)));
-        app.add_system(button_handle_system.in_set(OnUpdate(SceneState::HighscoreScene)));
-        app.add_system(book_animation_handle_system.in_set(OnUpdate(SceneState::HighscoreScene)));
-        app.add_system(hero_image_handle_system.in_set(OnUpdate(SceneState::HighscoreScene)));
-        app.add_system(texts_handle_system.in_set(OnUpdate(SceneState::HighscoreScene)));
-        app.add_system(cleanup.in_schedule(OnExit(SceneState::HighscoreScene)));
+        app.add_systems(OnEnter(SceneState::HighscoreScene), setup);
+        app.add_systems(Update, (
+            button_handle_system,
+            book_animation_handle_system,
+            hero_image_handle_system,
+            texts_handle_system
+        ).run_if(in_state(SceneState::HighscoreScene)));
+        app.add_systems(OnExit(SceneState::HighscoreScene), cleanup);
     }
 }
 
@@ -190,7 +192,8 @@ fn setup(
     let user_interface_root = commands
         .spawn(NodeBundle {
             style: Style {
-                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                width: Val::Percent(100.0),
+                height: Val::Percent(100.0),
                 ..Default::default()
             },
             background_color: BackgroundColor(Color::NONE),
@@ -236,15 +239,15 @@ fn buttons(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
         match button {
             ButtonComponent::Return => {
                 let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
-
-                let size = Size {
-                    width: Val::Px(50.0),
-                    height: Val::Px(50.0),
-                };
+                let rect = positions[index];
                 root.spawn(ButtonBundle {
                     style: Style {
-                        position: positions[index],
-                        size,
+                        left: rect.left,
+                        right: rect.right,
+                        top: rect.top,
+                        bottom: rect.bottom,
+                        width: Val::Px(50.0),
+                        height: Val::Px(50.0),
                         justify_content: JustifyContent::Center,
                         position_type: PositionType::Absolute,
                         ..Default::default()
@@ -255,15 +258,15 @@ fn buttons(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
                 .insert(*button);
             }
             _ => {
-                let size = Size {
-                    width: Val::Px(250.0),
-                    height: Val::Px(320.0),
-                };
-
+                let rect = positions[index];
                 root.spawn(ButtonBundle {
                     style: Style {
-                        position: positions[index],
-                        size,
+                        left: rect.left,
+                        right: rect.right,
+                        top: rect.top,
+                        bottom: rect.bottom,
+                        width: Val::Px(250.0),
+                        height: Val::Px(320.0),
                         justify_content: JustifyContent::Center,
                         position_type: PositionType::Absolute,
                         ..Default::default()
@@ -295,14 +298,14 @@ fn button_handle_system(
                 Interaction::Hovered => {
                     ui_image.texture = scenes_materials.icon_materials.home_icon_hovered.clone()
                 }
-                Interaction::Clicked => {
+                Interaction::Pressed => {
                     ui_image.texture = scenes_materials.icon_materials.home_icon_clicked.clone();
                     state
                         .set(SceneState::MainMenuScene);
                 }
             },
             ButtonComponent::Next => {
-                if *interaction == Interaction::Clicked {
+                if *interaction == Interaction::Pressed {
                     let mut highscore_book = highscore_book_query.get_single_mut().unwrap();
                     let total_pages = highscore_book.total_pages as isize;
                     if highscore_book.animation_indexes.is_empty() {
@@ -319,7 +322,7 @@ fn button_handle_system(
                 }
             }
             ButtonComponent::Previous => {
-                if *interaction == Interaction::Clicked {
+                if *interaction == Interaction::Pressed {
                     let mut highscore_book = highscore_book_query.get_single_mut().unwrap();
                     if highscore_book.animation_indexes.is_empty() {
                         highscore_book.is_reverse = true;
@@ -368,17 +371,13 @@ fn book_animation_handle_system(
 fn hero_image(root: &mut ChildBuilder) {
     root.spawn(ImageBundle {
         style: Style {
-            position: UiRect {
-                right: Val::Auto,
-                bottom: Val::Auto,
-                left: Val::Px(280.0),
-                top: Val::Px(100.0),
-            },
+            right: Val::Auto,
+            bottom: Val::Auto,
+            left: Val::Px(280.0),
+            top: Val::Px(100.0),
             position_type: PositionType::Absolute,
-            size: Size::new(
-                Val::Px(HERO_IMAGE_SIZE.width),
-                Val::Px(HERO_IMAGE_SIZE.height),
-            ),
+            width: Val::Px(HERO_IMAGE_SIZE.width),
+            height: Val::Px(HERO_IMAGE_SIZE.height),
             ..Default::default()
         },
         visibility: Visibility::Hidden,
@@ -439,10 +438,8 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: Di
         style: Style {
             display: Display::None,
             position_type: PositionType::Absolute,
-            size: Size {
-                width: Val::Percent(100.0),
-                height: Val::Percent(100.0),
-            },
+            width: Val::Percent(100.0),
+            height: Val::Percent(100.0),
             ..Default::default()
         },
         background_color: BackgroundColor(Color::NONE),
@@ -454,11 +451,8 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: Di
                 .spawn(TextBundle {
                     style: Style {
                         position_type: PositionType::Absolute,
-                        position: UiRect {
-                            left: Val::Px(position_of_texts[index][0]),
-                            top: Val::Px(position_of_texts[index][1]),
-                            ..Default::default()
-                        },
+                        left: Val::Px(position_of_texts[index][0]),
+                        top: Val::Px(position_of_texts[index][1]),
                         ..Default::default()
                     },
                     visibility: Visibility::Inherited,

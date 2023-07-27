@@ -42,11 +42,13 @@ pub struct LoadingScenePlugin;
 
 impl Plugin for LoadingScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(setup.in_schedule(OnEnter(SceneState::LoadingScene)));
-        app.add_system(load_materials.in_schedule(OnEnter(SceneState::LoadingScene)));
-        app.add_system(load_data.in_schedule(OnEnter(SceneState::LoadingScene)));
-        app.add_system(update_loader.in_set(OnUpdate(SceneState::LoadingScene)));
-        app.add_system(cleanup.in_schedule(OnExit(SceneState::LoadingScene)));
+        app.add_systems(OnEnter(SceneState::LoadingScene), setup);
+        app.add_systems(Update, (
+            load_materials,
+            load_data,
+            update_loader
+        ).run_if(in_state(SceneState::LoadingScene)));
+        app.add_systems(OnExit(SceneState::LoadingScene), cleanup);
     }
 }
 
@@ -54,7 +56,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, dictionary: Res
     let user_interface_root = commands
         .spawn(NodeBundle {
             style: Style {
-                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                width: Val::Percent(100.0),
+                height: Val::Percent(100.0),
                 ..Default::default()
             },
             background_color: BackgroundColor(Color::BLACK),
@@ -88,18 +91,14 @@ fn loader_bundle(
             style: Style {
                 justify_content: JustifyContent::Center,
                 position_type: PositionType::Absolute,
-                size: Size::new(
-                    Val::Px(LOADING_BORDER_WIDTH),
-                    Val::Px(LOADING_BORDER_HEIGHT),
+                width: Val::Px(LOADING_BORDER_WIDTH),
+                height: Val::Px(LOADING_BORDER_HEIGHT),
+                top: Val::Px((WINDOW_HEIGHT / 2.0) - (LOADING_BORDER_HEIGHT / 2.0)),
+                left: Val::Px(
+                    (WINDOW_HEIGHT * RESOLUTION) / 2.0 - (LOADING_BORDER_WIDTH / 2.0),
                 ),
-                position: UiRect {
-                    top: Val::Px((WINDOW_HEIGHT / 2.0) - (LOADING_BORDER_HEIGHT / 2.0)),
-                    left: Val::Px(
-                        (WINDOW_HEIGHT * RESOLUTION) / 2.0 - (LOADING_BORDER_WIDTH / 2.0),
-                    ),
-                    bottom: Val::Auto,
-                    right: Val::Auto,
-                },
+                bottom: Val::Auto,
+                right: Val::Auto,
                 ..Default::default()
             },
             background_color: BackgroundColor(Color::DARK_GRAY),
@@ -112,11 +111,12 @@ fn loader_bundle(
                 style: Style {
                     justify_content: JustifyContent::Center,
                     position_type: PositionType::Absolute,
-                    size: Size::new(
-                        Val::Px(0.0),
-                        Val::Px(LOADING_BORDER_HEIGHT - LOADING_BORDER_HEIGHT * 0.2),
-                    ),
-                    position: UiRect::all(Val::Px(5.0)),
+                    width: Val::Px(0.0),
+                    height: Val::Px(LOADING_BORDER_HEIGHT - LOADING_BORDER_HEIGHT * 0.2),
+                    left: Val::Px(5.0),
+                    top: Val::Px(5.0),
+                    right: Val::Px(5.0),
+                    bottom: Val::Px(5.0),
                     ..Default::default()
                 },
                 background_color: BackgroundColor(Color::rgb(247.0 / 255.0, 104.0 / 255.0, 12.0 / 255.0)),
@@ -165,13 +165,12 @@ fn loading_text(
         style: Style {
             justify_content: JustifyContent::Center,
             position_type: PositionType::Absolute,
-            size: Size::new(Val::Px(LOADING_BORDER_WIDTH), Val::Px(35.0)),
-            position: UiRect {
-                left: Val::Px((WINDOW_HEIGHT * RESOLUTION - LOADING_BORDER_WIDTH) / 2.0),
-                top: Val::Px((WINDOW_HEIGHT - LOADING_BORDER_HEIGHT) / 2.0 - 37.0),
-                bottom: Val::Auto,
-                right: Val::Auto,
-            },
+            width: Val::Px(LOADING_BORDER_WIDTH),
+            height: Val::Px(35.0),
+            left: Val::Px((WINDOW_HEIGHT * RESOLUTION - LOADING_BORDER_WIDTH) / 2.0),
+            top: Val::Px((WINDOW_HEIGHT - LOADING_BORDER_HEIGHT) / 2.0 - 37.0),
+            bottom: Val::Auto,
+            right: Val::Auto,
             ..Default::default()
         },
         background_color: BackgroundColor(Color::NONE),
@@ -217,7 +216,7 @@ fn update_loader(
     for (mut loader, mut style, children) in query.iter_mut() {
         if loader.current_width < loader.max_width {
             loader.current_width += 2.5;
-            style.size.width = Val::Px(loader.current_width);
+            style.width = Val::Px(loader.current_width);
 
             let value = (loader.current_width / loader.max_width * 100.0) as usize;
             if value >= 6 {

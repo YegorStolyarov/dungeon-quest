@@ -87,11 +87,13 @@ struct HeroSelectSceneData {
 
 impl Plugin for HeroSelectScenePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(setup.in_schedule(OnEnter(SceneState::HeroSelectScene)));
-        app.add_system(return_button_handle.in_set(OnUpdate(SceneState::HeroSelectScene)));
-        app.add_system(hero_select_handle.in_set(OnUpdate(SceneState::HeroSelectScene)));
-        app.add_system(hero_image_animation_handle.in_set(OnUpdate(SceneState::HeroSelectScene)));
-        app.add_system(cleanup.in_schedule(OnExit(SceneState::HeroSelectScene)));
+        app.add_systems(OnEnter(SceneState::HeroSelectScene), setup);
+        app.add_systems(Update, (
+            return_button_handle,
+            hero_select_handle,
+            hero_image_animation_handle,
+        ).run_if(in_state(SceneState::HeroSelectScene)));
+        app.add_systems(OnExit(SceneState::HeroSelectScene), cleanup);
     }
 }
 
@@ -118,7 +120,12 @@ fn setup(
     let user_interface_root = commands
         .spawn(NodeBundle {
             style: Style {
-                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                width: Val::Percent(100.0),
+                height: Val::Percent(100.0),
+                ..Default::default()
+            },
+            transform: Transform{
+                translation: Vec3::new(0.0, 0.0, 10.0),
                 ..Default::default()
             },
             background_color: BackgroundColor(Color::NONE),
@@ -179,9 +186,9 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
                 texture: image,
                 transform: Transform {
                     translation: Vec3::new(
-                        start_x + 60.0 * column_index as f32,
-                        start_y - 60.0 * row_index as f32,
-                        0.0,
+                        start_x + BOX_TILE_SIZE * column_index as f32,
+                        start_y - BOX_TILE_SIZE * row_index as f32,
+                        0.1,
                     ),
                     scale: Vec3::splat(1.0),
                     ..Default::default()
@@ -200,16 +207,12 @@ fn return_button(root: &mut ChildBuilder, scenes_materials: &ScenesMaterials) {
     let handle_image = scenes_materials.icon_materials.home_icon_normal.clone();
     root.spawn(ButtonBundle {
         style: Style {
-            position: UiRect {
-                left: Val::Px(RETURN_BUTTON_SIZE / 2.0),
-                top: Val::Px(RETURN_BUTTON_SIZE / 2.0),
-                right: Val::Auto,
-                bottom: Val::Auto,
-            },
-            size: Size {
-                width: Val::Px(RETURN_BUTTON_SIZE),
-                height: Val::Px(RETURN_BUTTON_SIZE),
-            },
+            left: Val::Px(RETURN_BUTTON_SIZE / 2.0),
+            top: Val::Px(RETURN_BUTTON_SIZE / 2.0),
+            right: Val::Auto,
+            bottom: Val::Auto,
+            width: Val::Px(RETURN_BUTTON_SIZE),
+            height: Val::Px(RETURN_BUTTON_SIZE),
             justify_content: JustifyContent::Center,
             position_type: PositionType::Absolute,
             ..Default::default()
@@ -237,7 +240,7 @@ fn return_button_handle(
             Interaction::Hovered => {
                 ui_image.texture = scenes_materials.icon_materials.home_icon_hovered.clone()
             }
-            Interaction::Clicked => {
+            Interaction::Pressed => {
                 ui_image.texture = scenes_materials.icon_materials.home_icon_clicked.clone();
                 state
                     .set(SceneState::MainMenuScene);
@@ -329,7 +332,7 @@ fn heros_images(
             root.spawn(SpriteSheetBundle {
                 texture_atlas: texture_atlas_handle,
                 transform: Transform {
-                    translation: Vec3::new(x, y, 1.0),
+                    translation: Vec3::new(x, y, 0.2),
                     scale: Vec3::splat(6.0),
                     ..Default::default()
                 },
@@ -352,11 +355,8 @@ fn select_hero_text(
     root.spawn(TextBundle {
         style: Style {
             position_type: PositionType::Absolute,
-            position: UiRect {
-                left: Val::Px(390.0),
-                top: Val::Px(95.0),
-                ..Default::default()
-            },
+            left: Val::Px(390.0),
+            top: Val::Px(95.0),
             ..Default::default()
         },
         text: Text::from_section(
@@ -387,12 +387,6 @@ fn heros_buttons(root: &mut ChildBuilder) {
     ];
 
     for (index, value) in ButtonComponent::iterator().enumerate() {
-        let position = UiRect {
-            left: Val::Px(button_positions[index][0]),
-            top: Val::Px(button_positions[index][1]),
-            right: Val::Auto,
-            bottom: Val::Auto,
-        };
 
         let component_name = match index {
             1 => "MaleElf",
@@ -408,11 +402,12 @@ fn heros_buttons(root: &mut ChildBuilder) {
         root.spawn(ButtonBundle {
             style: Style {
                 position_type: PositionType::Absolute,
-                position,
-                size: Size {
-                    width: Val::Px(100.0),
-                    height: Val::Px(150.0),
-                },
+                left: Val::Px(button_positions[index][0]),
+                top: Val::Px(button_positions[index][1]),
+                right: Val::Auto,
+                bottom: Val::Auto,
+                width: Val::Px(100.0),
+                height: Val::Px(150.0),
                 ..Default::default()
             },
             background_color: BackgroundColor(Color::NONE),
@@ -461,7 +456,7 @@ fn hero_select_handle(
                     }
                 };
             }
-            Interaction::Clicked => {
+            Interaction::Pressed => {
                 profile.set_hero(button.clone());
                 if profile.game_mode == GameMode::ClassicMode {
                     state

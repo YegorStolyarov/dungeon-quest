@@ -17,22 +17,26 @@ pub struct WeaponEntity {
 
 impl Plugin for WeaponPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(initiate::initiate_weapon.in_schedule(OnEnter(SceneState::PreClassicMode)));
+        app.add_systems(OnEnter(SceneState::PreClassicMode),initiate::initiate_weapon);
+        app.add_systems(OnEnter(SceneState::PreSurvivalMode),initiate::initiate_weapon);
 
-        app.add_system(feature::attach_to_player.run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
-        app.add_system(feature::aim.run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
-        app.add_system(feature::change_weapon_texture.run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
-        app.add_system(bullet::spawn_bullet.run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
-        app.add_system(bullet::bullet_handle.run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
-        app.add_system(collisions::bullet_collision.run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
-        app.add_system(collisions::swing_weapon_collision.run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
+        app.add_systems(Update, (
+            feature::attach_to_player,
+            feature::aim,
+            feature::change_weapon_texture,
+            bullet::spawn_bullet,
+            bullet::bullet_handle,
+            collisions::bullet_collision,
+            collisions::swing_weapon_collision
+        ).run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
 
-        app.add_system(cleanup::cleanup_weapon.in_schedule(OnExit(SceneState::InGameClassicMode)));
-        app.add_system(cleanup::cleanup_bullet.in_schedule(OnExit(SceneState::InGameClassicMode)));
-
-        app.add_system(initiate::initiate_weapon.in_schedule(OnEnter(SceneState::PreSurvivalMode)));
-
-        app.add_system(cleanup::cleanup_weapon.in_schedule(OnExit(SceneState::InGameSurvivalMode)));
-        app.add_system(cleanup::cleanup_bullet.in_schedule(OnExit(SceneState::InGameSurvivalMode)));
+        app.add_systems(OnExit(SceneState::InGameClassicMode),(
+            cleanup::cleanup_weapon,
+            cleanup::cleanup_bullet
+        ));
+        app.add_systems(OnExit(SceneState::InGameSurvivalMode),(
+            cleanup::cleanup_weapon,
+            cleanup::cleanup_bullet
+        ));
     }
 }
