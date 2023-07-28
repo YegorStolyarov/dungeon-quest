@@ -47,7 +47,6 @@ fn main() {
         .add_plugins(scenes::game_mode_select_scene::GameModeSelectScenePlugin)
         .add_plugins(scenes::hero_select_scene::HeroSelectScenePlugin)
         .add_plugins(scenes::result_scene::ResultScenePlugin)
-        .add_plugins(scenes::pause_scene::PauseScenePlugin)
         .add_plugins(scenes::rewards_scene::RewardsScenePlugin)
         .add_plugins(scenes::reward_scene::RewardScenePlugin)
         .add_plugins(plugins::input::InputHandlePlugin)

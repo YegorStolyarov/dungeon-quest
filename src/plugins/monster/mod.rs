@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use crate::scenes::pause_scene::PauseSceneData;
 
 use crate::scenes::SceneState;
 
@@ -23,7 +24,7 @@ impl Plugin for MonsterPlugin {
             effect::update_color_of_effects,
             cleanup::cleanup_killed_monsters,
             invinsible::hurt_duration_color.after(effect::update_color_of_effects)
-        ).run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
+        ).run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode)).and_then(not(resource_exists::<PauseSceneData>()))));
 
         app.add_systems(Update, (
             spawn::spawn_monsters_classic_mode,

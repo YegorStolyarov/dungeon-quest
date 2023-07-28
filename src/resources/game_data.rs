@@ -12,6 +12,9 @@ use crate::resources::skill::Skill;
 use crate::resources::weapon::weapon_type::WeaponType;
 use crate::resources::weapon::Weapon;
 
+#[derive(Resource, Serialize, Deserialize, Debug, Clone, Default)]
+pub struct PauseFlag(pub(crate) bool);
+
 #[derive(Resource, Serialize, Deserialize, Debug, Clone)]
 pub struct GameData {
     heroes: [Hero; 4],

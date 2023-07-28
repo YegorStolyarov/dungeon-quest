@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use crate::scenes::pause_scene::PauseSceneData;
 
 use crate::scenes::SceneState;
 
@@ -47,7 +48,7 @@ impl Plugin for PlayerPlugin {
             skill::cooldown,
             skill::duration,
             skill::knight_skill
-        ).run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
+        ).run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode)).and_then(not(resource_exists::<PauseSceneData>()))));
 
         app.add_systems(Update, (
             animation::player_animation_system,

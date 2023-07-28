@@ -17,14 +17,6 @@ use crate::resources::effect::effect_type::EffectType;
 use crate::resources::skill::skill_type::SkillType;
 use crate::resources::weapon::attack_type::AttackType;
 use crate::resources::weapon::weapon_type::WeaponType;
-use crate::scenes::SceneState;
-
-pub fn pause(mut keyboard_input: ResMut<Input<KeyCode>>, mut state: ResMut<NextState<SceneState>>) {
-    if keyboard_input.pressed(KeyCode::Escape) {
-        state.set(SceneState::PauseScene);
-        keyboard_input.reset(KeyCode::Escape);
-    }
-}
 
 pub fn use_skill(
     mut player_query: Query<(&mut PlayerComponent, &mut SkillComponent)>,

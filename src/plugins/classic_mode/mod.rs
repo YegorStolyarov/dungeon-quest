@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use crate::scenes::pause_scene::PauseSceneData;
 
 use crate::scenes::SceneState;
 
@@ -37,7 +38,7 @@ impl Plugin for ClassicModePlugin {
             interactions::door::vertical_door_interaction_handle,
             interactions::end_point::end_point_interaction_handle_system,
             interactions::unlock_room::cleared_room_check
-        ).run_if(in_state(SceneState::InGameClassicMode)));
+        ).run_if(in_state(SceneState::InGameClassicMode).and_then(not(resource_exists::<PauseSceneData>()))));
 
         app.add_systems(OnExit(SceneState::InGameClassicMode), clean_up_classic_mode);
     }

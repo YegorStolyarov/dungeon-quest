@@ -6,7 +6,7 @@ use crate::materials::font::FontMaterials;
 use crate::materials::menu_box::MenuBoxMaterials;
 use crate::materials::scenes::ScenesMaterials;
 use crate::resources::dictionary::Dictionary;
-use crate::resources::game_mode::GameMode;
+use crate::resources::game_data::PauseFlag;
 use crate::resources::profile::Profile;
 use crate::scenes::SceneState;
 
@@ -21,7 +21,7 @@ const BOX_ARRAY: [[i8; 7]; 3] = [
 ];
 
 #[derive(Component, Copy, Clone, PartialEq, Eq)]
-enum ButtonComponent {
+pub enum ButtonComponent {
     Continue,
     Quit,
 }
@@ -33,27 +33,23 @@ impl ButtonComponent {
 }
 
 #[derive(Resource)]
-struct PauseSceneData {
+pub struct PauseSceneData {
     user_interface_root: Entity,
 }
 
-pub struct PauseScenePlugin;
-
-impl Plugin for PauseScenePlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(SceneState::PauseScene), setup);
-        app.add_systems(Update, button_handle_system.run_if(in_state(SceneState::PauseScene)));
-        app.add_systems(OnExit(SceneState::PauseScene),cleanup);
-    }
-}
-
-fn setup(
+pub fn pause(
+    mut keyboard_input: ResMut<Input<KeyCode>>,
+    mut pause_flag: ResMut<PauseFlag>,
     mut commands: Commands,
     font_materials: Res<FontMaterials>,
     scenes_materials: Res<ScenesMaterials>,
     dictionary: Res<Dictionary>,
 ) {
-    let user_interface_root = commands
+    if keyboard_input.pressed(KeyCode::Escape) {
+        pause_flag.0 = true;
+        keyboard_input.reset(KeyCode::Escape);
+
+        let user_interface_root = commands
         .spawn(NodeBundle {
             style: Style {
                 width: Val::Percent(100.0),
@@ -71,15 +67,10 @@ fn setup(
         .insert(Name::new("PauseUI"))
         .id();
 
-    commands.insert_resource(PauseSceneData {
-        user_interface_root,
-    });
-}
-
-fn cleanup(mut commands: Commands, pause_scene_data: Res<PauseSceneData>) {
-    commands
-        .entity(pause_scene_data.user_interface_root)
-        .despawn_recursive();
+        commands.insert_resource(PauseSceneData {
+            user_interface_root,
+        });
+    }
 }
 
 fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
@@ -178,7 +169,7 @@ fn buttons(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: 
     }
 }
 
-fn button_handle_system(
+pub fn button_handle_system(
     mut button_query: Query<
         (&Interaction, &ButtonComponent, &Children),
         (Changed<Interaction>, With<Button>),
@@ -186,7 +177,11 @@ fn button_handle_system(
     mut text_query: Query<&mut Text>,
     mut profile: ResMut<Profile>,
     mut next_state: ResMut<NextState<SceneState>>,
+    mut pause_flag: ResMut<PauseFlag>,
+    mut commands: Commands,
+    pause_scene_data: Res<PauseSceneData>
 ) {
+    if pause_flag.0 == false { return }
     for (interaction, button, children) in button_query.iter_mut() {
         let mut text = text_query.get_mut(children[0]).unwrap();
         match *interaction {
@@ -195,14 +190,15 @@ fn button_handle_system(
             Interaction::Pressed => {
                 if *button == ButtonComponent::Quit {
                     profile.is_run_finished = true;
-                    // next_state.set(SceneState::MainMenuScene);
-                } else {
-                    let prev_state = match profile.game_mode {
-                        GameMode::ClassicMode => SceneState::InGameClassicMode,
-                        GameMode::SurvivalMode => SceneState::InGameSurvivalMode
-                    };
-                    next_state.set(prev_state);
+                    next_state.set(SceneState::MainMenuScene);
                 }
+
+                pause_flag.0 = false;
+
+                commands
+                    .entity(pause_scene_data.user_interface_root)
+                    .despawn_recursive();
+                commands.remove_resource::<PauseSceneData>();
             }
         }
     }

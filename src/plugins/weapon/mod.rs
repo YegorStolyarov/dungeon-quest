@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use crate::scenes::pause_scene::PauseSceneData;
 
 use crate::scenes::SceneState;
 
@@ -28,7 +29,7 @@ impl Plugin for WeaponPlugin {
             bullet::bullet_handle,
             collisions::bullet_collision,
             collisions::swing_weapon_collision
-        ).run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode))));
+        ).run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode)).and_then(not(resource_exists::<PauseSceneData>()))));
 
         app.add_systems(OnExit(SceneState::InGameClassicMode),(
             cleanup::cleanup_weapon,
