@@ -416,7 +416,7 @@ fn texts(
                         }
                     ).with_alignment(
                         TextAlignment::Center
-                    ),
+                    ).with_no_wrap(),
                     ..Default::default()
                 })
                 .insert(Name::new(component_name))
