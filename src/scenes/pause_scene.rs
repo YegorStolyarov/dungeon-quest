@@ -195,12 +195,14 @@ fn button_handle_system(
             Interaction::Pressed => {
                 if *button == ButtonComponent::Quit {
                     profile.is_run_finished = true;
+                    // next_state.set(SceneState::MainMenuScene);
+                } else {
+                    let prev_state = match profile.game_mode {
+                        GameMode::ClassicMode => SceneState::InGameClassicMode,
+                        GameMode::SurvivalMode => SceneState::InGameSurvivalMode
+                    };
+                    next_state.set(prev_state);
                 }
-                let prev_state = match profile.game_mode {
-                    GameMode::ClassicMode => SceneState::InGameClassicMode,
-                    GameMode::SurvivalMode => SceneState::InGameSurvivalMode
-                };
-                next_state.set(prev_state);
             }
         }
     }
