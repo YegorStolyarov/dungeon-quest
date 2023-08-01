@@ -1,12 +1,11 @@
 # Dungeon Quest
 Updated version of funny game which I failed to build from original repo.
+Runs on bevy=0.11
 
 For learning purposes.
 
-## Changelog:
-- Migrated to bevy=0.9, bevy_kira_audio=0.14, bevy_inspector_egui=0.17
+```cargo run``` for build and play.
 
-- Migrated to bevy=0.8, bevy_kira_audio=0.12, bevy_inspector_egui=0.13
 
 ## Legacy readme
 Map : 15:10 (7 + 3)
