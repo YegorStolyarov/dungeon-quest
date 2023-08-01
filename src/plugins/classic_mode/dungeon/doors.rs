@@ -6,7 +6,6 @@ use crate::plugins::classic_mode::ClassicModeData;
 use crate::resources::dungeon::door::{Door, HorizontalDoor, VerticaltDoor};
 use crate::resources::dungeon::doors::Doors;
 use crate::resources::dungeon::Dungeon;
-use crate::resources::game_data::PauseFlag;
 use crate::resources::player::player_dungeon_stats::PlayerDungeonStats;
 
 const START_Y: f32 = 0.0 + WINDOW_HEIGHT / 2.0 - TILE_SIZE / 2.0;
@@ -161,9 +160,7 @@ pub fn horizontal_doors_system(
     mut horizontal_door_query: Query<(&HorizontalDoor, &Door, &mut Visibility)>,
     player_dungeon_stats: Res<PlayerDungeonStats>,
     dungeon: Res<Dungeon>,
-    pause_flag: Res<PauseFlag>
 ) {
-    if pause_flag.0 {return}
     if player_dungeon_stats.is_changed() {
         for (_horizontal_door, door, mut visibility) in horizontal_door_query.iter_mut() {
             if !player_dungeon_stats.is_room_cleared {
@@ -213,9 +210,7 @@ pub fn vertical_doors_system(
     player_dungeon_stats: Res<PlayerDungeonStats>,
     ingame_materials: Res<InGameMaterials>,
     dungeon: Res<Dungeon>,
-    pause_flag: Res<PauseFlag>
 ) {
-    if pause_flag.0 {return}
     if player_dungeon_stats.is_changed() {
         for (vertical_door, children, mut visibility) in vertical_door_query.iter_mut() {
             let current_floor = dungeon.current_floor.clone();

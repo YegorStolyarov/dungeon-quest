@@ -4,6 +4,7 @@ use std::time::Duration;
 use crate::materials::font::FontMaterials;
 use crate::resources::dictionary::Dictionary;
 use crate::resources::player::player_dungeon_stats::PlayerDungeonStats;
+use crate::scenes::pause_scene::PauseSceneData;
 use crate::scenes::SceneState;
 
 pub struct ClassicModeUIPlugin;
@@ -28,7 +29,7 @@ impl Plugin for ClassicModeUIPlugin {
         app.add_systems(Update, (
             center_text_handle_system,
             top_right_conner_text_handle_system
-        ).run_if(in_state(SceneState::InGameClassicMode)));
+        ).run_if(in_state(SceneState::InGameClassicMode).and_then(not(resource_exists::<PauseSceneData>()))));
 
         app.add_systems(OnExit(SceneState::InGameClassicMode), cleanup);
     }

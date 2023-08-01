@@ -6,7 +6,6 @@ use crate::plugins::classic_mode::dungeon::{TOTAL_TILE_HEIGHT, TOTAL_TILE_WIDTH}
 use crate::plugins::classic_mode::ClassicModeData;
 use crate::resources::dungeon::end_point::EndPoint;
 use crate::resources::dungeon::Dungeon;
-use crate::resources::game_data::PauseFlag;
 
 pub fn end_point(
     mut commands: Commands,
@@ -48,9 +47,7 @@ pub fn end_point_handle_system(
     mut query: Query<(&mut Visibility, &mut Handle<Image>), With<EndPoint>>,
     ingame_materials: Res<InGameMaterials>,
     dungeon: Res<Dungeon>,
-    pause_flag: Res<PauseFlag>
 ) {
-    if pause_flag.0 {return}
     for (mut visibility, mut handle_image) in query.iter_mut() {
         let current_position = dungeon.current_floor.current_position;
         let end_room_position = dungeon.current_floor.end_room_position;

@@ -4,6 +4,7 @@ use std::time::Duration;
 use crate::materials::font::FontMaterials;
 use crate::resources::dictionary::Dictionary;
 use crate::resources::dungeon::wave::Wave;
+use crate::scenes::pause_scene::PauseSceneData;
 use crate::scenes::SceneState;
 
 pub struct SurvivalModeUIPlugin;
@@ -28,14 +29,14 @@ impl Plugin for SurvivalModeUIPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(SceneState::InGameSurvivalMode), (
             setup,
-            reset_center_text
+            reset_center_text.after(setup)
         ));
 
         app.add_systems(Update, (
             center_text_handle_system,
             wave_text_handle_system,
             wave_countdown_text_handle_system
-        ).run_if(in_state(SceneState::InGameSurvivalMode)));
+        ).run_if(in_state(SceneState::InGameSurvivalMode).and_then(not(resource_exists::<PauseSceneData>()))));
 
         app.add_systems(OnExit(SceneState::InGameSurvivalMode), cleanup);
     }
@@ -226,7 +227,8 @@ fn wave_countdown_text_handle_system(
 
 fn reset_center_text(mut center_text_query: Query<&mut CenterTextComponent>, wave: Res<Wave>) {
     if wave.is_changed() {
-        let mut center_text = center_text_query.single_mut();
-        center_text.timer = Timer::new(Duration::from_secs(1), TimerMode::Once);
+        if let Ok(mut center_text) = center_text_query.get_single_mut() {
+            center_text.timer = Timer::new(Duration::from_secs(1), TimerMode::Once);
+        }
     }
 }

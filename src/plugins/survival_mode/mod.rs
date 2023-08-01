@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use crate::scenes::pause_scene::PauseSceneData;
 
 use crate::scenes::SceneState;
 
@@ -21,7 +22,9 @@ impl Plugin for SurvivalModePlugin {
             dungeon::walls::walls
         ));
 
-        app.add_systems(Update, dungeon::wave::countdown.run_if(in_state(SceneState::InGameSurvivalMode)));
+        app.add_systems(Update, dungeon::wave::countdown.run_if(
+            in_state(SceneState::InGameSurvivalMode).and_then(not(resource_exists::<PauseSceneData>())
+        )));
 
         app.add_systems(OnExit(SceneState::InGameSurvivalMode), cleanup_survival_mode_data);
     }
