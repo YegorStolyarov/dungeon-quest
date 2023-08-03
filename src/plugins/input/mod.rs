@@ -1,6 +1,5 @@
 use bevy::prelude::*;
-use crate::scenes::pause_scene::PauseSceneData;
-
+use crate::resources::game_data::PauseSceneData;
 use crate::scenes::SceneState;
 
 pub mod cheat;
@@ -28,7 +27,12 @@ impl Plugin for InputHandlePlugin {
         ).run_if(in_state(SceneState::InGameClassicMode).or_else(in_state(SceneState::InGameSurvivalMode)).and_then(not(resource_exists::<PauseSceneData>())))
         );
 
-        app.add_systems(Update, crate::scenes::pause_scene::button_handle_system.run_if(resource_exists::<PauseSceneData>()));
+        app.add_systems(Update, crate::scenes::pause_scene::button_handle_system.run_if(
+            resource_exists::<crate::scenes::pause_scene::PauseSceneFlag>())
+        );
+        app.add_systems(Update, crate::plugins::survival_mode::dungeon::wave::button_handle_system.run_if(
+            resource_exists::<crate::plugins::survival_mode::dungeon::wave::RewardsSceneFlag>())
+        );
 
         app.add_systems(Update, cheat::unlock_room_cheat.run_if(in_state(SceneState::InGameClassicMode)));
 

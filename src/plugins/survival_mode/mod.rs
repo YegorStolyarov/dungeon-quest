@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crate::scenes::pause_scene::PauseSceneData;
+use crate::resources::game_data::PauseSceneData;
 
 use crate::scenes::SceneState;
 

@@ -12,6 +12,11 @@ use crate::resources::skill::Skill;
 use crate::resources::weapon::weapon_type::WeaponType;
 use crate::resources::weapon::Weapon;
 
+#[derive(Resource)]
+pub struct PauseSceneData {
+    pub(crate) user_interface_root: Entity,
+}
+
 #[derive(Resource, Serialize, Deserialize, Debug, Clone)]
 pub struct GameData {
     heroes: [Hero; 4],

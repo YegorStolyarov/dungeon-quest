@@ -4,7 +4,7 @@ use std::time::Duration;
 use crate::materials::font::FontMaterials;
 use crate::resources::dictionary::Dictionary;
 use crate::resources::dungeon::wave::Wave;
-use crate::scenes::pause_scene::PauseSceneData;
+use crate::resources::game_data::PauseSceneData;
 use crate::scenes::SceneState;
 
 pub struct SurvivalModeUIPlugin;

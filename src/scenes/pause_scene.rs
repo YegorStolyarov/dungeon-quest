@@ -6,6 +6,7 @@ use crate::materials::font::FontMaterials;
 use crate::materials::menu_box::MenuBoxMaterials;
 use crate::materials::scenes::ScenesMaterials;
 use crate::resources::dictionary::Dictionary;
+use crate::resources::game_data::PauseSceneData;
 use crate::resources::profile::Profile;
 use crate::scenes::SceneState;
 
@@ -25,15 +26,14 @@ pub enum ButtonComponent {
     Quit,
 }
 
+// the clumsy way to differ pause screen from other pausing screens, e.x. reward screen for survival mode
+#[derive(Resource)]
+pub struct PauseSceneFlag;
+
 impl ButtonComponent {
     pub fn iterator() -> Iter<'static, ButtonComponent> {
         [ButtonComponent::Continue, ButtonComponent::Quit].iter()
     }
-}
-
-#[derive(Resource)]
-pub struct PauseSceneData {
-    pub(crate) user_interface_root: Entity,
 }
 
 // works without SceneState now, should consider to move
@@ -68,6 +68,7 @@ pub fn pause(
         commands.insert_resource(PauseSceneData {
             user_interface_root,
         });
+        commands.insert_resource(PauseSceneFlag);
     }
 }
 
@@ -193,6 +194,7 @@ pub fn button_handle_system(
                     .entity(pause_scene_data.user_interface_root)
                     .despawn_recursive();
                 commands.remove_resource::<PauseSceneData>();
+                commands.remove_resource::<PauseSceneFlag>();
             }
         }
     }
