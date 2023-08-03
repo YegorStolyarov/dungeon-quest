@@ -22,6 +22,10 @@ impl Plugin for SurvivalModePlugin {
             dungeon::walls::walls
         ));
 
+        app.add_systems(Update, dungeon::wave::button_handle_system.run_if(
+            in_state(SceneState::InGameSurvivalMode).and_then(resource_exists::<dungeon::wave::RewardsSceneFlag>()))
+        );
+
         app.add_systems(Update, dungeon::wave::countdown.run_if(
             in_state(SceneState::InGameSurvivalMode).and_then(not(resource_exists::<PauseSceneData>())
         )));

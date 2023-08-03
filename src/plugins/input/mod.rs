@@ -30,9 +30,6 @@ impl Plugin for InputHandlePlugin {
         app.add_systems(Update, crate::scenes::pause_scene::button_handle_system.run_if(
             resource_exists::<crate::scenes::pause_scene::PauseSceneFlag>())
         );
-        app.add_systems(Update, crate::plugins::survival_mode::dungeon::wave::button_handle_system.run_if(
-            resource_exists::<crate::plugins::survival_mode::dungeon::wave::RewardsSceneFlag>())
-        );
 
         app.add_systems(Update, cheat::unlock_room_cheat.run_if(in_state(SceneState::InGameClassicMode)));
 

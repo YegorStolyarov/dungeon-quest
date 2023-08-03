@@ -40,6 +40,11 @@ impl Plugin for ClassicModePlugin {
             interactions::unlock_room::cleared_room_check
         ).run_if(in_state(SceneState::InGameClassicMode).and_then(not(resource_exists::<PauseSceneData>()))));
 
+        app.add_systems(Update, (
+            interactions::end_point::cooldown_handle,
+            interactions::end_point::collect_reward
+        ).run_if(in_state(SceneState::InGameClassicMode).and_then(resource_exists::<interactions::end_point::RewardSceneFlag>())));
+
         app.add_systems(OnExit(SceneState::InGameClassicMode), clean_up_classic_mode);
     }
 }
