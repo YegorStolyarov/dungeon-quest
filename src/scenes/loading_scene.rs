@@ -18,7 +18,7 @@ use crate::materials::scenes::ScenesMaterials;
 use crate::materials::weapons::WeaponsMaterials;
 use crate::resources::dictionary::Dictionary;
 use crate::resources::dungeon::rooms::Rooms;
-use crate::resources::game_data::{GameData, PauseFlag};
+use crate::resources::game_data::GameData;
 use crate::resources::language::Language;
 
 const LOADING_TEXT_FONT_SIZE: f32 = 30.0;
@@ -371,5 +371,4 @@ fn load_materials(mut commands: Commands, asset_server: Res<AssetServer>) {
 fn load_data(mut commands: Commands) {
     commands.insert_resource(GameData::new());
     commands.insert_resource(Rooms::new());
-    commands.insert_resource(PauseFlag::default());
 }

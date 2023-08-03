@@ -10,7 +10,6 @@ use crate::resources::dungeon::wall::Wall;
 use crate::resources::dungeon::wall_type::WallType;
 use crate::resources::dungeon::walls::Walls;
 use crate::resources::dungeon::Dungeon;
-use crate::resources::game_data::PauseFlag;
 use crate::resources::player::player_dungeon_stats::PlayerDungeonStats;
 
 const START_Y: f32 = 0.0 + WINDOW_HEIGHT / 2.0 - TILE_SIZE / 2.0;
@@ -138,9 +137,7 @@ pub fn temporary_walls_system(
     mut wall_query: Query<(&Wall, &mut Visibility)>,
     player_dungeon_stats: Res<PlayerDungeonStats>,
     dungeon: Res<Dungeon>,
-    pause_flag: Res<PauseFlag>
 ) {
-    if pause_flag.0 {return}
     if player_dungeon_stats.is_changed() {
         let current_floor = dungeon.current_floor.clone();
         let current_position = current_floor.current_position;

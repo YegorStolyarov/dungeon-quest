@@ -6,7 +6,6 @@ use crate::materials::font::FontMaterials;
 use crate::materials::menu_box::MenuBoxMaterials;
 use crate::materials::scenes::ScenesMaterials;
 use crate::resources::dictionary::Dictionary;
-use crate::resources::game_data::PauseFlag;
 use crate::resources::profile::Profile;
 use crate::scenes::SceneState;
 
@@ -34,20 +33,18 @@ impl ButtonComponent {
 
 #[derive(Resource)]
 pub struct PauseSceneData {
-    user_interface_root: Entity,
+    pub(crate) user_interface_root: Entity,
 }
 
 // works without SceneState now, should consider to move
 pub fn pause(
     mut keyboard_input: ResMut<Input<KeyCode>>,
-    mut pause_flag: ResMut<PauseFlag>,
     mut commands: Commands,
     font_materials: Res<FontMaterials>,
     scenes_materials: Res<ScenesMaterials>,
     dictionary: Res<Dictionary>,
 ) {
     if keyboard_input.pressed(KeyCode::Escape) {
-        pause_flag.0 = true;
         keyboard_input.reset(KeyCode::Escape);
 
         let user_interface_root = commands
@@ -178,11 +175,9 @@ pub fn button_handle_system(
     mut text_query: Query<&mut Text>,
     mut profile: ResMut<Profile>,
     mut next_state: ResMut<NextState<SceneState>>,
-    mut pause_flag: ResMut<PauseFlag>,
     mut commands: Commands,
     pause_scene_data: Res<PauseSceneData>
 ) {
-    if pause_flag.0 == false { return }
     for (interaction, button, children) in button_query.iter_mut() {
         let mut text = text_query.get_mut(children[0]).unwrap();
         match *interaction {
@@ -193,8 +188,6 @@ pub fn button_handle_system(
                     profile.is_run_finished = true;
                     next_state.set(SceneState::MainMenuScene);
                 }
-
-                pause_flag.0 = false;
 
                 commands
                     .entity(pause_scene_data.user_interface_root)

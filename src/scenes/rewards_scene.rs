@@ -19,6 +19,7 @@ use crate::resources::hero::hero_class::HeroClass;
 use crate::resources::profile::Profile;
 use crate::resources::upgrade::upgrade_controller::UpgradeController;
 use crate::resources::upgrade::upgrade_type::UpgradeType;
+use crate::scenes::pause_scene::PauseSceneData;
 use crate::scenes::SceneState;
 
 const BOX_TILE_SIZE: f32 = 60.0;
@@ -97,7 +98,7 @@ fn setup(
         .insert(Name::new("RewardsUI"))
         .id();
 
-    commands.insert_resource(RewardsSceneData {
+    commands.insert_resource(PauseSceneData {
         user_interface_root,
     });
 }
