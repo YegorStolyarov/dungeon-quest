@@ -41,13 +41,16 @@ pub fn aim(
     time: Res<Time>,
 ) {
     let (camera, camera_transform) = q_camera.single();
-    let Ok(wnd) = primary_query.get_single() else {
-        return;
-    };
+    let wnd = primary_query.single();
 
     if let Some(screen_pos) = wnd.cursor_position() {
         let window_size = Vec2::new(wnd.width() as f32, wnd.height() as f32);
-        let ndc = (screen_pos / window_size) * 2.0 - Vec2::ONE;
+
+        // translate y coord of cursor, according to https://bevyengine.org/learn/migration-guides/0.10-0.11/#consistent-screen-space-coordinates
+        let ndc = (
+            Vec2::new(screen_pos.x, window_size.y - screen_pos.y) / window_size
+        ) * 2.0 - Vec2::ONE;
+
         let ndc_to_world = camera_transform.compute_matrix() * camera.projection_matrix().inverse();
         let world_pos = ndc_to_world.project_point3(ndc.extend(-1.0));
         let mouse_pos: Vec2 = world_pos.truncate();
