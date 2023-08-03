@@ -27,9 +27,10 @@ struct SurvivalModeUIData {
 
 impl Plugin for SurvivalModeUIPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(SceneState::InGameSurvivalMode), (
-            setup,
-            reset_center_text.after(setup)
+        app.add_systems(OnEnter(SceneState::InGameSurvivalMode), setup);
+
+        app.add_systems(Update, reset_center_text.run_if(
+            in_state(SceneState::InGameSurvivalMode).and_then(resource_removed::<PauseSceneData>())
         ));
 
         app.add_systems(Update, (
@@ -227,8 +228,7 @@ fn wave_countdown_text_handle_system(
 
 fn reset_center_text(mut center_text_query: Query<&mut CenterTextComponent>, wave: Res<Wave>) {
     if wave.is_changed() {
-        if let Ok(mut center_text) = center_text_query.get_single_mut() {
-            center_text.timer = Timer::new(Duration::from_secs(1), TimerMode::Once);
-        }
+        let mut center_text = center_text_query.single_mut();
+        center_text.timer = Timer::new(Duration::from_secs(1), TimerMode::Once);
     }
 }

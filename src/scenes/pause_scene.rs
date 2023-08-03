@@ -37,6 +37,7 @@ pub struct PauseSceneData {
     user_interface_root: Entity,
 }
 
+// works without SceneState now, should consider to move
 pub fn pause(
     mut keyboard_input: ResMut<Input<KeyCode>>,
     mut pause_flag: ResMut<PauseFlag>,
