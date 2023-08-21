@@ -29,7 +29,9 @@ fn main() {
                 ..default()
             }),
             ..default()
-        }))
+        }).set(
+            ImagePlugin::default_nearest()
+        ))
         .init_resource::<resources::setting::Setting>()
         .init_resource::<resources::dictionary::Dictionary>()
         .add_state::<scenes::SceneState>()
