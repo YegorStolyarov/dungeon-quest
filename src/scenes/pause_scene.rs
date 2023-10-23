@@ -48,22 +48,22 @@ pub fn pause(
         keyboard_input.reset(KeyCode::Escape);
 
         let user_interface_root = commands
-        .spawn(NodeBundle {
-            style: Style {
-                width: Val::Percent(100.0),
-                height: Val::Percent(100.0),
-                position_type: PositionType::Absolute,
+            .spawn(NodeBundle {
+                style: Style {
+                    width: Val::Percent(100.0),
+                    height: Val::Percent(100.0),
+                    position_type: PositionType::Absolute,
+                    ..Default::default()
+                },
+                background_color: BackgroundColor(Color::NONE),
                 ..Default::default()
-            },
-            background_color: BackgroundColor(Color::NONE),
-            ..Default::default()
-        })
-        .with_children(|parent| {
-            menu_box(parent, &scenes_materials.menu_box_materials);
-            buttons(parent, &font_materials, &dictionary);
-        })
-        .insert(Name::new("PauseUI"))
-        .id();
+            })
+            .with_children(|parent| {
+                menu_box(parent, &scenes_materials.menu_box_materials);
+                buttons(parent, &font_materials, &dictionary);
+            })
+            .insert(Name::new("PauseUI"))
+            .id();
 
         commands.insert_resource(PauseSceneData {
             user_interface_root,
@@ -73,7 +73,6 @@ pub fn pause(
 }
 
 fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
-
     let start_left = (WINDOW_HEIGHT * RESOLUTION - BOX_TILE_SIZE * BOX_WIDTH_TILES) / 2.0;
     let start_top = (WINDOW_HEIGHT - BOX_TILE_SIZE * BOX_HEIGHT_TILES) / 2.0;
 
@@ -83,17 +82,16 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     .with_children(|parent| {
         for (row_index, row) in BOX_ARRAY.iter().enumerate() {
             for (column_index, value) in row.iter().enumerate() {
-
                 let image: Handle<Image> = match value {
-                    0 => menu_box_materials.top_right.clone(),
+                    0 => menu_box_materials.top_left.clone(),
                     1 => menu_box_materials.top_center.clone(),
-                    2 => menu_box_materials.top_left.clone(),
-                    3 => menu_box_materials.mid_right.clone(),
+                    2 => menu_box_materials.top_right.clone(),
+                    3 => menu_box_materials.mid_left.clone(),
                     4 => menu_box_materials.mid_center.clone(),
-                    5 => menu_box_materials.mid_left.clone(),
-                    6 => menu_box_materials.bottom_right.clone(),
+                    5 => menu_box_materials.mid_right.clone(),
+                    6 => menu_box_materials.bottom_left.clone(),
                     7 => menu_box_materials.bottom_center.clone(),
-                    8 => menu_box_materials.bottom_left.clone(),
+                    8 => menu_box_materials.bottom_right.clone(),
                     _ => panic!("Unknown resources"),
                 };
 
@@ -156,10 +154,9 @@ fn buttons(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: 
                         font: font.clone(),
                         font_size: 35.0,
                         color: Color::GRAY,
-                    }
-                ).with_alignment(
-                    TextAlignment::Center
-                ),
+                    },
+                )
+                .with_alignment(TextAlignment::Center),
                 ..Default::default()
             });
         })
@@ -177,7 +174,7 @@ pub fn button_handle_system(
     mut profile: ResMut<Profile>,
     mut next_state: ResMut<NextState<SceneState>>,
     mut commands: Commands,
-    pause_scene_data: Res<PauseSceneData>
+    pause_scene_data: Res<PauseSceneData>,
 ) {
     for (interaction, button, children) in button_query.iter_mut() {
         let mut text = text_query.get_mut(children[0]).unwrap();

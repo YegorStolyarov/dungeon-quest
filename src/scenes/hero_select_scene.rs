@@ -88,11 +88,15 @@ struct HeroSelectSceneData {
 impl Plugin for HeroSelectScenePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(SceneState::HeroSelectScene), setup);
-        app.add_systems(Update, (
-            return_button_handle,
-            hero_select_handle,
-            hero_image_animation_handle,
-        ).run_if(in_state(SceneState::HeroSelectScene)));
+        app.add_systems(
+            Update,
+            (
+                return_button_handle,
+                hero_select_handle,
+                hero_image_animation_handle,
+            )
+                .run_if(in_state(SceneState::HeroSelectScene)),
+        );
         app.add_systems(OnExit(SceneState::HeroSelectScene), cleanup);
     }
 }
@@ -166,15 +170,15 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     for (row_index, row) in BOX_ARRAY.iter().enumerate() {
         for (column_index, value) in row.iter().enumerate() {
             let image: Handle<Image> = match value {
-                0 => menu_box_materials.top_right.clone(),
+                0 => menu_box_materials.top_left.clone(),
                 1 => menu_box_materials.top_center.clone(),
-                2 => menu_box_materials.top_left.clone(),
-                3 => menu_box_materials.mid_right.clone(),
+                2 => menu_box_materials.top_right.clone(),
+                3 => menu_box_materials.mid_left.clone(),
                 4 => menu_box_materials.mid_center.clone(),
-                5 => menu_box_materials.mid_left.clone(),
-                6 => menu_box_materials.bottom_right.clone(),
+                5 => menu_box_materials.mid_right.clone(),
+                6 => menu_box_materials.bottom_left.clone(),
                 7 => menu_box_materials.bottom_center.clone(),
-                8 => menu_box_materials.bottom_left.clone(),
+                8 => menu_box_materials.bottom_right.clone(),
                 _ => panic!("Unknown resources"),
             };
 
@@ -238,8 +242,7 @@ fn return_button_handle(
             }
             Interaction::Pressed => {
                 ui_image.texture = scenes_materials.icon_materials.home_icon_clicked.clone();
-                state
-                    .set(SceneState::MainMenuScene);
+                state.set(SceneState::MainMenuScene);
             }
         }
     }
@@ -319,7 +322,8 @@ fn heroes_images(
                 },
             };
 
-            let texture_atlas = TextureAtlas::from_grid(hero_tileset, Vec2::new(16.0, 28.0), 9, 1, None, None);
+            let texture_atlas =
+                TextureAtlas::from_grid(hero_tileset, Vec2::new(16.0, 28.0), 9, 1, None, None);
             let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
             let x = hero_image_positions[index][0];
@@ -361,10 +365,9 @@ fn select_hero_text(
                 font: font,
                 font_size: 50.0,
                 color: Color::BLACK,
-            }
-        ).with_alignment(
-            TextAlignment::Center
-        ),
+            },
+        )
+        .with_alignment(TextAlignment::Center),
         ..Default::default()
     })
     .insert(Name::new("SelectHeroText"));
@@ -383,7 +386,6 @@ fn heroes_buttons(root: &mut ChildBuilder) {
     ];
 
     for (index, value) in ButtonComponent::iterator().enumerate() {
-
         let component_name = match index {
             1 => "MaleElf",
             2 => "MaleKnight",
@@ -455,11 +457,9 @@ fn hero_select_handle(
             Interaction::Pressed => {
                 profile.set_hero(button.clone());
                 if profile.game_mode == GameMode::ClassicMode {
-                    state
-                        .set(SceneState::PreClassicMode);
+                    state.set(SceneState::PreClassicMode);
                 } else {
-                    state
-                        .set(SceneState::PreSurvivalMode);
+                    state.set(SceneState::PreSurvivalMode);
                 }
             }
         }
