@@ -40,7 +40,10 @@ struct CreditsSceneData {
 impl Plugin for CreditsScenePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(SceneState::CreditsScene), setup);
-        app.add_systems(Update, button_handle_system.run_if(in_state(SceneState::CreditsScene)));
+        app.add_systems(
+            Update,
+            button_handle_system.run_if(in_state(SceneState::CreditsScene)),
+        );
         app.add_systems(OnExit(SceneState::CreditsScene), cleanup);
     }
 }
@@ -81,23 +84,21 @@ fn cleanup(mut commands: Commands, credits_scene_data: Res<CreditsSceneData>) {
 }
 
 fn credits_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
-
     let start_left = (WINDOW_HEIGHT * RESOLUTION - BOX_TILE_SIZE * BOX_WIDTH_TILES) / 2.0;
     let start_top = (WINDOW_HEIGHT - BOX_TILE_SIZE * BOX_HEIGHT_TILES) / 2.0;
 
     for (row_index, row) in BOX_ARRAY.iter().enumerate() {
         for (column_index, value) in row.iter().enumerate() {
-
             let image: Handle<Image> = match value {
-                0 => menu_box_materials.top_right.clone(),
+                0 => menu_box_materials.top_left.clone(),
                 1 => menu_box_materials.top_center.clone(),
-                2 => menu_box_materials.top_left.clone(),
-                3 => menu_box_materials.mid_right.clone(),
+                2 => menu_box_materials.top_right.clone(),
+                3 => menu_box_materials.mid_left.clone(),
                 4 => menu_box_materials.mid_center.clone(),
-                5 => menu_box_materials.mid_left.clone(),
-                6 => menu_box_materials.bottom_right.clone(),
+                5 => menu_box_materials.mid_right.clone(),
+                6 => menu_box_materials.bottom_left.clone(),
                 7 => menu_box_materials.bottom_center.clone(),
-                8 => menu_box_materials.bottom_left.clone(),
+                8 => menu_box_materials.bottom_right.clone(),
                 _ => panic!("Unknown resources"),
             };
 
@@ -158,8 +159,7 @@ fn button_handle_system(
             }
             Interaction::Pressed => {
                 ui_image.texture = scenes_materials.icon_materials.home_icon_clicked.clone();
-                state
-                    .set(SceneState::MainMenuScene);
+                state.set(SceneState::MainMenuScene);
             }
         }
     }
@@ -181,10 +181,9 @@ fn credits_text(root: &mut ChildBuilder, font_materials: &FontMaterials, diction
                 font,
                 font_size: 50.0,
                 color: Color::BLACK,
-            }
-        ).with_alignment(
-            TextAlignment::Center
-        ),
+            },
+        )
+        .with_alignment(TextAlignment::Center),
         ..Default::default()
     });
 }
@@ -213,10 +212,9 @@ fn texts(root: &mut ChildBuilder, font_materials: &FontMaterials, dictionary: &D
                     font: font.clone(),
                     font_size: 25.0,
                     color: Color::BLACK,
-                }
-            ).with_alignment(
-                TextAlignment::Center
-            ),
+                },
+            )
+            .with_alignment(TextAlignment::Center),
             ..Default::default()
         });
     }
