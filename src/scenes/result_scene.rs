@@ -91,11 +91,15 @@ pub struct ResultScenePlugin;
 impl Plugin for ResultScenePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(SceneState::ResultScene), setup);
-        app.add_systems(Update, (
-            button_handle_system,
-            user_input_visibility_handle,
-            user_input_handle
-        ).run_if(in_state(SceneState::ResultScene)));
+        app.add_systems(
+            Update,
+            (
+                button_handle_system,
+                user_input_visibility_handle,
+                user_input_handle,
+            )
+                .run_if(in_state(SceneState::ResultScene)),
+        );
         app.add_systems(OnExit(SceneState::ResultScene), cleanup);
     }
 }
@@ -144,7 +148,6 @@ fn cleanup(mut commands: Commands, result_scene_data: Res<ResultSceneData>) {
 }
 
 fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
-
     let start_left = (WINDOW_HEIGHT * RESOLUTION - MENU_BOX_TILE_SIZE * MENU_BOX_WIDTH_TILES) / 2.0;
     let start_top = (WINDOW_HEIGHT - MENU_BOX_TILE_SIZE * MENU_BOX_HEIGHT_TILES) / 2.0;
 
@@ -154,17 +157,16 @@ fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
     .with_children(|parent| {
         for (row_index, row) in MENU_BOX_ARRAY.iter().enumerate() {
             for (column_index, value) in row.iter().enumerate() {
-
                 let image: Handle<Image> = match value {
-                    0 => menu_box_materials.top_right.clone(),
+                    0 => menu_box_materials.top_left.clone(),
                     1 => menu_box_materials.top_center.clone(),
-                    2 => menu_box_materials.top_left.clone(),
-                    3 => menu_box_materials.mid_right.clone(),
+                    2 => menu_box_materials.top_right.clone(),
+                    3 => menu_box_materials.mid_left.clone(),
                     4 => menu_box_materials.mid_center.clone(),
-                    5 => menu_box_materials.mid_left.clone(),
-                    6 => menu_box_materials.bottom_right.clone(),
+                    5 => menu_box_materials.mid_right.clone(),
+                    6 => menu_box_materials.bottom_left.clone(),
                     7 => menu_box_materials.bottom_center.clone(),
-                    8 => menu_box_materials.bottom_left.clone(),
+                    8 => menu_box_materials.bottom_right.clone(),
                     _ => panic!("Unknown resources"),
                 };
 
@@ -212,10 +214,9 @@ fn result_text(root: &mut ChildBuilder, font_materials: &FontMaterials, dictiona
                 font: font,
                 font_size: 50.0,
                 color: Color::BLACK,
-            }
-        ).with_alignment(
-            TextAlignment::Center
-        ),
+            },
+        )
+        .with_alignment(TextAlignment::Center),
         ..Default::default()
     })
     .insert(Name::new("ResultText"));
@@ -413,10 +414,10 @@ fn texts(
                             font: font.clone(),
                             font_size: 35.0,
                             color: Color::BLACK,
-                        }
-                    ).with_alignment(
-                        TextAlignment::Center
-                    ).with_no_wrap(),
+                        },
+                    )
+                    .with_alignment(TextAlignment::Center)
+                    .with_no_wrap(),
                     ..Default::default()
                 })
                 .insert(Name::new(component_name))
@@ -521,8 +522,7 @@ fn button_handle_system(
                 }
                 Interaction::Pressed => {
                     ui_image.texture = scenes_materials.icon_materials.home_icon_clicked.clone();
-                    state
-                        .set(SceneState::MainMenuScene);
+                    state.set(SceneState::MainMenuScene);
                 }
             },
             ButtonComponent::SaveProfile => match *interaction {
@@ -538,13 +538,14 @@ fn button_handle_system(
                 }
             },
             ButtonComponent::PlayAgain => match *interaction {
-                Interaction::None => ui_image.texture = scenes_materials.icon_materials.restart.clone(),
+                Interaction::None => {
+                    ui_image.texture = scenes_materials.icon_materials.restart.clone()
+                }
                 Interaction::Hovered => {
                     ui_image.texture = scenes_materials.icon_materials.restart_hovered.clone()
                 }
                 Interaction::Pressed => {
-                    state
-                        .set(SceneState::GameModeSelectScene);
+                    state.set(SceneState::GameModeSelectScene);
                 }
             },
         };
@@ -591,10 +592,9 @@ fn user_input_text(
                             font: font.clone(),
                             font_size: 40.0,
                             color: Color::WHITE,
-                        }
-                    ).with_alignment(
-                        TextAlignment::Center
-                    ),
+                        },
+                    )
+                    .with_alignment(TextAlignment::Center),
                     visibility: Visibility::Hidden,
                     ..Default::default()
                 })
@@ -647,8 +647,7 @@ fn user_input_handle(
             profile.set_name(user_name.clone());
             stored_profile(profile.convert_to_stored_profile());
             user_name.clear();
-            state
-                .set(SceneState::HighscoreScene);
+            state.set(SceneState::HighscoreScene);
         }
 
         if keys.just_pressed(KeyCode::Escape) {

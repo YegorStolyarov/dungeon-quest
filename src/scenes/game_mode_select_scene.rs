@@ -53,10 +53,11 @@ struct GameModeSelectSceneData {
 impl Plugin for GameModeSelectScenePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(SceneState::GameModeSelectScene), setup);
-        app.add_systems(Update, (
-            button_handle_system,
-            return_button_handle
-        ).run_if(in_state(SceneState::GameModeSelectScene)));
+        app.add_systems(
+            Update,
+            (button_handle_system, return_button_handle)
+                .run_if(in_state(SceneState::GameModeSelectScene)),
+        );
         app.add_systems(OnExit(SceneState::GameModeSelectScene), cleanup);
     }
 }
@@ -100,23 +101,21 @@ fn cleanup(mut commands: Commands, game_mode_select_scene_data: Res<GameModeSele
 }
 
 fn menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
-
     let start_left = (WINDOW_HEIGHT * RESOLUTION - BOX_TILE_SIZE * BOX_WIDTH_TILES) / 2.0;
     let start_top = (WINDOW_HEIGHT - BOX_TILE_SIZE * BOX_HEIGHT_TILES) / 2.0;
 
     for (row_index, row) in BOX_ARRAY.iter().enumerate() {
         for (column_index, value) in row.iter().enumerate() {
-
             let image: Handle<Image> = match value {
-                0 => menu_box_materials.top_right.clone(),
+                0 => menu_box_materials.top_left.clone(),
                 1 => menu_box_materials.top_center.clone(),
-                2 => menu_box_materials.top_left.clone(),
-                3 => menu_box_materials.mid_right.clone(),
+                2 => menu_box_materials.top_right.clone(),
+                3 => menu_box_materials.mid_left.clone(),
                 4 => menu_box_materials.mid_center.clone(),
-                5 => menu_box_materials.mid_left.clone(),
-                6 => menu_box_materials.bottom_right.clone(),
+                5 => menu_box_materials.mid_right.clone(),
+                6 => menu_box_materials.bottom_left.clone(),
                 7 => menu_box_materials.bottom_center.clone(),
-                8 => menu_box_materials.bottom_left.clone(),
+                8 => menu_box_materials.bottom_right.clone(),
                 _ => panic!("Unknown resources"),
             };
 
@@ -165,10 +164,9 @@ fn select_game_mode_text(
                 font: font,
                 font_size: 50.0,
                 color: Color::BLACK,
-            }
-        ).with_alignment(
-            TextAlignment::Center
-        ),
+            },
+        )
+        .with_alignment(TextAlignment::Center),
         ..Default::default()
     });
 }
@@ -231,10 +229,9 @@ fn buttons(
                                 font: font.clone(),
                                 font_size: FONT_SIZE,
                                 color: Color::GRAY,
-                            }
-                        ).with_alignment(
-                            TextAlignment::Center
-                        ),
+                            },
+                        )
+                        .with_alignment(TextAlignment::Center),
                         ..Default::default()
                     });
                 })
@@ -261,12 +258,10 @@ fn button_handle_system(
             Interaction::Pressed => {
                 if *button == ButtonComponent::ClassicMode {
                     profile.set_game_mode(GameMode::ClassicMode);
-                    state
-                        .set(SceneState::HeroSelectScene);
+                    state.set(SceneState::HeroSelectScene);
                 } else if *button == ButtonComponent::SurvivalMode {
                     profile.set_game_mode(GameMode::SurvivalMode);
-                    state
-                        .set(SceneState::HeroSelectScene);
+                    state.set(SceneState::HeroSelectScene);
                 }
             }
         }
@@ -292,8 +287,7 @@ fn return_button_handle(
                 }
                 Interaction::Pressed => {
                     ui_image.texture = scenes_materials.icon_materials.home_icon_clicked.clone();
-                    state
-                        .set(SceneState::MainMenuScene);
+                    state.set(SceneState::MainMenuScene);
                 }
             }
         }

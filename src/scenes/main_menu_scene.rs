@@ -55,7 +55,10 @@ pub struct MainMenuScenePlugin;
 impl Plugin for MainMenuScenePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(SceneState::MainMenuScene), setup);
-        app.add_systems(Update,button_handle_system.run_if(in_state(SceneState::MainMenuScene)));
+        app.add_systems(
+            Update,
+            button_handle_system.run_if(in_state(SceneState::MainMenuScene)),
+        );
         app.add_systems(OnExit(SceneState::MainMenuScene), cleanup);
     }
 }
@@ -95,20 +98,18 @@ fn cleanup(mut commands: Commands, main_menu_scene_data: Res<MainMenuSceneData>)
 }
 
 fn main_menu_box(root: &mut ChildBuilder, menu_box_materials: &MenuBoxMaterials) {
-
     for (row_index, row) in MAIN_MENU_BOX_ARRAY.iter().enumerate() {
         for (column_index, value) in row.iter().enumerate() {
-
             let image: Handle<Image> = match value {
-                0 => menu_box_materials.top_right.clone(),
+                0 => menu_box_materials.top_left.clone(),
                 1 => menu_box_materials.top_center.clone(),
-                2 => menu_box_materials.top_left.clone(),
-                3 => menu_box_materials.mid_right.clone(),
+                2 => menu_box_materials.top_right.clone(),
+                3 => menu_box_materials.mid_left.clone(),
                 4 => menu_box_materials.mid_center.clone(),
-                5 => menu_box_materials.mid_left.clone(),
-                6 => menu_box_materials.bottom_right.clone(),
+                5 => menu_box_materials.mid_right.clone(),
+                6 => menu_box_materials.bottom_left.clone(),
                 7 => menu_box_materials.bottom_center.clone(),
-                8 => menu_box_materials.bottom_left.clone(),
+                8 => menu_box_materials.bottom_right.clone(),
                 _ => panic!("Unknown resources"),
             };
 
@@ -135,7 +136,6 @@ fn buttons(root: &mut ChildBuilder, materials: &Res<FontMaterials>, dictionary: 
     let glossary = dictionary.get_glossary();
 
     for (index, button) in ButtonComponent::iterator().enumerate() {
-
         root.spawn(ButtonBundle {
             style: Style {
                 width: Val::Px(MAIN_MENU_BOX_TILE_SIZE * 3.0),
@@ -170,10 +170,9 @@ fn buttons(root: &mut ChildBuilder, materials: &Res<FontMaterials>, dictionary: 
                         font: materials.get_font(dictionary.get_current_language()),
                         font_size: FONT_SIZE,
                         color: Color::GRAY,
-                    }
-                ).with_alignment(
-                    TextAlignment::Center
-                ),
+                    },
+                )
+                .with_alignment(TextAlignment::Center),
                 ..Default::default()
             });
         })
@@ -198,16 +197,11 @@ fn button_handle_system(
             Interaction::Pressed => {
                 text.sections[0].style.color = Color::RED;
                 match button {
-                    ButtonComponent::Play => state
-                        .set(SceneState::GameModeSelectScene),
-                    ButtonComponent::Highscore => state
-                        .set(SceneState::HighscoreScene),
-                    ButtonComponent::Options => state
-                        .set(SceneState::OptionsScene),
-                    ButtonComponent::Help => state
-                        .set(SceneState::HelpScene),
-                    ButtonComponent::Credits => state
-                        .set(SceneState::CreditsScene),
+                    ButtonComponent::Play => state.set(SceneState::GameModeSelectScene),
+                    ButtonComponent::Highscore => state.set(SceneState::HighscoreScene),
+                    ButtonComponent::Options => state.set(SceneState::OptionsScene),
+                    ButtonComponent::Help => state.set(SceneState::HelpScene),
+                    ButtonComponent::Credits => state.set(SceneState::CreditsScene),
                     ButtonComponent::Quit => exit.send(AppExit),
                 }
             }
